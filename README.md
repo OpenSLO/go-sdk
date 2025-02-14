@@ -15,7 +15,7 @@ OpenSLO SDK for the Go programming language.
 
 ---
 
-# Installation
+## Installation
 
 To add the latest version to your Go module run:
 
@@ -23,7 +23,7 @@ To add the latest version to your Go module run:
 go get github.com/OpenSLO/go-sdk
 ```
 
-# Usage
+## Usage
 
 <!-- markdownlint-disable MD013 -->
 
@@ -120,12 +120,10 @@ func Example() {
 	//   }
 	// ]
 }
-
-func ptr[T any](v T) *T { return &v }
 ```
 
 <!-- markdownlint-enable MD013 -->
 
-# Contributing
+## Contributing
 
 Checkout [contributing guidelines](./CONTRIBUTING.md).
