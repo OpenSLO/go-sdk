@@ -1,0 +1,10 @@
+apiVersion: openslo.com/v2alpha
+kind: DataSource
+metadata:
+  name: cloudWatch-prod
+spec:
+  description: "CloudWatch Production Data Source"
+  type: cloudWatch
+  connectionDetails:
+    accessKeyID: accessKey
+    secretAccessKey: secretAccessKey
