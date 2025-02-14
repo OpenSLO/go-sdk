@@ -143,8 +143,11 @@ func annotationsValidator() govy.Validator[Annotations] {
 			Cascade(govy.CascadeModeStop).
 			RulesForKeys(
 				rules.StringMatchRegexp(annotationKeyLengthRegexp),
-				rules.StringMatchRegexp(annotationKeyRegexp,
-					"my-domain.org/my-key",
-					"openslo.com/annotation")),
+				rules.StringMatchRegexp(annotationKeyRegexp).
+					WithExamples(
+						"my-domain.org/my-key",
+						"openslo.com/annotation",
+					),
+			),
 	)
 }

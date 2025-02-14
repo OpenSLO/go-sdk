@@ -114,9 +114,9 @@ func labelsValidator() govy.Validator[Labels] {
 			Cascade(govy.CascadeModeStop).
 			RulesForKeys(
 				rules.StringMatchRegexp(labelKeyLengthRegexp),
-				rules.StringMatchRegexp(labelKeyRegexp, "my-domain.org/my-key", "openslo.com/annotation"),
+				rules.StringMatchRegexp(labelKeyRegexp).WithExamples("my-domain.org/my-key", "openslo.com/annotation"),
 			).
-			RulesForValues(rules.StringMatchRegexp(labelValueRegexp, "my-label", "my.domain_123-label")),
+			RulesForValues(rules.StringMatchRegexp(labelValueRegexp).WithExamples("my-label", "my.domain_123-label")),
 	)
 }
 
@@ -126,7 +126,7 @@ func annotationsValidator() govy.Validator[Annotations] {
 			Cascade(govy.CascadeModeStop).
 			RulesForKeys(
 				rules.StringMatchRegexp(labelKeyLengthRegexp),
-				rules.StringMatchRegexp(labelKeyRegexp, "my-domain.org/my-key", "openslo.com/annotation"),
+				rules.StringMatchRegexp(labelKeyRegexp).WithExamples("my-domain.org/my-key", "openslo.com/annotation"),
 			),
 	)
 }

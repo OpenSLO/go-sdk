@@ -1,9 +1,9 @@
 module github.com/OpenSLO/go-sdk
 
-go 1.22
+go 1.23
 
 require (
-	github.com/nobl9/govy v0.11.0
+	github.com/nobl9/govy v0.12.1
 	sigs.k8s.io/yaml v1.4.0
 )
 
