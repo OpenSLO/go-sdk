@@ -384,7 +384,7 @@ func TestEncode(t *testing.T) {
 }
 
 func TestExamples(t *testing.T) {
-  t.Skip("TODO: figure out how to best verify examples provided in the main OpenSLO repository")
+	t.Skip("TODO: figure out how to best verify examples provided in the main OpenSLO repository")
 
 	root := internal.FindModuleRoot()
 	objects := findObjectsExamples(t, filepath.Join(root, "examples"))

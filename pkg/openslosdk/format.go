@@ -2,7 +2,7 @@ package openslosdk
 
 import "fmt"
 
-// ObjectFormat represents the serialization format of [Object].
+// ObjectFormat represents the serialization format of [openslo.Object].
 type ObjectFormat int
 
 const (
@@ -10,6 +10,7 @@ const (
 	FormatJSON
 )
 
+// String implements the [fmt.Stringer] interface.
 func (f ObjectFormat) String() string {
 	switch f {
 	case FormatYAML:
@@ -21,6 +22,7 @@ func (f ObjectFormat) String() string {
 	}
 }
 
+// Validate checks if [ObjectFormat] is supported.
 func (f ObjectFormat) Validate() error {
 	switch f {
 	case FormatYAML, FormatJSON:

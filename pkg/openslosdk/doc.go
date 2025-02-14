@@ -1,2 +1,2 @@
-// Package openslosdk provides SDK utilities for working with [openslo.Object].
+// Package openslosdk provides utilities for working with [openslo.Object].
 package openslosdk

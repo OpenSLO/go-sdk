@@ -17,6 +17,8 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
 )
 
+// Decode reads objects from [io.Reader] and decodes them,
+// according to the provided [ObjectFormat], into a slice of [openslo.Object].
 func Decode(r io.Reader, format ObjectFormat) ([]openslo.Object, error) {
 	if err := format.Validate(); err != nil {
 		return nil, err
@@ -31,6 +33,8 @@ func Decode(r io.Reader, format ObjectFormat) ([]openslo.Object, error) {
 	}
 }
 
+// Encode writes the provided [openslo.Object] to [io.Writer],
+// according to the provided [ObjectFormat].
 func Encode(out io.Writer, format ObjectFormat, objects ...openslo.Object) error {
 	if err := format.Validate(); err != nil {
 		return err

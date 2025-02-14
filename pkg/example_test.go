@@ -1,33 +1,3 @@
-#
-
-<!-- markdownlint-disable MD033-->
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="images/openslo_light.png">
-  <img alt="OpenSLO light theme" src="images/openslo.png">
-</picture>
-<!-- markdownlint-enable MD033-->
-
----
-
-OpenSLO SDK for the Go programming language.
-
-⚠️ The SDK is in active development and awaits its official release.
-
----
-
-# Installation
-
-To add the latest version to your Go module run:
-
-```shell
-go get github.com/OpenSLO/go-sdk
-```
-
-# Usage
-
-<!-- markdownlint-disable MD013 -->
-
-```go
 package pkg_test
 
 import (
@@ -122,10 +92,3 @@ func Example() {
 }
 
 func ptr[T any](v T) *T { return &v }
-```
-
-<!-- markdownlint-enable MD013 -->
-
-# Contributing
-
-Checkout [contributing guidelines](./CONTRIBUTING.md).
