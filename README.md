@@ -7,6 +7,8 @@
 </picture>
 <!-- markdownlint-enable MD033-->
 
+---
+
 OpenSLO SDK for the Go programming language.
 
 *NOTICE*: The SDK is in active development and awaits its official release.
