@@ -11,7 +11,8 @@
 
 OpenSLO SDK for the Go programming language.
 
-⚠️ The SDK is in active development and awaits its official release.
+⚠️ The SDK is in active development and awaits its official, v1 release.
+We expect breaking API changes to be introduced freely.
 
 ---
 
