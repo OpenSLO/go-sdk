@@ -20,6 +20,7 @@ install/devbox:
 	curl -fsSL https://get.jetpack.io/devbox | bash
 
 ## Automatically load devbox environment, requires direnv.
+install/direnv:
 	devbox generate direnv
 
 .PHONY: test test/go/unit
