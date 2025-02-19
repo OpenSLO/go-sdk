@@ -39,7 +39,7 @@ func (d *DurationShorthand) GetUnit() DurationShorthandUnit {
 	return d.unit
 }
 
-// GetUnit returns the underlying duration value.
+// GetValue returns the underlying duration value.
 // Example:
 //
 //	duration, _ := ParseDurationShorthand("12w")
