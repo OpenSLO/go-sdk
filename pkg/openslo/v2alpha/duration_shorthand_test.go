@@ -92,6 +92,16 @@ func TestDurationShorthandDuration(t *testing.T) {
 	}
 }
 
+func TestDurationShorthand_GetUnit(t *testing.T) {
+	dur := DurationShorthand{unit: DurationShorthandUnitWeek}
+	assert.Equal(t, DurationShorthandUnitWeek, dur.GetUnit())
+}
+
+func TestDurationShorthand_GetValue(t *testing.T) {
+	dur := DurationShorthand{value: 12}
+	assert.Equal(t, 12, dur.GetValue())
+}
+
 func runDurationShorthandTests[T openslo.Object](t *testing.T, path string, objectGetter func(d DurationShorthand) T) {
 	t.Helper()
 
