@@ -30,6 +30,24 @@ type DurationShorthand struct {
 	value int
 }
 
+// GetUnit returns the underlying [DurationShorthandUnit].
+// Example:
+//
+//	duration, _ := ParseDurationShorthand("1w")
+//	duration.GetUnit() -> "w"
+func (d *DurationShorthand) GetUnit() DurationShorthandUnit {
+	return d.unit
+}
+
+// GetUnit returns the underlying duration value.
+// Example:
+//
+//	duration, _ := ParseDurationShorthand("12w")
+//	duration.GetValue() -> "12"
+func (d *DurationShorthand) GetValue() int {
+	return d.value
+}
+
 // UnmarshalText implements [encoding.TextUnmarshaler].
 func (d *DurationShorthand) UnmarshalText(text []byte) error {
 	if len(text) == 0 {
