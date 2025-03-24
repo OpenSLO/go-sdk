@@ -63,7 +63,9 @@ var labelKeyTestCases = []struct {
 	{"net", false},
 	{"9net", false},
 	{"net9", false},
+	{"nEt", false},
 	{"openslo.com/service", false},
+	{"openslo.com/Service", false},
 	{"domain/service", false},
 	{"domain.org/service", false},
 	{"domain.this.org/service", false},
@@ -77,7 +79,6 @@ var labelKeyTestCases = []struct {
 	{"_net", true},
 	{"-net", true},
 	{".net", true},
-	{"nEt", true},
 	{"openslo.com/", true},
 	{"openslo.com!/service", true},
 	{"-openslo.com/service", true},
@@ -158,7 +159,7 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 				error: govytest.ExpectedRuleError{
 					PropertyName: propertyPath + "." + tc.in,
 					IsKeyError:   true,
-					Code:         rules.ErrorCodeStringMatchRegexp,
+					Code:         rules.ErrorCodeStringKubernetesQualifiedName,
 				},
 			}
 		} else {
@@ -197,7 +198,7 @@ func getAnnotationsTestCases(t *testing.T, propertyPath string) map[string]annot
 				error: govytest.ExpectedRuleError{
 					PropertyName: propertyPath + "." + tc.in,
 					IsKeyError:   true,
-					Code:         rules.ErrorCodeStringMatchRegexp,
+					Code:         rules.ErrorCodeStringKubernetesQualifiedName,
 				},
 			}
 		} else {
