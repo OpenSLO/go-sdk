@@ -112,10 +112,7 @@ func labelsValidator() govy.Validator[Labels] {
 	return govy.New(
 		govy.ForMap(govy.GetSelf[Labels]()).
 			Cascade(govy.CascadeModeStop).
-			RulesForKeys(
-				rules.StringMatchRegexp(labelKeyLengthRegexp),
-				rules.StringMatchRegexp(labelKeyRegexp).WithExamples("my-domain.org/my-key", "openslo.com/annotation"),
-			).
+			RulesForKeys(rules.StringKubernetesQualifiedName()).
 			RulesForValues(rules.StringMatchRegexp(labelValueRegexp).WithExamples("my-label", "my.domain_123-label")),
 	)
 }
@@ -124,9 +121,6 @@ func annotationsValidator() govy.Validator[Annotations] {
 	return govy.New(
 		govy.ForMap(govy.GetSelf[Annotations]()).
 			Cascade(govy.CascadeModeStop).
-			RulesForKeys(
-				rules.StringMatchRegexp(labelKeyLengthRegexp),
-				rules.StringMatchRegexp(labelKeyRegexp).WithExamples("my-domain.org/my-key", "openslo.com/annotation"),
-			),
+			RulesForKeys(rules.StringKubernetesQualifiedName()),
 	)
 }
