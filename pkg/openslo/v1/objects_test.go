@@ -150,7 +150,7 @@ func getAnnotationsTestCases(t *testing.T, propertyPath string) map[string]annot
 		{"domain.org/service": ""},
 		{"domain.this.org/service": ""},
 		{"domain.this.org/service.foo": ""},
-		{"nobl9.com/spec.indicator.metricSource": ""},
+		{"my-org.com/spec.indicator.metricSource": ""},
 	}
 	invalidAnnotations := []Annotations{
 		{strings.Repeat("l", 64): ""},
