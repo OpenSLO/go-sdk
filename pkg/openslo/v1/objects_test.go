@@ -87,6 +87,7 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 		{"net_.-this": {}},
 		{"9net": {}},
 		{"net9": {}},
+		{"nEt": {}},
 	}
 	invalidLabels := []Labels{
 		{strings.Repeat("l", 64): {}},
@@ -96,7 +97,6 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 		{"_net": {}},
 		{"-net": {}},
 		{".net": {}},
-		{"nEt": {}},
 	}
 	testCases := make(map[string]labelsTestCase, len(validLabels)+len(invalidLabels))
 	for _, labels := range validLabels {
@@ -144,10 +144,13 @@ func getAnnotationsTestCases(t *testing.T, propertyPath string) map[string]annot
 		{"net": ""},
 		{"9net": ""},
 		{"net9": ""},
+		{"nEt": ""},
 		{"openslo.com/service": ""},
 		{"domain/service": ""},
 		{"domain.org/service": ""},
 		{"domain.this.org/service": ""},
+		{"domain.this.org/service.foo": ""},
+		{"my-org.com/spec.indicator.metricSource": ""},
 	}
 	invalidAnnotations := []Annotations{
 		{strings.Repeat("l", 64): ""},
@@ -160,7 +163,6 @@ func getAnnotationsTestCases(t *testing.T, propertyPath string) map[string]annot
 		{"_net": ""},
 		{"-net": ""},
 		{".net": ""},
-		{"nEt": ""},
 		{"openslo.com/": ""},
 		{"openslo.com!/service": ""},
 		{"-openslo.com/service": ""},
