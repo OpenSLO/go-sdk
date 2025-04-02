@@ -31,6 +31,7 @@
     "devbox",
     "direnv",
     "envrc",
+    "fset",
     "gofumpt",
     "goimports",
     "golangci",
@@ -51,6 +52,7 @@
     "struct",
     "tada",
     "unmarshaller",
+    "vspec",
     "vulns"
   ]
 }

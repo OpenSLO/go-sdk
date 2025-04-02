@@ -18,6 +18,14 @@ const (
 	KindAlertNotificationTarget Kind = "AlertNotificationTarget"
 )
 
+func ParseKind(s string) (Kind, error) {
+	kind := Kind(s)
+	if err := kind.Validate(); err != nil {
+		return "", err
+	}
+	return kind, nil
+}
+
 func (k Kind) String() string {
 	return string(k)
 }
@@ -39,8 +47,8 @@ func (k Kind) Validate() error {
 
 // UnmarshalText implements the text [encoding.TextUnmarshaler] interface.
 func (k *Kind) UnmarshalText(text []byte) error {
-	tmp := Kind(text)
-	if err := tmp.Validate(); err != nil {
+	tmp, err := ParseKind(string(text))
+	if err != nil {
 		return err
 	}
 	*k = tmp
