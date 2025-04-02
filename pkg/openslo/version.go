@@ -11,6 +11,14 @@ const (
 	VersionV2alpha Version = "openslo.com/v2alpha"
 )
 
+func ParseVersion(s string) (Version, error) {
+	version := Version(s)
+	if err := version.Validate(); err != nil {
+		return "", err
+	}
+	return version, nil
+}
+
 func (v Version) String() string {
 	return string(v)
 }
@@ -28,8 +36,8 @@ func (v Version) Validate() error {
 
 // UnmarshalText implements the text [encoding.TextUnmarshaler] interface.
 func (v *Version) UnmarshalText(text []byte) error {
-	tmp := Version(text)
-	if err := tmp.Validate(); err != nil {
+	tmp, err := ParseVersion(string(text))
+	if err != nil {
 		return err
 	}
 	*v = tmp
