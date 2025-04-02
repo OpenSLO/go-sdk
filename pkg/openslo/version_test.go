@@ -50,7 +50,7 @@ func TestAllVersionEnumValuesAreValid(t *testing.T) {
 	filePath := "../openslo/version.go"
 	enumName := "Version"
 
-	assert.AllEnumValuesAreEqual(t, filePath, enumName, func(s string) error {
+	assert.AllEnumValuesAreValid(t, filePath, enumName, func(s string) error {
 		_, err := ParseVersion(s)
 		return err
 	})

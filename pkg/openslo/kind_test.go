@@ -50,7 +50,7 @@ func TestAllKindEnumValuesAreValid(t *testing.T) {
 	filePath := "../openslo/kind.go"
 	enumName := "Kind"
 
-	assert.AllEnumValuesAreEqual(t, filePath, enumName, func(s string) error {
+	assert.AllEnumValuesAreValid(t, filePath, enumName, func(s string) error {
 		_, err := ParseKind(s)
 		return err
 	})

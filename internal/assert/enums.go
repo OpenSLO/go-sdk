@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func AllEnumValuesAreEqual(t *testing.T, filePath, enumName string, validate func(string) error) {
+func AllEnumValuesAreValid(t *testing.T, filePath, enumName string, validate func(string) error) {
 	t.Helper()
 
 	fset := token.NewFileSet()
