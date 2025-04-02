@@ -8,6 +8,8 @@ import (
 	"testing"
 )
 
+// AllEnumValuesAreValid checks if all enum values are valid as defined by a supplied validation function.
+// The enum (distinguished by enumName) is read from a Go source file at the specified filePath.
 func AllEnumValuesAreValid(t *testing.T, filePath, enumName string, validate func(string) error) {
 	t.Helper()
 
