@@ -32,7 +32,7 @@ func AllEnumValuesAreEqual(t *testing.T, filePath, enumName string, validate fun
 					for _, v := range vspec.Values {
 						if lit, ok := v.(*ast.BasicLit); ok {
 							// Trim quotes from the literal
-							val := strings.Trim(lit.Value, "`\"`")
+							val := strings.Trim(lit.Value, "`\"")
 							enumValues = append(enumValues, val)
 						}
 					}
