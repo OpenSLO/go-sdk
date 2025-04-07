@@ -53,7 +53,7 @@ type AlertConditionType struct {
 	Operator       Operator           `json:"op"`
 	Threshold      *float64           `json:"threshold"`
 	LookbackWindow DurationShorthand  `json:"lookbackWindow"`
-	AlertAfter     DurationShorthand  `json:"alertAfter"`
+	AlertAfter     DurationShorthand  `json:"alertAfter,omitempty"`
 }
 
 type AlertConditionKind string
