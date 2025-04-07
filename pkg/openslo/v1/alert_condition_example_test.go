@@ -50,7 +50,7 @@ func ExampleAlertCondition() {
 				Operator:       v1.OperatorLTE,
 				Threshold:      ptr(2.0),
 				LookbackWindow: v1.NewDurationShorthand(1, v1.DurationShorthandUnitHour),
-				AlertAfter:     v1.NewDurationShorthand(5, v1.DurationShorthandUnitMinute),
+				AlertAfter:     ptr(v1.NewDurationShorthand(5, v1.DurationShorthandUnitMinute)),
 			},
 			Description: "If the CPU usage is too high for given period then it should alert",
 		},

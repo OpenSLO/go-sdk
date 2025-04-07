@@ -128,7 +128,6 @@ func runAlertConditionTypeTests[T openslo.Object](
 			Operator:       "",
 			Threshold:      nil,
 			LookbackWindow: DurationShorthand{},
-			AlertAfter:     DurationShorthand{},
 		}
 		object := objectGetter(condition.Spec.Condition)
 		err := object.Validate()
@@ -143,10 +142,6 @@ func runAlertConditionTypeTests[T openslo.Object](
 			},
 			govytest.ExpectedRuleError{
 				PropertyName: path + ".condition.lookbackWindow",
-				Code:         rules.ErrorCodeRequired,
-			},
-			govytest.ExpectedRuleError{
-				PropertyName: path + ".condition.alertAfter",
 				Code:         rules.ErrorCodeRequired,
 			},
 		)
@@ -170,7 +165,7 @@ func runAlertConditionTypeTests[T openslo.Object](
 	t.Run("alertAfter", func(t *testing.T) {
 		runDurationShorthandTests(t, path+".condition.alertAfter", func(d DurationShorthand) T {
 			condition := validAlertCondition()
-			condition.Spec.Condition.AlertAfter = d
+			condition.Spec.Condition.AlertAfter = &d
 			object := objectGetter(condition.Spec.Condition)
 			return object
 		})
@@ -197,7 +192,7 @@ func validAlertCondition() AlertCondition {
 				Operator:       OperatorLTE,
 				Threshold:      ptr(2.0),
 				LookbackWindow: NewDurationShorthand(1, DurationShorthandUnitHour),
-				AlertAfter:     NewDurationShorthand(5, DurationShorthandUnitMinute),
+				AlertAfter:     ptr(NewDurationShorthand(5, DurationShorthandUnitMinute)),
 			},
 			Description: "If the CPU usage is too high for given period then it should alert",
 		},

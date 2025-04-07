@@ -53,7 +53,7 @@ type AlertConditionType struct {
 	Operator       Operator           `json:"op"`
 	Threshold      *float64           `json:"threshold"`
 	LookbackWindow DurationShorthand  `json:"lookbackWindow"`
-	AlertAfter     DurationShorthand  `json:"alertAfter"`
+	AlertAfter     *DurationShorthand `json:"alertAfter,omitempty"`
 }
 
 type AlertConditionKind string
@@ -106,9 +106,8 @@ var alertConditionBurnRateValidation = govy.New(
 		WithName("lookbackWindow").
 		Required().
 		Include(durationShortHandValidation),
-	govy.For(func(a AlertConditionType) DurationShorthand { return a.AlertAfter }).
+	govy.ForPointer(func(a AlertConditionType) *DurationShorthand { return a.AlertAfter }).
 		WithName("alertAfter").
-		Required().
 		Include(durationShortHandValidation),
 ).
 	When(func(a AlertConditionType) bool { return a.Kind == AlertConditionKindBurnRate })
