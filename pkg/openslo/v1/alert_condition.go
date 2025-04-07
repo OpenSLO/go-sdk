@@ -108,7 +108,7 @@ var alertConditionBurnRateValidation = govy.New(
 		Include(durationShortHandValidation),
 	govy.For(func(a AlertConditionType) DurationShorthand { return a.AlertAfter }).
 		WithName("alertAfter").
-		Required().
+    OmitEmpty().
 		Include(durationShortHandValidation),
 ).
 	When(func(a AlertConditionType) bool { return a.Kind == AlertConditionKindBurnRate })

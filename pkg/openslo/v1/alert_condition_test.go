@@ -145,10 +145,6 @@ func runAlertConditionTypeTests[T openslo.Object](
 				PropertyName: path + ".condition.lookbackWindow",
 				Code:         rules.ErrorCodeRequired,
 			},
-			govytest.ExpectedRuleError{
-				PropertyName: path + ".condition.alertAfter",
-				Code:         rules.ErrorCodeRequired,
-			},
 		)
 	})
 	t.Run("operator", func(t *testing.T) {
