@@ -1,0 +1,106 @@
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: single-referenced-object
+  spec:
+    alertWhenBreaching: true
+    conditions:
+    - kind: AlertCondition
+      metadata:
+        name: cpu-usage-breach
+      spec:
+        condition:
+          alertAfter: 5m
+          kind: burnrate
+          lookbackWindow: 1h
+          op: lte
+          threshold: 2
+        severity: page
+    notificationTargets:
+    - kind: AlertNotificationTarget
+      metadata:
+        name: devs-email-notification
+      spec:
+        target: email
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: multiple-referenced-objects
+  spec:
+    alertWhenBreaching: true
+    conditions:
+    - kind: AlertCondition
+      metadata:
+        name: cpu-usage-breach
+      spec:
+        condition:
+          alertAfter: 5m
+          kind: burnrate
+          lookbackWindow: 1h
+          op: lte
+          threshold: 2
+        severity: page
+    notificationTargets:
+    - kind: AlertNotificationTarget
+      metadata:
+        name: devs-email-notification
+      spec:
+        target: email
+    - kind: AlertNotificationTarget
+      metadata:
+        name: pd-on-call-notification
+      spec:
+        target: pagerduty
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: mix-of-referenced-and-inlined-objects
+  spec:
+    alertWhenBreaching: true
+    conditions:
+    - kind: AlertCondition
+      metadata:
+        name: memory-usage-breach
+      spec:
+        condition:
+          alertAfter: 5m
+          kind: burnrate
+          lookbackWindow: 1h
+          op: gt
+          threshold: 2
+        severity: page
+    notificationTargets:
+    - kind: AlertNotificationTarget
+      metadata:
+        name: pd-on-call-notification
+      spec:
+        target: pagerduty
+    - kind: AlertNotificationTarget
+      metadata:
+        name: devs-email-notification
+      spec:
+        target: email
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: only-inlined-objects
+  spec:
+    alertWhenBreaching: true
+    conditions:
+    - kind: AlertCondition
+      metadata:
+        name: memory-usage-breach
+      spec:
+        condition:
+          alertAfter: 5m
+          kind: burnrate
+          lookbackWindow: 1h
+          op: gt
+          threshold: 2
+        severity: page
+    notificationTargets:
+    - kind: AlertNotificationTarget
+      metadata:
+        name: on-call-slack-notification
+      spec:
+        target: slack

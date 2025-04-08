@@ -1,0 +1,94 @@
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: single-referenced-object
+  spec:
+    alertWhenBreaching: true
+    conditions:
+      - conditionRef: cpu-usage-breach
+    notificationTargets:
+      - targetRef: devs-email-notification
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: multiple-referenced-objects
+  spec:
+    alertWhenBreaching: true
+    conditions:
+      - conditionRef: cpu-usage-breach
+    notificationTargets:
+      - targetRef: devs-email-notification
+      - targetRef: pd-on-call-notification
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: mix-of-referenced-and-inlined-objects
+  spec:
+    alertWhenBreaching: true
+    conditions:
+      - kind: AlertCondition
+        metadata:
+          name: memory-usage-breach
+        spec:
+          severity: page
+          condition:
+            kind: burnrate
+            op: gt
+            threshold: 2
+            lookbackWindow: 1h
+            alertAfter: 5m
+    notificationTargets:
+      - kind: AlertNotificationTarget
+        metadata:
+          name: pd-on-call-notification
+        spec:
+          target: pagerduty
+      - targetRef: devs-email-notification
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: only-inlined-objects 
+  spec:
+    alertWhenBreaching: true
+    conditions:
+      - kind: AlertCondition
+        metadata:
+          name: memory-usage-breach
+        spec:
+          severity: page
+          condition:
+            kind: burnrate
+            op: gt
+            threshold: 2
+            lookbackWindow: 1h
+            alertAfter: 5m
+    notificationTargets:
+      - kind: AlertNotificationTarget
+        metadata:
+          name: on-call-slack-notification
+        spec:
+          target: slack
+- apiVersion: openslo/v1
+  kind: AlertCondition
+  metadata:
+    name: cpu-usage-breach
+  spec:
+    severity: page
+    condition:
+      kind: burnrate
+      op: lte
+      threshold: 2
+      lookbackWindow: 1h
+      alertAfter: 5m
+- apiVersion: openslo/v1
+  kind: AlertNotificationTarget
+  metadata:
+    name: devs-email-notification
+  spec:
+    target: email
+- apiVersion: openslo/v1
+  kind: AlertNotificationTarget
+  metadata:
+    name: pd-on-call-notification
+  spec:
+    target: pagerduty

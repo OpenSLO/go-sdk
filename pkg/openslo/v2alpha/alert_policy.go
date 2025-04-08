@@ -47,8 +47,8 @@ type AlertPolicySpec struct {
 	AlertWhenNoData     bool                            `json:"alertWhenNoData,omitempty"`
 	AlertWhenBreaching  bool                            `json:"alertWhenBreaching,omitempty"`
 	AlertWhenResolved   bool                            `json:"alertWhenResolved,omitempty"`
-	Conditions          []AlertPolicyCondition          `json:"conditions"`
-	NotificationTargets []AlertPolicyNotificationTarget `json:"notificationTargets"`
+	Conditions          []AlertPolicyCondition          `json:"conditions,omitempty"`
+	NotificationTargets []AlertPolicyNotificationTarget `json:"notificationTargets,omitempty"`
 }
 
 type AlertPolicyCondition struct {

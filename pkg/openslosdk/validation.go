@@ -8,6 +8,10 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
+func Validate(objects ...openslo.Object) error {
+	return objectsValidator.ValidateSlice(objects)
+}
+
 var objectsValidator = govy.New(
 	govy.For(govy.GetSelf[openslo.Object]()).
 		Rules(
@@ -23,7 +27,3 @@ var objectsValidator = govy.New(
 	WithNameFunc(func(o openslo.Object) string {
 		return fmt.Sprintf("%s %s", o.GetVersion(), o.GetKind())
 	})
-
-func Validate(objects ...openslo.Object) error {
-	return objectsValidator.ValidateSlice(objects)
-}
