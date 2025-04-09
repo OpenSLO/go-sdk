@@ -421,7 +421,7 @@ func TestSLO_Validate_Spec_AlertPolicies(t *testing.T) {
 	t.Run("invalid condition ref", func(t *testing.T) {
 		slo := validSLO()
 		slo.Spec.AlertPolicies[0].SLOAlertPolicyRef = &SLOAlertPolicyRef{
-			Ref: "invalid ref",
+			AlertPolicyRef: "invalid ref",
 		}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -571,7 +571,7 @@ func validSLO() SLO {
 				},
 			},
 			AlertPolicies: []SLOAlertPolicy{
-				{SLOAlertPolicyRef: &SLOAlertPolicyRef{Ref: "alert-policy-1"}},
+				{SLOAlertPolicyRef: &SLOAlertPolicyRef{AlertPolicyRef: "alert-policy-1"}},
 			},
 		},
 	)

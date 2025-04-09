@@ -87,6 +87,8 @@ func (r *ReferenceResolver) inlineV1Object(object openslo.Object) (openslo.Objec
 	switch v := object.(type) {
 	case v1.AlertPolicy:
 		return r.inlineV1AlertPolicy(v)
+	case v1.SLO:
+		return r.inlineV1SLO(v)
 	default:
 		return object, nil
 	}
@@ -136,6 +138,47 @@ func (r *ReferenceResolver) inlineV1AlertPolicy(alertPolicy v1.AlertPolicy) (ope
 		alertPolicy.Spec.Conditions[i] = condition
 	}
 	return alertPolicy, nil
+}
+
+func (r *ReferenceResolver) inlineV1SLO(slo v1.SLO) (openslo.Object, error) {
+	for i, ap := range slo.Spec.AlertPolicies {
+		if ap.SLOAlertPolicyRef == nil {
+			continue
+		}
+		alertPolicy, idx := findObject[v1.AlertPolicy](r.objects, ap.AlertPolicyRef)
+		if idx == -1 {
+			return nil, newReferenceNotFoundErr(
+				alertPolicy,
+				fmt.Sprintf("spec.alertPolicies[%d].alertPolicyRef", i),
+				ap.AlertPolicyRef,
+			)
+		}
+		ap.SLOAlertPolicyRef = nil
+		ap.SLOAlertPolicyInline = &v1.SLOAlertPolicyInline{
+			Kind:     alertPolicy.GetKind(),
+			Metadata: alertPolicy.Metadata,
+			Spec:     alertPolicy.Spec,
+		}
+		r.referencedObjectIndexes[idx] = true
+		slo.Spec.AlertPolicies[i] = ap
+	}
+	if slo.Spec.IndicatorRef != nil {
+		sli, idx := findObject[v1.SLI](r.objects, *slo.Spec.IndicatorRef)
+		if idx == -1 {
+			return nil, newReferenceNotFoundErr(
+				sli,
+				"spec.indicatorRef",
+				*slo.Spec.IndicatorRef,
+			)
+		}
+		slo.Spec.IndicatorRef = nil
+		slo.Spec.Indicator = &v1.SLOIndicatorInline{
+			Metadata: sli.Metadata,
+			Spec:     sli.Spec,
+		}
+		r.referencedObjectIndexes[idx] = true
+	}
+	return slo, nil
 }
 
 func (r *ReferenceResolver) addResult(object openslo.Object) {

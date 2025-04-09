@@ -20,22 +20,31 @@ func TestReferenceResolver_Inline(t *testing.T) {
 		resolverMod func(*ReferenceResolver) *ReferenceResolver
 		err         error
 	}{
-		"valid Alert Policies - keep refs": {
+		"v1: valid Alert Policies - keep refs": {
 			filename: "v1_alert_policies_keep_refs.yaml",
 		},
-		"valid Alert Policies - remove refs": {
+		"v1: valid Alert Policies - remove refs": {
 			filename:    "v1_alert_policies_remove_refs.yaml",
 			resolverMod: func(r *ReferenceResolver) *ReferenceResolver { return r.RemoveReferencedObjects() },
 		},
-		"non-existing AlertNotificationTarget for Alert Policies": {
+		"v1: non-existing AlertNotificationTarget for Alert Policies": {
 			filename: "v1_alert_policies_invalid_target.yaml",
 			err: errors.New("failed to inline v1.AlertPolicy 'invalid-target': v1.AlertNotificationTarget" +
 				" 'devs-email-notification' referenced at 'spec.notificationTargets[1].targetRef' does not exist"),
 		},
-		"non-existing AlertCondition for Alert Policies": {
+		"v1: non-existing AlertCondition for Alert Policies": {
 			filename: "v1_alert_policies_invalid_condition.yaml",
 			err: errors.New("failed to inline v1.AlertPolicy 'invalid-condition': v1.AlertCondition" +
 				" 'cpu-usage-breach' referenced at 'spec.conditions[0].conditionRef' does not exist"),
+		},
+		"v1: valid SLO": {
+			filename:    "v1_slo.yaml",
+			resolverMod: func(r *ReferenceResolver) *ReferenceResolver { return r.RemoveReferencedObjects() },
+		},
+		"v1: non-existing SLI for SLO": {
+			filename: "v1_slo_invalid_sli.yaml",
+			err: errors.New("failed to inline v1.SLO 'my-slo': v1.SLI" +
+				" 'no-sli' referenced at 'spec.indicatorRef' does not exist"),
 		},
 	}
 
