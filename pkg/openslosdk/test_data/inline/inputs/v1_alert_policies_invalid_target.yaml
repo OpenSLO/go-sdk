@@ -1,0 +1,25 @@
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: mix-of-referenced-and-inlined-objects
+  spec:
+    alertWhenBreaching: true
+    conditions:
+      - kind: AlertCondition
+        metadata:
+          name: memory-usage-breach
+        spec:
+          severity: page
+          condition:
+            kind: burnrate
+            op: gt
+            threshold: 2
+            lookbackWindow: 1h
+            alertAfter: 5m
+    notificationTargets:
+      - kind: AlertNotificationTarget
+        metadata:
+          name: pd-on-call-notification
+        spec:
+          target: pagerduty
+      - targetRef: devs-email-notification

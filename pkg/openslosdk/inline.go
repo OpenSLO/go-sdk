@@ -7,7 +7,7 @@ import (
 	v1 "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
 )
 
-func InlineObjects(objects ...openslo.Object) ([]openslo.Object, error) {
+func InlineObjects(objects []openslo.Object) ([]openslo.Object, error) {
 	inliner := &objectsInliner{
 		objects:                 objects,
 		inlined:                 make([]openslo.Object, 0, len(objects)),
