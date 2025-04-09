@@ -14,7 +14,7 @@ import (
 
 func getValidationMessageRegexp(kind openslo.Kind) *regexp.Regexp {
 	return regexp.MustCompile(fmt.Sprintf(strings.TrimSpace(`
-(?s)Validation for v1alpha/%s '.*' has failed for the following properties:
+(?s)Validation for v1alpha.%s '.*' has failed for the following properties:
 .*
 `), kind))
 }

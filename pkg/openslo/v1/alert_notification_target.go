@@ -42,6 +42,10 @@ func (a AlertNotificationTarget) Validate() error {
 	return alertNotificationTargetValidation.Validate(a)
 }
 
+func (a AlertNotificationTarget) String() string {
+	return internal.GetObjectName(a)
+}
+
 type AlertNotificationTargetSpec struct {
 	Description string `json:"description,omitempty"`
 	Target      string `json:"target"`
@@ -59,7 +63,7 @@ var alertNotificationTargetValidation = govy.New(
 	govy.For(func(a AlertNotificationTarget) AlertNotificationTargetSpec { return a.Spec }).
 		WithName("spec").
 		Include(alertNotificationTargetSpecValidation),
-).WithNameFunc(internal.ObjectNameFunc[AlertNotificationTarget])
+).WithNameFunc(internal.GetObjectName[AlertNotificationTarget])
 
 var alertNotificationTargetSpecValidation = govy.New(
 	govy.For(func(spec AlertNotificationTargetSpec) string { return spec.Target }).

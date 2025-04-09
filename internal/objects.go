@@ -7,13 +7,16 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-// ObjectNameFunc returns a pretty-formatted name of the [openslo.Object].
-// It is used as an input to [govy.Validator.WithNameFunc]
-func ObjectNameFunc[T openslo.Object](o T) string {
-	versionFields := strings.Split(o.GetVersion().String(), "/")
-	version := versionFields[len(versionFields)-1]
-	if name := o.GetName(); name != "" {
-		return fmt.Sprintf("%s/%s '%s'", version, o.GetKind(), o.GetName())
+// GetObjectName returns a pretty-formatted name of the [openslo.Object].
+func GetObjectName[T openslo.Object](o T) string {
+	version := o.GetVersion().String()
+	i := strings.Index(version, "/")
+	if i == -1 {
+		return ""
 	}
-	return fmt.Sprintf("%s/%s", version, o.GetKind())
+	version = version[i+1:]
+	if name := o.GetName(); name != "" {
+		return fmt.Sprintf("%s.%s '%s'", version, o.GetKind(), o.GetName())
+	}
+	return fmt.Sprintf("%s.%s", version, o.GetKind())
 }
