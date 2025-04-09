@@ -1,7 +1,7 @@
 - apiVersion: openslo/v1
   kind: AlertPolicy
   metadata:
-    name: mix-of-referenced-and-inlined-objects
+    name: invalid-target
   spec:
     alertWhenBreaching: true
     conditions:

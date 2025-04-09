@@ -1,7 +1,7 @@
 - apiVersion: openslo/v1
   kind: AlertPolicy
   metadata:
-    name: single-referenced-object
+    name: invalid-condition
   spec:
     alertWhenBreaching: true
     conditions:

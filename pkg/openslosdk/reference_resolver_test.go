@@ -11,24 +11,29 @@ import (
 	"github.com/OpenSLO/go-sdk/internal/assert"
 )
 
-func TestInlineObjects(t *testing.T) {
+func TestReferenceResolver_Inline(t *testing.T) {
 	root := internal.FindModuleRoot()
 	testDataPath := filepath.Join(root, "pkg", "openslosdk", "test_data", "inline")
 
 	tests := map[string]struct {
-		filename string
-		err      error
+		filename    string
+		resolverMod func(*ReferenceResolver) *ReferenceResolver
+		err         error
 	}{
-		"valid Alert Policies": {
-			filename: "v1_alert_policies.yaml",
+		"valid Alert Policies - keep refs": {
+			filename: "v1_alert_policies_keep_refs.yaml",
+		},
+		"valid Alert Policies - remove refs": {
+			filename:    "v1_alert_policies_remove_refs.yaml",
+			resolverMod: func(r *ReferenceResolver) *ReferenceResolver { return r.RemoveReferencedObjects() },
 		},
 		"non-existing AlertNotificationTarget for Alert Policies": {
 			filename: "v1_alert_policies_invalid_target.yaml",
-			err:      errors.New(`open slo v1 refs not found`),
+			err:      errors.New(`failed to inline v1.AlertPolicy 'invalid-target': v1.AlertNotificationTarget 'devs-email-notification' referenced at 'spec.notificationTargets[1].targetRef' does not exist`),
 		},
 		"non-existing AlertCondition for Alert Policies": {
 			filename: "v1_alert_policies_invalid_condition.yaml",
-			err:      errors.New(`open slo v1 refs not found`),
+			err:      errors.New(`failed to inline v1.AlertPolicy 'invalid-condition': v1.AlertCondition 'cpu-usage-breach' referenced at 'spec.conditions[0].conditionRef' does not exist`),
 		},
 	}
 
@@ -44,7 +49,11 @@ func TestInlineObjects(t *testing.T) {
 			assert.Require(t, assert.NoError(t, err))
 
 			// Inline objects.
-			inlinedObjects, err := InlineObjects(inputObjects)
+			resolver := NewReferenceResolver(inputObjects...)
+			if test.resolverMod != nil {
+				resolver = test.resolverMod(resolver)
+			}
+			inlinedObjects, err := resolver.Inline()
 			switch {
 			case test.err == nil:
 				assert.Require(t, assert.NoError(t, err))
