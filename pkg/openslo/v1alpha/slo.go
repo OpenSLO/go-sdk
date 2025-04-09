@@ -45,6 +45,10 @@ func (s SLO) Validate() error {
 	return sloValidation.Validate(s)
 }
 
+func (s SLO) String() string {
+	return internal.GetObjectName(s)
+}
+
 type SLOSpec struct {
 	TimeWindows     []SLOTimeWindow    `json:"timeWindows"`
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
@@ -164,7 +168,7 @@ var sloValidation = govy.New(
 			}).WithErrorCode(rules.ErrorCodeMutuallyExclusive),
 		).
 		Include(sloSpecValidation),
-).WithNameFunc(internal.ObjectNameFunc[SLO])
+).WithNameFunc(internal.GetObjectName[SLO])
 
 var sloSpecValidation = govy.New(
 	govy.For(govy.GetSelf[SLOSpec]()).

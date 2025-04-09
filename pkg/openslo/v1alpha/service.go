@@ -42,6 +42,10 @@ func (s Service) Validate() error {
 	return serviceValidation.Validate(s)
 }
 
+func (s Service) String() string {
+	return internal.GetObjectName(s)
+}
+
 type ServiceSpec struct {
 	Description string `json:"description,omitempty"`
 }
@@ -57,4 +61,4 @@ var serviceValidation = govy.New(
 				WithName("description").
 				Rules(rules.StringMaxLength(1050)),
 		)),
-).WithNameFunc(internal.ObjectNameFunc[Service])
+).WithNameFunc(internal.GetObjectName[Service])

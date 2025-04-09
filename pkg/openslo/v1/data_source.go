@@ -44,6 +44,10 @@ func (d DataSource) Validate() error {
 	return dataSourceValidation.Validate(d)
 }
 
+func (d DataSource) String() string {
+	return internal.GetObjectName(d)
+}
+
 type DataSourceSpec struct {
 	Description       string          `json:"description,omitempty"`
 	Type              string          `json:"type"`
@@ -67,4 +71,4 @@ var dataSourceValidation = govy.New(
 				WithName("connectionDetails").
 				Required(),
 		)),
-).WithNameFunc(internal.ObjectNameFunc[DataSource])
+).WithNameFunc(internal.GetObjectName[DataSource])
