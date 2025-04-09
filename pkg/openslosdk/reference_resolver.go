@@ -1,6 +1,7 @@
 package openslosdk
 
 import (
+	"errors"
 	"fmt"
 	"sync"
 
@@ -16,8 +17,10 @@ func NewReferenceResolver(objects ...openslo.Object) *ReferenceResolver {
 	}
 }
 
+// ReferenceResolver is a utility to inline referenced [openslo.Object] in referencing object(s).
 type ReferenceResolver struct {
 	objects                 []openslo.Object
+	references              []openslo.Object
 	inlined                 []openslo.Object
 	referencedObjectIndexes map[int]bool
 	removeRefs              bool
@@ -46,6 +49,9 @@ func (r *ReferenceResolver) Inline() ([]openslo.Object, error) {
 }
 
 func (r *ReferenceResolver) resolve() ([]openslo.Object, error) {
+	if r.references == nil {
+		r.references = r.objects
+	}
 	for _, object := range r.objects {
 		if err := r.inlineObject(object); err != nil {
 			return nil, err
@@ -94,14 +100,14 @@ func (r *ReferenceResolver) inlineV1Object(object openslo.Object) (openslo.Objec
 	}
 }
 
-func (r *ReferenceResolver) inlineV1AlertPolicy(alertPolicy v1.AlertPolicy) (openslo.Object, error) {
+func (r *ReferenceResolver) inlineV1AlertPolicy(alertPolicy v1.AlertPolicy) (v1.AlertPolicy, error) {
 	for i, target := range alertPolicy.Spec.NotificationTargets {
 		if target.AlertPolicyNotificationTargetRef == nil {
 			continue
 		}
-		alertNotificationTarget, idx := findObject[v1.AlertNotificationTarget](r.objects, target.TargetRef)
+		alertNotificationTarget, idx := findObject[v1.AlertNotificationTarget](r.references, target.TargetRef)
 		if idx == -1 {
-			return nil, newReferenceNotFoundErr(
+			return v1.AlertPolicy{}, newReferenceNotFoundErr(
 				alertNotificationTarget,
 				fmt.Sprintf("spec.notificationTargets[%d].targetRef", i),
 				target.TargetRef,
@@ -120,9 +126,9 @@ func (r *ReferenceResolver) inlineV1AlertPolicy(alertPolicy v1.AlertPolicy) (ope
 		if condition.AlertPolicyConditionRef == nil {
 			continue
 		}
-		alertCondition, idx := findObject[v1.AlertCondition](r.objects, condition.ConditionRef)
+		alertCondition, idx := findObject[v1.AlertCondition](r.references, condition.ConditionRef)
 		if idx == -1 {
-			return nil, newReferenceNotFoundErr(
+			return v1.AlertPolicy{}, newReferenceNotFoundErr(
 				alertCondition,
 				fmt.Sprintf("spec.conditions[%d].conditionRef", i),
 				condition.ConditionRef,
@@ -140,32 +146,48 @@ func (r *ReferenceResolver) inlineV1AlertPolicy(alertPolicy v1.AlertPolicy) (ope
 	return alertPolicy, nil
 }
 
-func (r *ReferenceResolver) inlineV1SLO(slo v1.SLO) (openslo.Object, error) {
+func (r *ReferenceResolver) inlineV1SLO(slo v1.SLO) (v1.SLO, error) {
 	for i, ap := range slo.Spec.AlertPolicies {
-		if ap.SLOAlertPolicyRef == nil {
-			continue
+		var alertPolicy v1.AlertPolicy
+		switch {
+		case ap.SLOAlertPolicyInline != nil:
+			alertPolicy = v1.NewAlertPolicy(ap.Metadata, ap.Spec)
+		default:
+			var idx int
+			alertPolicy, idx = findObject[v1.AlertPolicy](r.references, ap.AlertPolicyRef)
+			if idx == -1 {
+				return v1.SLO{}, newReferenceNotFoundErr(
+					alertPolicy,
+					fmt.Sprintf("spec.alertPolicies[%d].alertPolicyRef", i),
+					ap.AlertPolicyRef,
+				)
+			}
+			r.referencedObjectIndexes[idx] = true
 		}
-		alertPolicy, idx := findObject[v1.AlertPolicy](r.objects, ap.AlertPolicyRef)
-		if idx == -1 {
-			return nil, newReferenceNotFoundErr(
-				alertPolicy,
-				fmt.Sprintf("spec.alertPolicies[%d].alertPolicyRef", i),
-				ap.AlertPolicyRef,
-			)
+
+		inlinedAlertPolicy, err := r.inlineV1AlertPolicy(alertPolicy)
+		if err != nil {
+			var refErr referenceNotFoundErr
+			if errors.As(err, &refErr) {
+				refErr.fieldPath = fmt.Sprintf("spec.alertPolicies[%d].%s", i, refErr.fieldPath)
+				return v1.SLO{}, refErr
+			}
+			return v1.SLO{}, fmt.Errorf(
+				"failed to inline %s referenced at 'spec.alertPolicies[%d].alertPolicyRef': %w",
+				alertPolicy, i, err)
 		}
 		ap.SLOAlertPolicyRef = nil
 		ap.SLOAlertPolicyInline = &v1.SLOAlertPolicyInline{
-			Kind:     alertPolicy.GetKind(),
-			Metadata: alertPolicy.Metadata,
-			Spec:     alertPolicy.Spec,
+			Kind:     inlinedAlertPolicy.GetKind(),
+			Metadata: inlinedAlertPolicy.Metadata,
+			Spec:     inlinedAlertPolicy.Spec,
 		}
-		r.referencedObjectIndexes[idx] = true
 		slo.Spec.AlertPolicies[i] = ap
 	}
 	if slo.Spec.IndicatorRef != nil {
-		sli, idx := findObject[v1.SLI](r.objects, *slo.Spec.IndicatorRef)
+		sli, idx := findObject[v1.SLI](r.references, *slo.Spec.IndicatorRef)
 		if idx == -1 {
-			return nil, newReferenceNotFoundErr(
+			return v1.SLO{}, newReferenceNotFoundErr(
 				sli,
 				"spec.indicatorRef",
 				*slo.Spec.IndicatorRef,
@@ -198,5 +220,19 @@ func findObject[T openslo.Object](objects []openslo.Object, name string) (object
 }
 
 func newReferenceNotFoundErr(object openslo.Object, path, name string) error {
-	return fmt.Errorf("%s '%s' referenced at '%s' does not exist", object, name, path)
+	return referenceNotFoundErr{
+		objectName: name,
+		fieldPath:  path,
+		object:     object,
+	}
+}
+
+type referenceNotFoundErr struct {
+	objectName string
+	fieldPath  string
+	object     openslo.Object
+}
+
+func (r referenceNotFoundErr) Error() string {
+	return fmt.Sprintf("%s '%s' referenced at '%s' does not exist", r.object, r.objectName, r.fieldPath)
 }

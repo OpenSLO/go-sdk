@@ -43,8 +43,18 @@ func TestReferenceResolver_Inline(t *testing.T) {
 		},
 		"v1: non-existing SLI for SLO": {
 			filename: "v1_slo_invalid_sli.yaml",
-			err: errors.New("failed to inline v1.SLO 'my-slo': v1.SLI" +
-				" 'no-sli' referenced at 'spec.indicatorRef' does not exist"),
+			err: errors.New("failed to inline v1.SLO 'my-slo':" +
+				" v1.SLI 'no-sli' referenced at 'spec.indicatorRef' does not exist"),
+		},
+		"v1: non-existing AlertPolicy for SLO": {
+			filename: "v1_slo_invalid_sli.yaml",
+			err: errors.New("failed to inline v1.SLO 'my-slo':" +
+				" v1.SLI 'no-sli' referenced at 'spec.indicatorRef' does not exist"),
+		},
+		"v1: non-existing AlertNotificationTarget for AlertPolicy in SLO": {
+			filename: "v1_slo_invalid_target.yaml",
+			err: errors.New("failed to inline v1.SLO 'my-slo': v1.AlertNotificationTarget 'devs-email-notification'" +
+				" referenced at 'spec.alertPolicies[0].spec.notificationTargets[1].targetRef' does not exist"),
 		},
 	}
 
