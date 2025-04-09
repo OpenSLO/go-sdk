@@ -32,8 +32,8 @@ func (r *ReferenceResolver) RemoveReferencedObjects() *ReferenceResolver {
 	return r
 }
 
-// Inline inlines all referenced objects in the provided slice of [openslo.Object].
-// Each encountered reference will be replaced with the referenced object.
+// Inline finds all referenced objects in the provided slice of [openslo.Object]
+// and replaces the references with an inlined version of the referenced [openslo.Object].
 // If the referenced object is not found in the provided [openslo.Object] slice, an error will be returned.
 //
 // By default, it will not remove referenced objects from the result.

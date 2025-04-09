@@ -47,7 +47,7 @@
 - apiVersion: openslo/v1
   kind: AlertPolicy
   metadata:
-    name: only-inlined-objects 
+    name: only-inlined-objects
   spec:
     alertWhenBreaching: true
     conditions:

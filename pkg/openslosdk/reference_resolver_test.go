@@ -29,11 +29,13 @@ func TestReferenceResolver_Inline(t *testing.T) {
 		},
 		"non-existing AlertNotificationTarget for Alert Policies": {
 			filename: "v1_alert_policies_invalid_target.yaml",
-			err:      errors.New(`failed to inline v1.AlertPolicy 'invalid-target': v1.AlertNotificationTarget 'devs-email-notification' referenced at 'spec.notificationTargets[1].targetRef' does not exist`),
+			err: errors.New("failed to inline v1.AlertPolicy 'invalid-target': v1.AlertNotificationTarget" +
+				" 'devs-email-notification' referenced at 'spec.notificationTargets[1].targetRef' does not exist"),
 		},
 		"non-existing AlertCondition for Alert Policies": {
 			filename: "v1_alert_policies_invalid_condition.yaml",
-			err:      errors.New(`failed to inline v1.AlertPolicy 'invalid-condition': v1.AlertCondition 'cpu-usage-breach' referenced at 'spec.conditions[0].conditionRef' does not exist`),
+			err: errors.New("failed to inline v1.AlertPolicy 'invalid-condition': v1.AlertCondition" +
+				" 'cpu-usage-breach' referenced at 'spec.conditions[0].conditionRef' does not exist"),
 		},
 	}
 
