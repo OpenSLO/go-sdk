@@ -42,6 +42,10 @@ func (s SLI) Validate() error {
 	return sliValidation.Validate(s)
 }
 
+func (s SLI) String() string {
+	return internal.GetObjectName(s)
+}
+
 type SLISpec struct {
 	Description     string          `json:"description,omitempty"`
 	ThresholdMetric *SLIMetricSpec  `json:"thresholdMetric,omitempty"`
@@ -82,7 +86,7 @@ var sliValidation = govy.New(
 	govy.For(func(s SLI) SLISpec { return s.Spec }).
 		WithName("spec").
 		Include(sliSpecValidation),
-).WithNameFunc(internal.ObjectNameFunc[SLI])
+).WithNameFunc(internal.GetObjectName[SLI])
 
 var sliSpecValidation = govy.New(
 	govy.For(func(spec SLISpec) string { return spec.Description }).

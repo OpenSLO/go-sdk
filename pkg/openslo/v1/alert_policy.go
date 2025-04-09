@@ -42,6 +42,10 @@ func (a AlertPolicy) Validate() error {
 	return alertPolicyValidation.Validate(a)
 }
 
+func (a AlertPolicy) String() string {
+	return internal.GetObjectName(a)
+}
+
 type AlertPolicySpec struct {
 	Description         string                          `json:"description,omitempty"`
 	AlertWhenNoData     bool                            `json:"alertWhenNoData,omitempty"`
@@ -88,7 +92,7 @@ var alertPolicyValidation = govy.New(
 	govy.For(func(a AlertPolicy) AlertPolicySpec { return a.Spec }).
 		WithName("spec").
 		Include(alertPolicySpecValidation),
-).WithNameFunc(internal.ObjectNameFunc[AlertPolicy])
+).WithNameFunc(internal.GetObjectName[AlertPolicy])
 
 var alertPolicySpecValidation = govy.New(
 	govy.For(func(spec AlertPolicySpec) string { return spec.Description }).

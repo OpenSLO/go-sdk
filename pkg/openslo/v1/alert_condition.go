@@ -42,6 +42,10 @@ func (a AlertCondition) Validate() error {
 	return alertConditionValidation.Validate(a)
 }
 
+func (a AlertCondition) String() string {
+	return internal.GetObjectName(a)
+}
+
 type AlertConditionSpec struct {
 	Severity    string             `json:"severity"`
 	Condition   AlertConditionType `json:"condition"`
@@ -69,7 +73,7 @@ var alertConditionValidation = govy.New(
 	govy.For(func(a AlertCondition) AlertConditionSpec { return a.Spec }).
 		WithName("spec").
 		Include(alertConditionSpecValidation),
-).WithNameFunc(internal.ObjectNameFunc[AlertCondition])
+).WithNameFunc(internal.GetObjectName[AlertCondition])
 
 var alertConditionSpecValidation = govy.New(
 	govy.For(func(spec AlertConditionSpec) string { return spec.Description }).

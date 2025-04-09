@@ -45,6 +45,10 @@ func (s SLO) Validate() error {
 	return sloValidation.Validate(s)
 }
 
+func (s SLO) String() string {
+	return internal.GetObjectName(s)
+}
+
 func (s SLO) IsComposite() bool {
 	return s.Spec.HasCompositeObjectives()
 }
@@ -134,7 +138,7 @@ var sloValidation = govy.New(
 	govy.For(func(s SLO) SLOSpec { return s.Spec }).
 		WithName("spec").
 		Include(sloSpecValidation),
-).WithNameFunc(internal.ObjectNameFunc[SLO])
+).WithNameFunc(internal.GetObjectName[SLO])
 
 var sloSpecValidation = govy.New(
 	govy.For(govy.GetSelf[SLOSpec]()).
