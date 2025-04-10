@@ -16,16 +16,16 @@ func TestReferenceInliner_Inline(t *testing.T) {
 	testDataPath := filepath.Join(root, "pkg", "openslosdk", "test_data", "inline")
 
 	tests := map[string]struct {
-		filename    string
-		resolverMod func(*ReferenceInliner) *ReferenceInliner
-		err         error
+		filename   string
+		inlinerMod func(*ReferenceInliner) *ReferenceInliner
+		err        error
 	}{
 		"v1: valid Alert Policies - keep refs": {
 			filename: "v1_alert_policies_keep_refs.yaml",
 		},
 		"v1: valid Alert Policies - remove refs": {
-			filename:    "v1_alert_policies_remove_refs.yaml",
-			resolverMod: func(r *ReferenceInliner) *ReferenceInliner { return r.RemoveReferencedObjects() },
+			filename:   "v1_alert_policies_remove_refs.yaml",
+			inlinerMod: func(r *ReferenceInliner) *ReferenceInliner { return r.RemoveReferencedObjects() },
 		},
 		"v1: non-existing AlertNotificationTarget for Alert Policies": {
 			filename: "v1_alert_policies_invalid_target.yaml",
@@ -38,8 +38,8 @@ func TestReferenceInliner_Inline(t *testing.T) {
 				" 'cpu-usage-breach' referenced at 'spec.conditions[0].conditionRef' does not exist"),
 		},
 		"v1: valid SLO": {
-			filename:    "v1_slo.yaml",
-			resolverMod: func(r *ReferenceInliner) *ReferenceInliner { return r.RemoveReferencedObjects() },
+			filename:   "v1_slo.yaml",
+			inlinerMod: func(r *ReferenceInliner) *ReferenceInliner { return r.RemoveReferencedObjects() },
 		},
 		"v1: non-existing SLI for SLO": {
 			filename: "v1_slo_invalid_sli.yaml",
@@ -71,8 +71,8 @@ func TestReferenceInliner_Inline(t *testing.T) {
 
 			// Inline objects.
 			inliner := NewReferenceInliner(inputObjects...)
-			if test.resolverMod != nil {
-				inliner = test.resolverMod(inliner)
+			if test.inlinerMod != nil {
+				inliner = test.inlinerMod(inliner)
 			}
 			inlinedObjects, err := inliner.Inline()
 			switch {
