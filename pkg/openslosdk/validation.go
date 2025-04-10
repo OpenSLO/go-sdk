@@ -1,10 +1,9 @@
 package openslosdk
 
 import (
-	"fmt"
-
 	"github.com/nobl9/govy/pkg/govy"
 
+	"github.com/OpenSLO/go-sdk/internal"
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
@@ -24,6 +23,4 @@ var objectsValidator = govy.New(
 			}),
 		),
 ).
-	WithNameFunc(func(o openslo.Object) string {
-		return fmt.Sprintf("%s %s", o.GetVersion(), o.GetKind())
-	})
+	WithNameFunc(internal.GetObjectName)
