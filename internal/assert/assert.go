@@ -3,6 +3,7 @@ package assert
 import (
 	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -19,9 +20,13 @@ func Require(t *testing.T, isPassing bool) {
 }
 
 // Equal fails the test if the expected and actual values are not equal.
-func Equal(t *testing.T, expected, actual interface{}) bool {
+func Equal(t *testing.T, expected, actual any) bool {
 	t.Helper()
 	if !areEqual(expected, actual) {
+		isMultiline := strings.Contains(fmt.Sprint(expected), "\n")
+		if isMultiline {
+			return fail(t, "Expected:\n%v\n%s\nActual:\n%v", expected, strings.Repeat("-", 30), actual)
+		}
 		return fail(t, "Expected: %v, actual: %v", expected, actual)
 	}
 	return true
@@ -46,7 +51,7 @@ func False(t *testing.T, actual bool) bool {
 }
 
 // Len fails the test if the value is not of the expected length.
-func Len(t *testing.T, v interface{}, length int) bool {
+func Len(t *testing.T, v any, length int) bool {
 	t.Helper()
 	actual, err := getLen(v)
 	if err != nil {
@@ -85,7 +90,7 @@ func NotEmpty(t *testing.T, v any) bool {
 	return true
 }
 
-func areEqual(expected, actual interface{}) bool {
+func areEqual(expected, actual any) bool {
 	if expected == nil || actual == nil {
 		return expected == actual
 	}
@@ -95,7 +100,7 @@ func areEqual(expected, actual interface{}) bool {
 	return true
 }
 
-func getLen(v interface{}) (int, error) {
+func getLen(v any) (int, error) {
 	rv := reflect.ValueOf(v)
 	switch rv.Kind() {
 	case reflect.Slice, reflect.Map, reflect.String:
@@ -105,7 +110,7 @@ func getLen(v interface{}) (int, error) {
 	}
 }
 
-func isEmpty(v interface{}) bool {
+func isEmpty(v any) bool {
 	if v == nil {
 		return true
 	}
@@ -125,7 +130,7 @@ func isEmpty(v interface{}) bool {
 	}
 }
 
-func fail(t *testing.T, msg string, a ...interface{}) bool {
+func fail(t *testing.T, msg string, a ...any) bool {
 	t.Helper()
 	t.Errorf(msg, a...)
 	return false

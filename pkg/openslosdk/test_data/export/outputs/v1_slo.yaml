@@ -1,0 +1,79 @@
+- apiVersion: openslo/v1
+  kind: SLO
+  metadata:
+    name: my-slo
+  spec:
+    alertPolicies:
+    - alertPolicyRef: single-referenced-object
+    - alertPolicyRef: mix-of-referenced-and-inlined-objects
+    budgetingMethod: Timeslices
+    indicatorRef: my-sli
+    objectives:
+    - displayName: Good
+      op: gt
+      target: 0.995
+      timeSliceTarget: 0.95
+      timeSliceWindow: 1m
+    service: web
+    timeWindow:
+    - calendar:
+        startTime: "2022-01-01 12:00:00"
+        timeZone: America/New_York
+      duration: 1w
+      isRolling: false
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: single-referenced-object
+  spec:
+    alertWhenBreaching: true
+    conditions:
+    - conditionRef: cpu-usage-breach
+    notificationTargets:
+    - targetRef: devs-email-notification
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: mix-of-referenced-and-inlined-objects
+  spec:
+    alertWhenBreaching: true
+    conditions:
+    - conditionRef: memory-usage-breach
+    notificationTargets:
+    - targetRef: pd-on-call-notification
+- apiVersion: openslo/v1
+  kind: AlertNotificationTarget
+  metadata:
+    name: pd-on-call-notification
+  spec:
+    target: pagerduty
+- apiVersion: openslo/v1
+  kind: AlertCondition
+  metadata:
+    name: memory-usage-breach
+  spec:
+    condition:
+      alertAfter: 5m
+      kind: burnrate
+      lookbackWindow: 1h
+      op: gt
+      threshold: 2
+    severity: page
+- apiVersion: openslo/v1
+  kind: SLI
+  metadata:
+    name: my-sli
+  spec:
+    thresholdMetric:
+      metricSource:
+        metricSourceRef: my-prometheus
+        spec:
+          query: |
+            sum(min_over_time(kafka_consumergroup_lag{k8s_cluster="prod", consumergroup="annotator", topic="annotator-in"}[2m]))
+        type: Prometheus
+- apiVersion: openslo/v1
+  kind: AlertNotificationTarget
+  metadata:
+    name: devs-email-notification
+  spec:
+    target: email

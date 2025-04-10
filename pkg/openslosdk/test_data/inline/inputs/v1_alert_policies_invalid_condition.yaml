@@ -1,0 +1,14 @@
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: invalid-condition
+  spec:
+    alertWhenBreaching: true
+    conditions:
+      - conditionRef: cpu-usage-breach
+    notificationTargets:
+      - kind: AlertNotificationTarget
+        metadata:
+          name: pd-on-call-notification
+        spec:
+          target: pagerduty

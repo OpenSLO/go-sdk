@@ -1,0 +1,28 @@
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: single-referenced-object
+  spec:
+    alertWhenBreaching: true
+    conditions:
+      - conditionRef: cpu-usage-breach
+    notificationTargets:
+      - targetRef: devs-email-notification
+- apiVersion: openslo/v1
+  kind: AlertCondition
+  metadata:
+    name: cpu-usage-breach
+  spec:
+    severity: page
+    condition:
+      kind: burnrate
+      op: lte
+      threshold: 2
+      lookbackWindow: 1h
+      alertAfter: 5m
+- apiVersion: openslo/v1
+  kind: AlertNotificationTarget
+  metadata:
+    name: devs-email-notification
+  spec:
+    target: email

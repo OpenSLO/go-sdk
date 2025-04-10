@@ -128,7 +128,7 @@ type SLOAlertPolicyInline struct {
 }
 
 type SLOAlertPolicyRef struct {
-	Ref string `json:"alertPolicyRef"`
+	AlertPolicyRef string `json:"alertPolicyRef"`
 }
 
 var sloValidation = govy.New(
@@ -245,7 +245,7 @@ var sloAlertPolicyValidation = govy.New(
 		return a.SLOAlertPolicyRef
 	}).
 		Include(govy.New(
-			govy.For(func(ref SLOAlertPolicyRef) string { return ref.Ref }).
+			govy.For(func(ref SLOAlertPolicyRef) string { return ref.AlertPolicyRef }).
 				WithName("alertPolicyRef").
 				Required().
 				Rules(rules.StringDNSLabel()),
