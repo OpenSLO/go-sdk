@@ -9,28 +9,28 @@ import (
 	v1 "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
 )
 
-func NewReferenceResolver(objects ...openslo.Object) *ReferenceResolver {
-	return &ReferenceResolver{
+func NewReferenceInliner(objects ...openslo.Object) *ReferenceInliner {
+	return &ReferenceInliner{
 		objects:                 objects,
 		inlined:                 make([]openslo.Object, 0, len(objects)),
 		referencedObjectIndexes: make(map[int]bool),
 	}
 }
 
-// ReferenceResolver is a utility to inline referenced [openslo.Object] in referencing object(s).
-type ReferenceResolver struct {
+// ReferenceInliner is a utility to inline referenced [openslo.Object] in referencing object(s).
+type ReferenceInliner struct {
 	objects                 []openslo.Object
 	references              []openslo.Object
 	inlined                 []openslo.Object
 	referencedObjectIndexes map[int]bool
 	removeRefs              bool
 	err                     error
-	inlineOnce              sync.Once
+	once                    sync.Once
 }
 
-// RemoveReferencedObjects instructs [ReferenceResolver] to remove referenced objects
-// from the result of [ReferenceResolver.Inline].
-func (r *ReferenceResolver) RemoveReferencedObjects() *ReferenceResolver {
+// RemoveReferencedObjects instructs [ReferenceInliner] to remove referenced objects
+// from the result of [ReferenceInliner.Inline].
+func (r *ReferenceInliner) RemoveReferencedObjects() *ReferenceInliner {
 	r.removeRefs = true
 	return r
 }
@@ -40,15 +40,15 @@ func (r *ReferenceResolver) RemoveReferencedObjects() *ReferenceResolver {
 // If the referenced object is not found in the provided [openslo.Object] slice, an error will be returned.
 //
 // By default, it will not remove referenced objects from the result.
-// If you want to remove referenced objects, you can use the [ReferenceResolver.RemoveReferencedObjects] option.
-func (r *ReferenceResolver) Inline() ([]openslo.Object, error) {
-	r.inlineOnce.Do(func() {
-		r.inlined, r.err = r.resolve()
+// If you want to remove referenced objects, you can use the [ReferenceInliner.RemoveReferencedObjects] option.
+func (r *ReferenceInliner) Inline() ([]openslo.Object, error) {
+	r.once.Do(func() {
+		r.inlined, r.err = r.inlineObjects()
 	})
 	return r.inlined, r.err
 }
 
-func (r *ReferenceResolver) resolve() ([]openslo.Object, error) {
+func (r *ReferenceInliner) inlineObjects() ([]openslo.Object, error) {
 	if r.references == nil {
 		r.references = r.objects
 	}
@@ -63,7 +63,7 @@ func (r *ReferenceResolver) resolve() ([]openslo.Object, error) {
 	return r.inlined, nil
 }
 
-func (r *ReferenceResolver) inlineObject(object openslo.Object) error {
+func (r *ReferenceInliner) inlineObject(object openslo.Object) error {
 	version := object.GetVersion()
 	switch version {
 	case openslo.VersionV1:
@@ -78,7 +78,7 @@ func (r *ReferenceResolver) inlineObject(object openslo.Object) error {
 	return nil
 }
 
-func (r *ReferenceResolver) removeReferencedObjects() []openslo.Object {
+func (r *ReferenceInliner) removeReferencedObjects() []openslo.Object {
 	objects := make([]openslo.Object, 0, len(r.inlined))
 	for i := range r.inlined {
 		if r.referencedObjectIndexes[i] {
@@ -89,7 +89,7 @@ func (r *ReferenceResolver) removeReferencedObjects() []openslo.Object {
 	return objects
 }
 
-func (r *ReferenceResolver) inlineV1Object(object openslo.Object) (openslo.Object, error) {
+func (r *ReferenceInliner) inlineV1Object(object openslo.Object) (openslo.Object, error) {
 	switch v := object.(type) {
 	case v1.AlertPolicy:
 		return r.inlineV1AlertPolicy(v)
@@ -100,7 +100,7 @@ func (r *ReferenceResolver) inlineV1Object(object openslo.Object) (openslo.Objec
 	}
 }
 
-func (r *ReferenceResolver) inlineV1AlertPolicy(alertPolicy v1.AlertPolicy) (v1.AlertPolicy, error) {
+func (r *ReferenceInliner) inlineV1AlertPolicy(alertPolicy v1.AlertPolicy) (v1.AlertPolicy, error) {
 	for i, target := range alertPolicy.Spec.NotificationTargets {
 		if target.AlertPolicyNotificationTargetRef == nil {
 			continue
@@ -146,7 +146,7 @@ func (r *ReferenceResolver) inlineV1AlertPolicy(alertPolicy v1.AlertPolicy) (v1.
 	return alertPolicy, nil
 }
 
-func (r *ReferenceResolver) inlineV1SLO(slo v1.SLO) (v1.SLO, error) {
+func (r *ReferenceInliner) inlineV1SLO(slo v1.SLO) (v1.SLO, error) {
 	for i, ap := range slo.Spec.AlertPolicies {
 		var alertPolicy v1.AlertPolicy
 		switch {
@@ -203,7 +203,7 @@ func (r *ReferenceResolver) inlineV1SLO(slo v1.SLO) (v1.SLO, error) {
 	return slo, nil
 }
 
-func (r *ReferenceResolver) addResult(object openslo.Object) {
+func (r *ReferenceInliner) addResult(object openslo.Object) {
 	r.inlined = append(r.inlined, object)
 }
 

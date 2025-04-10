@@ -11,13 +11,13 @@ import (
 	"github.com/OpenSLO/go-sdk/internal/assert"
 )
 
-func TestReferenceResolver_Inline(t *testing.T) {
+func TestReferenceInliner_Inline(t *testing.T) {
 	root := internal.FindModuleRoot()
 	testDataPath := filepath.Join(root, "pkg", "openslosdk", "test_data", "inline")
 
 	tests := map[string]struct {
 		filename    string
-		resolverMod func(*ReferenceResolver) *ReferenceResolver
+		resolverMod func(*ReferenceInliner) *ReferenceInliner
 		err         error
 	}{
 		"v1: valid Alert Policies - keep refs": {
@@ -25,7 +25,7 @@ func TestReferenceResolver_Inline(t *testing.T) {
 		},
 		"v1: valid Alert Policies - remove refs": {
 			filename:    "v1_alert_policies_remove_refs.yaml",
-			resolverMod: func(r *ReferenceResolver) *ReferenceResolver { return r.RemoveReferencedObjects() },
+			resolverMod: func(r *ReferenceInliner) *ReferenceInliner { return r.RemoveReferencedObjects() },
 		},
 		"v1: non-existing AlertNotificationTarget for Alert Policies": {
 			filename: "v1_alert_policies_invalid_target.yaml",
@@ -39,7 +39,7 @@ func TestReferenceResolver_Inline(t *testing.T) {
 		},
 		"v1: valid SLO": {
 			filename:    "v1_slo.yaml",
-			resolverMod: func(r *ReferenceResolver) *ReferenceResolver { return r.RemoveReferencedObjects() },
+			resolverMod: func(r *ReferenceInliner) *ReferenceInliner { return r.RemoveReferencedObjects() },
 		},
 		"v1: non-existing SLI for SLO": {
 			filename: "v1_slo_invalid_sli.yaml",
@@ -70,11 +70,11 @@ func TestReferenceResolver_Inline(t *testing.T) {
 			assert.Require(t, assert.NoError(t, err))
 
 			// Inline objects.
-			resolver := NewReferenceResolver(inputObjects...)
+			inliner := NewReferenceInliner(inputObjects...)
 			if test.resolverMod != nil {
-				resolver = test.resolverMod(resolver)
+				inliner = test.resolverMod(inliner)
 			}
-			inlinedObjects, err := resolver.Inline()
+			inlinedObjects, err := inliner.Inline()
 			switch {
 			case test.err == nil:
 				assert.Require(t, assert.NoError(t, err))
