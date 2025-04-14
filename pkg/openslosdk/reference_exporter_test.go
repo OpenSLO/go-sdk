@@ -15,13 +15,20 @@ func TestReferenceExporter_Export(t *testing.T) {
 	testDataPath := filepath.Join(root, "pkg", "openslosdk", "test_data", "export")
 
 	tests := map[string]struct {
-		filename string
+		filename    string
+		exporterMod func(*ReferenceExporter) *ReferenceExporter
 	}{
 		"v1: Alert Policies": {
 			filename: "v1_alert_policies.yaml",
 		},
 		"v1: SLO": {
 			filename: "v1_slo.yaml",
+		},
+		"custom config, do not resolve anything": {
+			filename: "custom_config.yaml",
+			exporterMod: func(r *ReferenceExporter) *ReferenceExporter {
+				return r.WithConfig(ReferenceConfig{})
+			},
 		},
 	}
 
@@ -38,6 +45,9 @@ func TestReferenceExporter_Export(t *testing.T) {
 
 			// Inline objects.
 			exporter := NewReferenceExporter(inputObjects...)
+			if test.exporterMod != nil {
+				exporter = test.exporterMod(exporter)
+			}
 			inlinedObjects := exporter.Export()
 			assert.Require(t, assert.NotEmpty(t, inlinedObjects))
 

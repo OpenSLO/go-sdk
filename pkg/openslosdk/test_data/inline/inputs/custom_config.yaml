@@ -1,0 +1,33 @@
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: multiple-referenced-objects
+  spec:
+    alertWhenBreaching: true
+    conditions:
+      - conditionRef: cpu-usage-breach
+    notificationTargets:
+      - targetRef: pd-on-call-notification
+- apiVersion: openslo/v1
+  kind: SLO
+  metadata:
+    name: my-slo
+  spec:
+    alertPolicies:
+    - alertPolicyRef: single-referenced-object
+    - alertPolicyRef: mix-of-referenced-and-inlined-objects
+    budgetingMethod: Timeslices
+    indicatorRef: my-sli
+    objectives:
+    - displayName: Good
+      op: gt
+      target: 0.995
+      timeSliceTarget: 0.95
+      timeSliceWindow: 1m
+    service: web
+    timeWindow:
+    - calendar:
+        startTime: "2022-01-01 12:00:00"
+        timeZone: America/New_York
+      duration: 1w
+      isRolling: false
