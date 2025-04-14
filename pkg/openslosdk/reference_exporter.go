@@ -9,12 +9,14 @@ import (
 
 func NewReferenceExporter(objects ...openslo.Object) *ReferenceExporter {
 	return &ReferenceExporter{
+		config:   defaultReferenceConfig(),
 		objects:  objects,
 		exported: make([]openslo.Object, 0, len(objects)),
 	}
 }
 
 type ReferenceExporter struct {
+	config   ReferenceConfig
 	objects  []openslo.Object
 	exported []openslo.Object
 	once     sync.Once
@@ -27,6 +29,23 @@ func (r *ReferenceExporter) Export() []openslo.Object {
 		r.exported = r.exportObjects()
 	})
 	return r.exported
+}
+
+// WithConfig allows providing a custom [ReferenceConfig] which can help limit
+// the exported definitions to a desired subset.
+// Example:
+//
+//	 // only export [v1.SLI] reference for [v1.SLO]
+//	 ReferenceConfig{
+//			V1: ReferenceConfigV1{
+//				SLO: &ReferenceConfigV1SLO{
+//					SLI:         true,
+//				},
+//			},
+//		}
+func (r *ReferenceExporter) WithConfig(config ReferenceConfig) *ReferenceExporter {
+	r.config = config
+	return r
 }
 
 func (r *ReferenceExporter) exportObjects() []openslo.Object {
@@ -59,6 +78,17 @@ func (r *ReferenceExporter) exportV1Object(object openslo.Object) []openslo.Obje
 
 func (r *ReferenceExporter) exportV1AlertPolicy(alertPolicy v1.AlertPolicy) []openslo.Object {
 	exported := make([]openslo.Object, 0)
+	if r.config.V1.AlertPolicy.AlertNotificationTarget {
+		exported = append(exported, r.exportV1AlertPolicyTargets(&alertPolicy)...)
+	}
+	if r.config.V1.AlertPolicy.AlertCondition {
+		exported = append(exported, r.exportV1AlertPolicyConditions(&alertPolicy)...)
+	}
+	return append([]openslo.Object{alertPolicy}, exported...)
+}
+
+func (r *ReferenceExporter) exportV1AlertPolicyTargets(alertPolicy *v1.AlertPolicy) []openslo.Object {
+	exported := make([]openslo.Object, 0)
 	for i, target := range alertPolicy.Spec.NotificationTargets {
 		if target.AlertPolicyNotificationTargetInline == nil {
 			continue
@@ -70,6 +100,11 @@ func (r *ReferenceExporter) exportV1AlertPolicy(alertPolicy v1.AlertPolicy) []op
 		target.AlertPolicyNotificationTargetInline = nil
 		alertPolicy.Spec.NotificationTargets[i] = target
 	}
+	return exported
+}
+
+func (r *ReferenceExporter) exportV1AlertPolicyConditions(alertPolicy *v1.AlertPolicy) []openslo.Object {
+	exported := make([]openslo.Object, 0)
 	for i, condition := range alertPolicy.Spec.Conditions {
 		if condition.AlertPolicyConditionInline == nil {
 			continue
@@ -81,10 +116,21 @@ func (r *ReferenceExporter) exportV1AlertPolicy(alertPolicy v1.AlertPolicy) []op
 		condition.AlertPolicyConditionInline = nil
 		alertPolicy.Spec.Conditions[i] = condition
 	}
-	return append([]openslo.Object{alertPolicy}, exported...)
+	return exported
 }
 
 func (r *ReferenceExporter) exportV1SLO(slo v1.SLO) []openslo.Object {
+	exported := make([]openslo.Object, 0)
+	if r.config.V1.SLO.AlertPolicy {
+		exported = append(exported, r.exportV1SLOAlertPolicies(&slo)...)
+	}
+	if r.config.V1.SLO.SLI {
+		exported = append(exported, r.exportV1SLOSLI(&slo)...)
+	}
+	return append([]openslo.Object{slo}, exported...)
+}
+
+func (r *ReferenceExporter) exportV1SLOAlertPolicies(slo *v1.SLO) []openslo.Object {
 	exported := make([]openslo.Object, 0)
 	for i, ap := range slo.Spec.AlertPolicies {
 		if ap.SLOAlertPolicyInline == nil {
@@ -98,12 +144,17 @@ func (r *ReferenceExporter) exportV1SLO(slo v1.SLO) []openslo.Object {
 		ap.SLOAlertPolicyInline = nil
 		slo.Spec.AlertPolicies[i] = ap
 	}
-	if slo.Spec.Indicator != nil {
-		exported = append(exported, v1.NewSLI(slo.Spec.Indicator.Metadata, slo.Spec.Indicator.Spec))
-		slo.Spec.IndicatorRef = &slo.Spec.Indicator.Metadata.Name
-		slo.Spec.Indicator = nil
+	return exported
+}
+
+func (r *ReferenceExporter) exportV1SLOSLI(slo *v1.SLO) []openslo.Object {
+	if slo.Spec.Indicator == nil {
+		return nil
 	}
-	return append([]openslo.Object{slo}, exported...)
+	sli := v1.NewSLI(slo.Spec.Indicator.Metadata, slo.Spec.Indicator.Spec)
+	slo.Spec.IndicatorRef = &slo.Spec.Indicator.Metadata.Name
+	slo.Spec.Indicator = nil
+	return []openslo.Object{sli}
 }
 
 func (r *ReferenceExporter) addResult(objects ...openslo.Object) {
