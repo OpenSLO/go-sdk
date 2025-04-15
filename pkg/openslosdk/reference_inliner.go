@@ -246,7 +246,7 @@ func (r *ReferenceInliner) inlineV1SLOAlertPolicies(slo v1.SLO) (v1.SLO, error) 
 
 func (r *ReferenceInliner) inlineV1SLOSLI(slo v1.SLO) (v1.SLO, error) {
 	if slo.Spec.IndicatorRef == nil {
-		return v1.SLO{}, nil
+		return slo, nil
 	}
 	sli, idx := findObject[v1.SLI](r.references, *slo.Spec.IndicatorRef)
 	if idx == -1 {

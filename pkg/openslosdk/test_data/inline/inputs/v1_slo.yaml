@@ -1,7 +1,37 @@
 - apiVersion: openslo/v1
   kind: SLO
   metadata:
-    name: my-slo
+    name: my-slo-1
+  spec:
+    service: web
+    indicator:
+      metadata:
+        name: my-sli
+      spec:
+        thresholdMetric:
+          metricSource:
+            metricSourceRef: my-prometheus
+            type: Prometheus
+            spec:
+              query: |
+                sum(min_over_time(kafka_consumergroup_lag{k8s_cluster="prod", consumergroup="annotator", topic="annotator-in"}[2m]))
+    timeWindow:
+      - duration: 1w
+        isRolling: false
+        calendar:
+          startTime: 2022-01-01 12:00:00
+          timeZone: America/New_York
+    budgetingMethod: Timeslices
+    objectives:
+      - displayName: Good
+        op: gt
+        target: 0.995
+        timeSliceTarget: 0.95
+        timeSliceWindow: 1m
+- apiVersion: openslo/v1
+  kind: SLO
+  metadata:
+    name: my-slo-2
   spec:
     service: web
     indicatorRef: my-sli
