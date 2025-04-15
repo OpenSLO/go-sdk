@@ -56,6 +56,12 @@ func TestReferenceInliner_Inline(t *testing.T) {
 			err: errors.New("failed to inline v1.SLO 'my-slo': v1.AlertNotificationTarget 'devs-email-notification'" +
 				" referenced at 'spec.alertPolicies[0].spec.notificationTargets[1].targetRef' does not exist"),
 		},
+		"custom config, do not resolve anything": {
+			filename: "custom_config.yaml",
+			inlinerMod: func(r *ReferenceInliner) *ReferenceInliner {
+				return r.WithConfig(ReferenceConfig{})
+			},
+		},
 	}
 
 	for name, test := range tests {
@@ -75,8 +81,8 @@ func TestReferenceInliner_Inline(t *testing.T) {
 				inliner = test.inlinerMod(inliner)
 			}
 			inlinedObjects, err := inliner.Inline()
-			switch {
-			case test.err == nil:
+			switch test.err {
+			case nil:
 				assert.Require(t, assert.NoError(t, err))
 				assert.Require(t, assert.NotEmpty(t, inlinedObjects))
 			default:

@@ -1,37 +1,7 @@
 - apiVersion: openslo/v1
   kind: SLO
   metadata:
-    name: my-slo-1
-  spec:
-    budgetingMethod: Timeslices
-    indicator:
-      metadata:
-        name: my-sli
-      spec:
-        thresholdMetric:
-          metricSource:
-            metricSourceRef: my-prometheus
-            spec:
-              query: |
-                sum(min_over_time(kafka_consumergroup_lag{k8s_cluster="prod", consumergroup="annotator", topic="annotator-in"}[2m]))
-            type: Prometheus
-    objectives:
-    - displayName: Good
-      op: gt
-      target: 0.995
-      timeSliceTarget: 0.95
-      timeSliceWindow: 1m
-    service: web
-    timeWindow:
-    - calendar:
-        startTime: "2022-01-01 12:00:00"
-        timeZone: America/New_York
-      duration: 1w
-      isRolling: false
-- apiVersion: openslo/v1
-  kind: SLO
-  metadata:
-    name: my-slo-2
+    name: my-slo
   spec:
     alertPolicies:
     - kind: AlertPolicy
@@ -40,23 +10,9 @@
       spec:
         alertWhenBreaching: true
         conditions:
-        - kind: AlertCondition
-          metadata:
-            name: cpu-usage-breach
-          spec:
-            condition:
-              alertAfter: 5m
-              kind: burnrate
-              lookbackWindow: 1h
-              op: lte
-              threshold: 2
-            severity: page
+        - conditionRef: cpu-usage-breach
         notificationTargets:
-        - kind: AlertNotificationTarget
-          metadata:
-            name: devs-email-notification
-          spec:
-            target: email
+        - targetRef: devs-email-notification
     - kind: AlertPolicy
       metadata:
         name: mix-of-referenced-and-inlined-objects
@@ -105,3 +61,28 @@
         timeZone: America/New_York
       duration: 1w
       isRolling: false
+- apiVersion: openslo/v1
+  kind: AlertPolicy
+  metadata:
+    name: mix-of-referenced-and-inlined-objects
+  spec:
+    alertWhenBreaching: true
+    conditions:
+    - kind: AlertCondition
+      metadata:
+        name: memory-usage-breach
+      spec:
+        condition:
+          alertAfter: 5m
+          kind: burnrate
+          lookbackWindow: 1h
+          op: gt
+          threshold: 2
+        severity: page
+    notificationTargets:
+    - kind: AlertNotificationTarget
+      metadata:
+        name: pd-on-call-notification
+      spec:
+        target: pagerduty
+    - targetRef: devs-email-notification

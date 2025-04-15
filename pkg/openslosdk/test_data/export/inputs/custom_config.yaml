@@ -1,7 +1,7 @@
 - apiVersion: openslo/v1
   kind: SLO
   metadata:
-    name: my-slo-1
+    name: my-slo
   spec:
     service: web
     indicator:
@@ -15,26 +15,6 @@
             spec:
               query: |
                 sum(min_over_time(kafka_consumergroup_lag{k8s_cluster="prod", consumergroup="annotator", topic="annotator-in"}[2m]))
-    timeWindow:
-      - duration: 1w
-        isRolling: false
-        calendar:
-          startTime: 2022-01-01 12:00:00
-          timeZone: America/New_York
-    budgetingMethod: Timeslices
-    objectives:
-      - displayName: Good
-        op: gt
-        target: 0.995
-        timeSliceTarget: 0.95
-        timeSliceWindow: 1m
-- apiVersion: openslo/v1
-  kind: SLO
-  metadata:
-    name: my-slo-2
-  spec:
-    service: web
-    indicatorRef: my-sli
     timeWindow:
       - duration: 1w
         isRolling: false
@@ -82,32 +62,27 @@
               spec:
                 target: pagerduty
 - apiVersion: openslo/v1
-  kind: SLI
+  kind: AlertPolicy
   metadata:
-    name: my-sli
+    name: mix-of-referenced-and-inlined-objects
   spec:
-    thresholdMetric:
-      metricSource:
-        metricSourceRef: my-prometheus
-        type: Prometheus
+    alertWhenBreaching: true
+    conditions:
+      - kind: AlertCondition
+        metadata:
+          name: memory-usage-breach
         spec:
-          query: |
-            sum(min_over_time(kafka_consumergroup_lag{k8s_cluster="prod", consumergroup="annotator", topic="annotator-in"}[2m]))
-- apiVersion: openslo/v1
-  kind: AlertCondition
-  metadata:
-    name: cpu-usage-breach
-  spec:
-    severity: page
-    condition:
-      kind: burnrate
-      op: lte
-      threshold: 2
-      lookbackWindow: 1h
-      alertAfter: 5m
-- apiVersion: openslo/v1
-  kind: AlertNotificationTarget
-  metadata:
-    name: devs-email-notification
-  spec:
-    target: email
+          severity: page
+          condition:
+            kind: burnrate
+            op: gt
+            threshold: 2
+            lookbackWindow: 1h
+            alertAfter: 5m
+    notificationTargets:
+      - kind: AlertNotificationTarget
+        metadata:
+          name: pd-on-call-notification
+        spec:
+          target: pagerduty
+      - targetRef: devs-email-notification

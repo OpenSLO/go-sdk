@@ -11,6 +11,7 @@ import (
 
 func NewReferenceInliner(objects ...openslo.Object) *ReferenceInliner {
 	return &ReferenceInliner{
+		config:                  defaultReferenceConfig(),
 		objects:                 objects,
 		inlined:                 make([]openslo.Object, 0, len(objects)),
 		referencedObjectIndexes: make(map[int]bool),
@@ -19,6 +20,7 @@ func NewReferenceInliner(objects ...openslo.Object) *ReferenceInliner {
 
 // ReferenceInliner is a utility to inline referenced [openslo.Object] in referencing object(s).
 type ReferenceInliner struct {
+	config                  ReferenceConfig
 	objects                 []openslo.Object
 	references              []openslo.Object
 	inlined                 []openslo.Object
@@ -26,13 +28,6 @@ type ReferenceInliner struct {
 	removeRefs              bool
 	err                     error
 	once                    sync.Once
-}
-
-// RemoveReferencedObjects instructs [ReferenceInliner] to remove referenced objects
-// from the result of [ReferenceInliner.Inline].
-func (r *ReferenceInliner) RemoveReferencedObjects() *ReferenceInliner {
-	r.removeRefs = true
-	return r
 }
 
 // Inline finds all referenced objects in the provided slice of [openslo.Object]
@@ -46,6 +41,30 @@ func (r *ReferenceInliner) Inline() ([]openslo.Object, error) {
 		r.inlined, r.err = r.inlineObjects()
 	})
 	return r.inlined, r.err
+}
+
+// RemoveReferencedObjects instructs [ReferenceInliner] to remove referenced objects
+// from the result of [ReferenceInliner.Inline].
+func (r *ReferenceInliner) RemoveReferencedObjects() *ReferenceInliner {
+	r.removeRefs = true
+	return r
+}
+
+// WithConfig allows providing a custom [ReferenceConfig] which can help limit
+// the inlined references to a desired subset.
+// Example:
+//
+//	 // only inline [v1.SLI] reference for [v1.SLO]
+//	 ReferenceConfig{
+//			V1: ReferenceConfigV1{
+//				SLO: &ReferenceConfigV1SLO{
+//					SLI:         true,
+//				},
+//			},
+//		}
+func (r *ReferenceInliner) WithConfig(config ReferenceConfig) *ReferenceInliner {
+	r.config = config
+	return r
 }
 
 func (r *ReferenceInliner) inlineObjects() ([]openslo.Object, error) {
@@ -101,6 +120,23 @@ func (r *ReferenceInliner) inlineV1Object(object openslo.Object) (openslo.Object
 }
 
 func (r *ReferenceInliner) inlineV1AlertPolicy(alertPolicy v1.AlertPolicy) (v1.AlertPolicy, error) {
+	var err error
+	if r.config.V1.AlertPolicy.AlertNotificationTarget {
+		alertPolicy, err = r.inlineV1AlertPolicyTargets(alertPolicy)
+		if err != nil {
+			return v1.AlertPolicy{}, err
+		}
+	}
+	if r.config.V1.AlertPolicy.AlertCondition {
+		alertPolicy, err = r.inlineV1AlertPolicyConditions(alertPolicy)
+		if err != nil {
+			return v1.AlertPolicy{}, err
+		}
+	}
+	return alertPolicy, nil
+}
+
+func (r *ReferenceInliner) inlineV1AlertPolicyTargets(alertPolicy v1.AlertPolicy) (v1.AlertPolicy, error) {
 	for i, target := range alertPolicy.Spec.NotificationTargets {
 		if target.AlertPolicyNotificationTargetRef == nil {
 			continue
@@ -122,6 +158,10 @@ func (r *ReferenceInliner) inlineV1AlertPolicy(alertPolicy v1.AlertPolicy) (v1.A
 		r.referencedObjectIndexes[idx] = true
 		alertPolicy.Spec.NotificationTargets[i] = target
 	}
+	return alertPolicy, nil
+}
+
+func (r *ReferenceInliner) inlineV1AlertPolicyConditions(alertPolicy v1.AlertPolicy) (v1.AlertPolicy, error) {
 	for i, condition := range alertPolicy.Spec.Conditions {
 		if condition.AlertPolicyConditionRef == nil {
 			continue
@@ -147,6 +187,23 @@ func (r *ReferenceInliner) inlineV1AlertPolicy(alertPolicy v1.AlertPolicy) (v1.A
 }
 
 func (r *ReferenceInliner) inlineV1SLO(slo v1.SLO) (v1.SLO, error) {
+	var err error
+	if r.config.V1.SLO.AlertPolicy {
+		slo, err = r.inlineV1SLOAlertPolicies(slo)
+		if err != nil {
+			return v1.SLO{}, err
+		}
+	}
+	if r.config.V1.SLO.SLI {
+		slo, err = r.inlineV1SLOSLI(slo)
+		if err != nil {
+			return v1.SLO{}, err
+		}
+	}
+	return slo, nil
+}
+
+func (r *ReferenceInliner) inlineV1SLOAlertPolicies(slo v1.SLO) (v1.SLO, error) {
 	for i, ap := range slo.Spec.AlertPolicies {
 		var alertPolicy v1.AlertPolicy
 		switch {
@@ -184,22 +241,27 @@ func (r *ReferenceInliner) inlineV1SLO(slo v1.SLO) (v1.SLO, error) {
 		}
 		slo.Spec.AlertPolicies[i] = ap
 	}
-	if slo.Spec.IndicatorRef != nil {
-		sli, idx := findObject[v1.SLI](r.references, *slo.Spec.IndicatorRef)
-		if idx == -1 {
-			return v1.SLO{}, newReferenceNotFoundErr(
-				sli,
-				"spec.indicatorRef",
-				*slo.Spec.IndicatorRef,
-			)
-		}
-		slo.Spec.IndicatorRef = nil
-		slo.Spec.Indicator = &v1.SLOIndicatorInline{
-			Metadata: sli.Metadata,
-			Spec:     sli.Spec,
-		}
-		r.referencedObjectIndexes[idx] = true
+	return slo, nil
+}
+
+func (r *ReferenceInliner) inlineV1SLOSLI(slo v1.SLO) (v1.SLO, error) {
+	if slo.Spec.IndicatorRef == nil {
+		return slo, nil
 	}
+	sli, idx := findObject[v1.SLI](r.references, *slo.Spec.IndicatorRef)
+	if idx == -1 {
+		return v1.SLO{}, newReferenceNotFoundErr(
+			sli,
+			"spec.indicatorRef",
+			*slo.Spec.IndicatorRef,
+		)
+	}
+	slo.Spec.IndicatorRef = nil
+	slo.Spec.Indicator = &v1.SLOIndicatorInline{
+		Metadata: sli.Metadata,
+		Spec:     sli.Spec,
+	}
+	r.referencedObjectIndexes[idx] = true
 	return slo, nil
 }
 
