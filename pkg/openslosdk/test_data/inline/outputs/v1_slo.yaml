@@ -21,6 +21,7 @@
       target: 0.995
       timeSliceTarget: 0.95
       timeSliceWindow: 1m
+      value: 1
     service: web
     timeWindow:
     - calendar:
@@ -98,6 +99,7 @@
       target: 0.995
       timeSliceTarget: 0.95
       timeSliceWindow: 1m
+      value: 1
     service: web
     timeWindow:
     - calendar:

@@ -1,6 +1,6 @@
 module github.com/OpenSLO/go-sdk
 
-go 1.23
+go 1.24
 
 require (
 	github.com/nobl9/govy v0.14.0
@@ -8,8 +8,8 @@ require (
 )
 
 require (
-	golang.org/x/exp v0.0.0-20240808152545-0cdaa3abc0fa // indirect
-	golang.org/x/mod v0.20.0 // indirect
-	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/tools v0.24.0 // indirect
+	golang.org/x/exp v0.0.0-20250408133849-7e4ce0ab07d0 // indirect
+	golang.org/x/mod v0.24.0 // indirect
+	golang.org/x/sync v0.13.0 // indirect
+	golang.org/x/tools v0.32.0 // indirect
 )

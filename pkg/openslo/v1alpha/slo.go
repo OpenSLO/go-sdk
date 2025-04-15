@@ -250,7 +250,7 @@ var sloObjectiveValidation = govy.New(
 		WithName("op").
 		When(
 			func(s SLOObjective) bool { return s.RatioMetrics == nil },
-			govy.WhenDescription("only required when 'thresholdMetric' is set"),
+			govy.WhenDescription("'thresholdMetric' is set"),
 		).
 		Required().
 		Rules(rules.OneOf(validOperators...)),
@@ -258,7 +258,7 @@ var sloObjectiveValidation = govy.New(
 		WithName("op").
 		When(
 			func(s SLOObjective) bool { return s.RatioMetrics != nil },
-			govy.WhenDescription("forbidden when 'ratioMetrics' is set"),
+			govy.WhenDescription("'ratioMetrics' is set"),
 		).
 		Rules(rules.Forbidden[Operator]()),
 )
