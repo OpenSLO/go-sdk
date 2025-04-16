@@ -95,7 +95,7 @@ type SLOIndicatorInline struct {
 type SLOObjective struct {
 	DisplayName     string              `json:"displayName,omitempty"`
 	Operator        Operator            `json:"op,omitempty"`
-	Value           float64             `json:"value,omitempty"`
+	Value           *float64            `json:"value,omitempty"`
 	Target          *float64            `json:"target,omitempty"`
 	TargetPercent   *float64            `json:"targetPercent,omitempty"`
 	TimeSliceTarget *float64            `json:"timeSliceTarget,omitempty"`
@@ -168,9 +168,20 @@ var sloSpecValidation = govy.New(
 	govy.ForSlice(func(spec SLOSpec) []SLOAlertPolicy { return spec.AlertPolicies }).
 		WithName("alertPolicies").
 		IncludeForEach(sloAlertPolicyValidation),
-	govy.ForSlice(func(spec SLOSpec) []SLOObjective { return spec.Objectives }).
-		WithName("objectives").
+	sloObjectivesProperty.
 		IncludeForEach(sloObjectiveValidation),
+	sloObjectivesProperty.
+		IncludeForEach(sloRatioObjectiveValidationWhenInlinedSLI).
+		When(
+			func(s SLOSpec) bool { return s.Indicator != nil && s.Indicator.Spec.RatioMetric != nil },
+			govy.WhenDescription("'indicator.spec.ratioMetric' is set"),
+		),
+	sloObjectivesProperty.
+		IncludeForEach(sloThresholdObjectiveValidationWhenInlinedSLI).
+		When(
+			func(s SLOSpec) bool { return s.Indicator != nil && s.Indicator.Spec.ThresholdMetric != nil },
+			govy.WhenDescription("'indicator.spec.thresholdMetric' is set"),
+		),
 	govy.ForSlice(func(spec SLOSpec) []SLOObjective { return spec.Objectives }).
 		WithName("objectives").
 		When(func(s SLOSpec) bool { return s.HasCompositeObjectives() }).
@@ -266,14 +277,10 @@ var sloAlertPolicyValidation = govy.New(
 		)).Cascade(govy.CascadeModeContinue),
 ).Cascade(govy.CascadeModeStop)
 
+var sloObjectivesProperty = govy.ForSlice(func(spec SLOSpec) []SLOObjective { return spec.Objectives }).
+	WithName("objectives")
+
 var sloObjectiveValidation = govy.New(
-	// Since operator is only required when using threshold metric SLI we have no way of checking it
-	// if the SLI is only referenced and not inlined, thus it's not required.
-	// The same goes for 'value'.
-	govy.For(func(s SLOObjective) Operator { return s.Operator }).
-		WithName("op").
-		OmitEmpty().
-		Include(operatorValidation),
 	govy.For(govy.GetSelf[SLOObjective]()).
 		Rules(rules.MutuallyExclusive(true, map[string]func(o SLOObjective) any{
 			"target":        func(o SLOObjective) any { return o.Target },
@@ -285,6 +292,27 @@ var sloObjectiveValidation = govy.New(
 	govy.ForPointer(func(s SLOObjective) *float64 { return s.TargetPercent }).
 		WithName("targetPercent").
 		Rules(rules.GTE(0.0), rules.LT(100.0)),
+)
+
+// Since operator and value are only required when using threshold metric SLI
+// we have no way of checking it if the SLI is only referenced and not inlined.
+var sloThresholdObjectiveValidationWhenInlinedSLI = govy.New(
+	govy.ForPointer(func(s SLOObjective) *float64 { return s.Value }).
+		WithName("value").
+		Required(),
+	govy.For(func(s SLOObjective) Operator { return s.Operator }).
+		WithName("op").
+		Required().
+		Include(operatorValidation),
+)
+
+var sloRatioObjectiveValidationWhenInlinedSLI = govy.New(
+	govy.For(func(s SLOObjective) *float64 { return s.Value }).
+		WithName("value").
+		Rules(rules.Forbidden[*float64]()),
+	govy.For(func(s SLOObjective) Operator { return s.Operator }).
+		WithName("op").
+		Rules(rules.Forbidden[Operator]()),
 )
 
 var sloCompositeObjectiveValidation = govy.New(

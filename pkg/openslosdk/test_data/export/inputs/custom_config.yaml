@@ -25,6 +25,7 @@
     objectives:
       - displayName: Good
         op: gt
+        value: 1
         target: 0.995
         timeSliceTarget: 0.95
         timeSliceWindow: 1m

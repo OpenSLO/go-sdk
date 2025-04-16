@@ -51,7 +51,6 @@ func ExampleSLO() {
     budgetingMethod: Timeslices
     objectives:
       - displayName: Good
-        op: gt
         target: 0.995
         timeSliceTarget: 0.95
         timeSliceWindow: 1m
@@ -109,7 +108,6 @@ func ExampleSLO() {
 			Objectives: []v1.SLOObjective{
 				{
 					DisplayName:     "Good",
-					Operator:        v1.OperatorGT,
 					Target:          ptr(0.995),
 					TimeSliceTarget: ptr(0.95),
 					TimeSliceWindow: ptr(v1.NewDurationShorthand(1, v1.DurationShorthandUnitMinute)),
@@ -168,7 +166,6 @@ func ExampleSLO() {
 	//               type: Prometheus
 	//     objectives:
 	//     - displayName: Good
-	//       op: gt
 	//       target: 0.995
 	//       timeSliceTarget: 0.95
 	//       timeSliceWindow: 1m
