@@ -45,7 +45,6 @@ func ExampleSLO() {
     budgetingMethod: Timeslices
     objectives:
       - displayName: Good
-        op: gt
         target: 0.995
         timeSliceTarget: 0.95
         timeSliceWindow: 1m
@@ -98,7 +97,6 @@ func ExampleSLO() {
 			Objectives: []v2alpha.SLOObjective{
 				{
 					DisplayName:     "Good",
-					Operator:        v2alpha.OperatorGT,
 					Target:          ptr(0.995),
 					TimeSliceTarget: ptr(0.95),
 					TimeSliceWindow: ptr(v2alpha.NewDurationShorthand(1, v2alpha.DurationShorthandUnitMinute)),
@@ -137,7 +135,6 @@ func ExampleSLO() {
 	//     description: X% of search requests are successful
 	//     objectives:
 	//     - displayName: Good
-	//       op: gt
 	//       target: 0.995
 	//       timeSliceTarget: 0.95
 	//       timeSliceWindow: 1m

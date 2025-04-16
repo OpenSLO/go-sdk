@@ -95,7 +95,7 @@ type SLOSLIInline struct {
 type SLOObjective struct {
 	DisplayName     string             `json:"displayName,omitempty"`
 	Operator        Operator           `json:"op,omitempty"`
-	Value           float64            `json:"value,omitempty"`
+	Value           *float64           `json:"value,omitempty"`
 	Target          *float64           `json:"target,omitempty"`
 	TargetPercent   *float64           `json:"targetPercent,omitempty"`
 	TimeSliceTarget *float64           `json:"timeSliceTarget,omitempty"`
@@ -128,7 +128,7 @@ type SLOAlertPolicyInline struct {
 }
 
 type SLOAlertPolicyRef struct {
-	Ref string `json:"alertPolicyRef"`
+	AlertPolicyRef string `json:"alertPolicyRef"`
 }
 
 var sloValidation = govy.New(
@@ -168,13 +168,26 @@ var sloSpecValidation = govy.New(
 	govy.ForSlice(func(spec SLOSpec) []SLOAlertPolicy { return spec.AlertPolicies }).
 		WithName("alertPolicies").
 		IncludeForEach(sloAlertPolicyValidation),
-	govy.ForSlice(func(spec SLOSpec) []SLOObjective { return spec.Objectives }).
-		WithName("objectives").
+	sloObjectivesProperty.
 		IncludeForEach(sloObjectiveValidation),
-	govy.ForSlice(func(spec SLOSpec) []SLOObjective { return spec.Objectives }).
-		WithName("objectives").
-		When(func(s SLOSpec) bool { return s.HasCompositeObjectives() }).
-		IncludeForEach(sloCompositeObjectiveValidation),
+	sloObjectivesProperty.
+		IncludeForEach(sloCompositeObjectiveValidation).
+		When(
+			func(s SLOSpec) bool { return s.HasCompositeObjectives() },
+			govy.WhenDescription("is composite SLO"),
+		),
+	sloObjectivesProperty.
+		IncludeForEach(sloRatioObjectiveValidationWhenInlinedSLI).
+		When(
+			func(s SLOSpec) bool { return s.SLI != nil && s.SLI.Spec.RatioMetric != nil },
+			govy.WhenDescription("'sli.spec.ratioMetric' is set"),
+		),
+	sloObjectivesProperty.
+		IncludeForEach(sloThresholdObjectiveValidationWhenInlinedSLI).
+		When(
+			func(s SLOSpec) bool { return s.SLI != nil && s.SLI.Spec.ThresholdMetric != nil },
+			govy.WhenDescription("'sli.spec.thresholdMetric' is set"),
+		),
 )
 
 func getSLOSLIValidation[T any](
@@ -245,7 +258,7 @@ var sloAlertPolicyValidation = govy.New(
 		return a.SLOAlertPolicyRef
 	}).
 		Include(govy.New(
-			govy.For(func(ref SLOAlertPolicyRef) string { return ref.Ref }).
+			govy.For(func(ref SLOAlertPolicyRef) string { return ref.AlertPolicyRef }).
 				WithName("alertPolicyRef").
 				Required().
 				Rules(rules.StringDNSLabel()),
@@ -266,14 +279,10 @@ var sloAlertPolicyValidation = govy.New(
 		)).Cascade(govy.CascadeModeContinue),
 ).Cascade(govy.CascadeModeStop)
 
+var sloObjectivesProperty = govy.ForSlice(func(spec SLOSpec) []SLOObjective { return spec.Objectives }).
+	WithName("objectives")
+
 var sloObjectiveValidation = govy.New(
-	// Since operator is only required when using threshold metric SLI we have no way of checking it
-	// if the SLI is only referenced and not inlined, thus it's not required.
-	// The same goes for 'value'.
-	govy.For(func(s SLOObjective) Operator { return s.Operator }).
-		WithName("op").
-		OmitEmpty().
-		Include(operatorValidation),
 	govy.For(govy.GetSelf[SLOObjective]()).
 		Rules(rules.MutuallyExclusive(true, map[string]func(o SLOObjective) any{
 			"target":        func(o SLOObjective) any { return o.Target },
@@ -298,6 +307,27 @@ var sloCompositeObjectiveValidation = govy.New(
 	govy.ForPointer(func(s SLOObjective) *float64 { return s.CompositeWeight }).
 		WithName("compositeWeight").
 		Rules(rules.GT(0.0)),
+)
+
+// Since operator and value are only required when using threshold metric SLI
+// we have no way of checking it if the SLI is only referenced and not inlined.
+var sloThresholdObjectiveValidationWhenInlinedSLI = govy.New(
+	govy.ForPointer(func(s SLOObjective) *float64 { return s.Value }).
+		WithName("value").
+		Required(),
+	govy.For(func(s SLOObjective) Operator { return s.Operator }).
+		WithName("op").
+		Required().
+		Include(operatorValidation),
+)
+
+var sloRatioObjectiveValidationWhenInlinedSLI = govy.New(
+	govy.For(func(s SLOObjective) *float64 { return s.Value }).
+		WithName("value").
+		Rules(rules.Forbidden[*float64]()),
+	govy.For(func(s SLOObjective) Operator { return s.Operator }).
+		WithName("op").
+		Rules(rules.Forbidden[Operator]()),
 )
 
 var sloTimeSlicesObjectiveValidation = govy.New(

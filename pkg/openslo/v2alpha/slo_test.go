@@ -17,8 +17,10 @@ var sloValidationMessageRegexp = getValidationMessageRegexp(openslo.KindSLO)
 
 func TestSLO_Validate_Ok(t *testing.T) {
 	for _, slo := range []SLO{
-		validSLO(),
-		validSLOWithInlinedAlertPolicy(),
+		validRatioSLO(),
+		validThresholdSLO(),
+		validRatioSLOWithSLIRef(),
+		validRatioSLOWithInlinedAlertPolicy(),
 		validCompositeSLOWithSLIRef(),
 		validCompositeSLOWithInlinedSLI(),
 	} {
@@ -28,7 +30,7 @@ func TestSLO_Validate_Ok(t *testing.T) {
 }
 
 func TestSLO_Validate_VersionAndKind(t *testing.T) {
-	slo := validSLO()
+	slo := validRatioSLO()
 	slo.APIVersion = "v0.1"
 	slo.Kind = openslo.KindService
 	err := slo.Validate()
@@ -48,7 +50,7 @@ func TestSLO_Validate_VersionAndKind(t *testing.T) {
 
 func TestSLO_Validate_Metadata(t *testing.T) {
 	runMetadataTests(t, "metadata", func(m Metadata) SLO {
-		condition := validSLO()
+		condition := validRatioSLO()
 		condition.Metadata = m
 		return condition
 	})
@@ -56,13 +58,13 @@ func TestSLO_Validate_Metadata(t *testing.T) {
 
 func TestSLO_Validate_Spec(t *testing.T) {
 	t.Run("description ok", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.Description = strings.Repeat("A", 1050)
 		err := slo.Validate()
 		govytest.AssertNoError(t, err)
 	})
 	t.Run("description too long", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.Description = strings.Repeat("A", 1051)
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -71,7 +73,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		})
 	})
 	t.Run("invalid budgetingMethod", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.BudgetingMethod = "invalid"
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -81,14 +83,14 @@ func TestSLO_Validate_Spec(t *testing.T) {
 	})
 	for _, method := range validSLOBudgetingMethods {
 		t.Run(fmt.Sprintf("budgetingMethod %s", method), func(t *testing.T) {
-			slo := validSLO()
+			slo := validRatioSLO()
 			slo.Spec.BudgetingMethod = method
 			err := slo.Validate()
 			govytest.AssertNoError(t, err)
 		})
 	}
 	t.Run("missing service", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.Service = ""
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -97,7 +99,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		})
 	})
 	t.Run("missing both sli definition in spec and objectives", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.SLI = nil
 		slo.Spec.SLIRef = nil
 		err := slo.Validate()
@@ -123,7 +125,10 @@ func TestSLO_Validate_Spec(t *testing.T) {
 
 func TestSLO_Validate_Spec_SLI(t *testing.T) {
 	runSLOSLITests(t, "spec", func(sli *SLOSLIInline, ref *string) SLO {
-		slo := validSLO()
+		slo := validRatioSLO()
+		if sli != nil && sli.Spec.ThresholdMetric != nil {
+			slo = validThresholdSLO()
+		}
 		slo.Spec.SLI = sli
 		slo.Spec.SLIRef = ref
 		return slo
@@ -132,7 +137,7 @@ func TestSLO_Validate_Spec_SLI(t *testing.T) {
 
 func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 	t.Run("missing timeWindow", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.TimeWindow = []SLOTimeWindow{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -141,7 +146,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		})
 	})
 	t.Run("too many timeWindows", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.TimeWindow = []SLOTimeWindow{
 			slo.Spec.TimeWindow[0],
 			slo.Spec.TimeWindow[0],
@@ -153,7 +158,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		})
 	})
 	t.Run("missing duration", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.TimeWindow[0].Duration = DurationShorthand{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -163,13 +168,13 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 	})
 	t.Run("duration", func(t *testing.T) {
 		runDurationShorthandTests(t, "spec.timeWindow[0].duration", func(d DurationShorthand) SLO {
-			slo := validSLO()
+			slo := validRatioSLO()
 			slo.Spec.TimeWindow[0].Duration = d
 			return slo
 		})
 	})
 	t.Run("calendar set when isRolling is true", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.TimeWindow[0] = SLOTimeWindow{
 			Duration:  NewDurationShorthand(1, DurationShorthandUnitWeek),
 			IsRolling: true,
@@ -185,7 +190,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		})
 	})
 	t.Run("calendar missing when isRolling is false", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.TimeWindow[0] = SLOTimeWindow{
 			Duration:  NewDurationShorthand(1, DurationShorthandUnitWeek),
 			IsRolling: false,
@@ -210,7 +215,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 			{1.0, rules.ErrorCodeLessThan},
 			{-0.1, rules.ErrorCodeGreaterThanOrEqualTo},
 		} {
-			slo := validSLO()
+			slo := validRatioSLO()
 			slo.Spec.Objectives[0].Target = ptr(tc.in)
 			slo.Spec.Objectives[0].TargetPercent = nil
 			err := slo.Validate()
@@ -235,7 +240,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 			{100.0, rules.ErrorCodeLessThan},
 			{-0.1, rules.ErrorCodeGreaterThanOrEqualTo},
 		} {
-			slo := validSLO()
+			slo := validRatioSLO()
 			slo.Spec.Objectives[0].Target = nil
 			slo.Spec.Objectives[0].TargetPercent = ptr(tc.in)
 			err := slo.Validate()
@@ -250,7 +255,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		}
 	})
 	t.Run("both target and targetPercent are missing", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.Objectives[0].Target = nil
 		slo.Spec.Objectives[0].TargetPercent = nil
 		err := slo.Validate()
@@ -261,7 +266,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		})
 	})
 	t.Run("both target and targetPercent are set", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.Objectives[0].Target = ptr(0.1)
 		slo.Spec.Objectives[0].TargetPercent = ptr(10.0)
 		err := slo.Validate()
@@ -271,15 +276,41 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
 	})
-	t.Run("empty operator", func(t *testing.T) {
-		slo := validSLO()
+	t.Run("empty operator and value for ratio SLO", func(t *testing.T) {
+		slo := validRatioSLO()
 		slo.Spec.Objectives[0].Operator = ""
+		slo.Spec.Objectives[0].Value = nil
 		err := slo.Validate()
 		govytest.AssertNoError(t, err)
 	})
+	t.Run("empty operator and value for threshold SLO with SLI ref", func(t *testing.T) {
+		slo := validThresholdSLO()
+		slo.Spec.SLI = nil
+		slo.Spec.SLIRef = ptr("my-sli")
+		slo.Spec.Objectives[0].Operator = ""
+		slo.Spec.Objectives[0].Value = nil
+		err := slo.Validate()
+		govytest.AssertNoError(t, err)
+	})
+	t.Run("empty operator and value for threshold SLO", func(t *testing.T) {
+		slo := validThresholdSLO()
+		slo.Spec.Objectives[0].Operator = ""
+		slo.Spec.Objectives[0].Value = nil
+		err := slo.Validate()
+		govytest.AssertError(t, err,
+			govytest.ExpectedRuleError{
+				PropertyName: "spec.objectives[0].op",
+				Code:         rules.ErrorCodeRequired,
+			},
+			govytest.ExpectedRuleError{
+				PropertyName: "spec.objectives[0].value",
+				Code:         rules.ErrorCodeRequired,
+			},
+		)
+	})
 	t.Run("operator", func(t *testing.T) {
 		runOperatorTests(t, "spec.objectives[0].op", func(o Operator) SLO {
-			slo := validSLO()
+			slo := validThresholdSLO()
 			slo.Spec.Objectives[0].Operator = o
 			return slo
 		})
@@ -289,7 +320,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 func TestSLO_Validate_Spec_CompositeObjectives(t *testing.T) {
 	t.Run("sli", func(t *testing.T) {
 		runSLOSLITests(t, "spec.objectives[0]", func(sli *SLOSLIInline, ref *string) SLO {
-			slo := validSLO()
+			slo := validRatioSLO()
 			slo.Spec.SLI = nil
 			slo.Spec.Objectives[0].SLI = sli
 			slo.Spec.Objectives[0].SLIRef = ref
@@ -324,7 +355,7 @@ func TestSLO_Validate_Spec_CompositeObjectives(t *testing.T) {
 func TestSLO_Validate_Spec_Objectives_TimeSliceTarget(t *testing.T) {
 	for _, method := range validSLOBudgetingMethods {
 		t.Run(fmt.Sprintf("missing for %s method", method), func(t *testing.T) {
-			slo := validSLO()
+			slo := validRatioSLO()
 			slo.Spec.BudgetingMethod = method
 			slo.Spec.Objectives[0].TimeSliceTarget = nil
 			slo.Spec.Objectives[0].TimeSliceWindow = ptr(NewDurationShorthand(1, "w"))
@@ -350,7 +381,7 @@ func TestSLO_Validate_Spec_Objectives_TimeSliceTarget(t *testing.T) {
 		{1.1, rules.ErrorCodeLessThanOrEqualTo},
 	}
 	for _, tc := range testCases {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.Objectives[0].TimeSliceTarget = ptr(tc.in)
 		err := slo.Validate()
 		if tc.errorCode != "" {
@@ -367,7 +398,7 @@ func TestSLO_Validate_Spec_Objectives_TimeSliceTarget(t *testing.T) {
 func TestSLO_Validate_Spec_Objectives_TimeSliceWindow(t *testing.T) {
 	for _, method := range validSLOBudgetingMethods {
 		t.Run(fmt.Sprintf("missing for %s method", method), func(t *testing.T) {
-			slo := validSLO()
+			slo := validRatioSLO()
 			slo.Spec.BudgetingMethod = method
 			slo.Spec.Objectives[0].TimeSliceTarget = ptr(0.9)
 			slo.Spec.Objectives[0].TimeSliceWindow = nil
@@ -385,7 +416,7 @@ func TestSLO_Validate_Spec_Objectives_TimeSliceWindow(t *testing.T) {
 	}
 	t.Run("duration", func(t *testing.T) {
 		runDurationShorthandTests(t, "spec.objectives[0].timeSliceWindow", func(d DurationShorthand) SLO {
-			slo := validSLO()
+			slo := validRatioSLO()
 			slo.Spec.Objectives[0].TimeSliceWindow = &d
 			return slo
 		})
@@ -394,13 +425,13 @@ func TestSLO_Validate_Spec_Objectives_TimeSliceWindow(t *testing.T) {
 
 func TestSLO_Validate_Spec_AlertPolicies(t *testing.T) {
 	t.Run("no policies", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.AlertPolicies = nil
 		err := slo.Validate()
 		govytest.AssertNoError(t, err)
 	})
 	t.Run("both ref and inline are set", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.AlertPolicies[0].SLOAlertPolicyRef = &SLOAlertPolicyRef{}
 		slo.Spec.AlertPolicies[0].SLOAlertPolicyInline = &SLOAlertPolicyInline{}
 		err := slo.Validate()
@@ -410,7 +441,7 @@ func TestSLO_Validate_Spec_AlertPolicies(t *testing.T) {
 		})
 	})
 	t.Run("ref missing", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.AlertPolicies[0].SLOAlertPolicyRef = &SLOAlertPolicyRef{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -419,9 +450,9 @@ func TestSLO_Validate_Spec_AlertPolicies(t *testing.T) {
 		})
 	})
 	t.Run("invalid condition ref", func(t *testing.T) {
-		slo := validSLO()
+		slo := validRatioSLO()
 		slo.Spec.AlertPolicies[0].SLOAlertPolicyRef = &SLOAlertPolicyRef{
-			Ref: "invalid ref",
+			AlertPolicyRef: "invalid ref",
 		}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -430,7 +461,7 @@ func TestSLO_Validate_Spec_AlertPolicies(t *testing.T) {
 		})
 	})
 	t.Run("invalid inline kind", func(t *testing.T) {
-		slo := validSLOWithInlinedAlertPolicy()
+		slo := validRatioSLOWithInlinedAlertPolicy()
 		slo.Spec.AlertPolicies[0].Kind = openslo.KindDataSource
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -440,14 +471,14 @@ func TestSLO_Validate_Spec_AlertPolicies(t *testing.T) {
 	})
 	t.Run("metadata", func(t *testing.T) {
 		runMetadataTests(t, "spec.alertPolicies[0].metadata", func(m Metadata) SLO {
-			slo := validSLOWithInlinedAlertPolicy()
+			slo := validRatioSLOWithInlinedAlertPolicy()
 			slo.Spec.AlertPolicies[0].Metadata = m
 			return slo
 		})
 	})
 	t.Run("spec", func(t *testing.T) {
 		runAlertPolicySpecTests(t, "spec.alertPolicies[0].spec", func(s AlertPolicySpec) SLO {
-			slo := validSLOWithInlinedAlertPolicy()
+			slo := validRatioSLOWithInlinedAlertPolicy()
 			slo.Spec.AlertPolicies[0].Spec = s
 			return slo
 		})
@@ -498,7 +529,7 @@ func runSLOSLITests(t *testing.T, path string, sloGetter func(*SLOSLIInline, *st
 }
 
 func TestSLO_IsComposite(t *testing.T) {
-	slo := validSLO()
+	slo := validRatioSLO()
 	assert.False(t, slo.IsComposite())
 
 	slo = validCompositeSLOWithSLIRef()
@@ -511,7 +542,7 @@ func TestSLO_IsComposite(t *testing.T) {
 	})
 }
 
-func validSLO() SLO {
+func validRatioSLO() SLO {
 	return NewSLO(
 		Metadata{
 			Name: "web-availability",
@@ -559,21 +590,80 @@ func validSLO() SLO {
 			Objectives: []SLOObjective{
 				{
 					DisplayName:     "Good",
-					Operator:        OperatorGT,
 					Target:          ptr(0.995),
 					TimeSliceTarget: ptr(0.95),
 					TimeSliceWindow: ptr(NewDurationShorthand(1, "m")),
 				},
 			},
 			AlertPolicies: []SLOAlertPolicy{
-				{SLOAlertPolicyRef: &SLOAlertPolicyRef{Ref: "alert-policy-1"}},
+				{SLOAlertPolicyRef: &SLOAlertPolicyRef{AlertPolicyRef: "alert-policy-1"}},
 			},
 		},
 	)
 }
 
-func validSLOWithInlinedAlertPolicy() SLO {
-	slo := validSLO()
+func validThresholdSLO() SLO {
+	return NewSLO(
+		Metadata{
+			Name: "annotator-throughput",
+			Labels: Labels{
+				"team": "team-a",
+				"env":  "prod",
+			},
+		},
+		SLOSpec{
+			Description: "X% of time messages are processed without delay by the processing pipeline (expected value ~100%)",
+			Service:     "annotator",
+			SLI: &SLOSLIInline{
+				Metadata: Metadata{
+					Name: "inlined-sli",
+				},
+				Spec: SLISpec{
+					ThresholdMetric: &SLIMetricSpec{
+						DataSourceRef: "prometheus",
+						Spec: map[string]any{
+							"query": `sum(min_over_time(kafka_consumergroup_lag{k8s_cluster="prod", consumergroup="annotator", topic="annotator-in"}[2m]))`, // nolint: lll
+						},
+					},
+				},
+			},
+			TimeWindow: []SLOTimeWindow{
+				{
+					Duration:  NewDurationShorthand(1, DurationShorthandUnitWeek),
+					IsRolling: false,
+					Calendar: &SLOCalendar{
+						StartTime: "2022-01-01 12:00:00",
+						TimeZone:  "America/New_York",
+					},
+				},
+			},
+			BudgetingMethod: SLOBudgetingMethodTimeslices,
+			Objectives: []SLOObjective{
+				{
+					DisplayName:     "Good",
+					Operator:        OperatorGTE,
+					Value:           ptr(10.0),
+					Target:          ptr(0.995),
+					TimeSliceTarget: ptr(0.95),
+					TimeSliceWindow: ptr(NewDurationShorthand(1, "m")),
+				},
+			},
+			AlertPolicies: []SLOAlertPolicy{
+				{SLOAlertPolicyRef: &SLOAlertPolicyRef{AlertPolicyRef: "alert-policy-1"}},
+			},
+		},
+	)
+}
+
+func validRatioSLOWithSLIRef() SLO {
+	slo := validRatioSLO()
+	slo.Spec.SLI = nil
+	slo.Spec.SLIRef = ptr("my-sli")
+	return slo
+}
+
+func validRatioSLOWithInlinedAlertPolicy() SLO {
+	slo := validRatioSLO()
 	alertPolicy := validAlertPolicy()
 	slo.Spec.AlertPolicies[0] = SLOAlertPolicy{
 		SLOAlertPolicyInline: &SLOAlertPolicyInline{
@@ -586,7 +676,7 @@ func validSLOWithInlinedAlertPolicy() SLO {
 }
 
 func validCompositeSLOWithSLIRef() SLO {
-	slo := validSLO()
+	slo := validRatioSLO()
 	slo.Spec.SLI = nil
 	slo.Spec.SLIRef = nil
 	slo.Spec.Objectives[0].SLI = nil
@@ -596,7 +686,7 @@ func validCompositeSLOWithSLIRef() SLO {
 }
 
 func validCompositeSLOWithInlinedSLI() SLO {
-	slo := validSLO()
+	slo := validRatioSLO()
 	sli := validSLI()
 	slo.Spec.SLI = nil
 	slo.Spec.SLIRef = nil

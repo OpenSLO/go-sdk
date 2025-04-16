@@ -19,7 +19,7 @@ func TestSLO_Validate_Ok(t *testing.T) {
 	for _, slo := range []SLO{
 		validRatioSLO(),
 		validThresholdSLO(),
-		validSLOWithSLIRef(),
+		validRatioSLOWithSLIRef(),
 		validRatioSLOWithInlinedAlertPolicy(),
 		validCompositeSLOWithSLIRef(),
 		validCompositeSLOWithInlinedSLI(),
@@ -629,7 +629,7 @@ func validThresholdSLO() SLO {
 						MetricSource: SLIMetricSource{
 							Type: "Prometheus",
 							Spec: map[string]any{
-								"query": `sum(min_over_time(kafka_consumergroup_lag{k8s_cluster="prod", consumergroup="annotator", topic="annotator-in"}[2m]))`,
+								"query": `sum(min_over_time(kafka_consumergroup_lag{k8s_cluster="prod", consumergroup="annotator", topic="annotator-in"}[2m]))`, // nolint: lll
 							},
 						},
 					},
@@ -662,44 +662,12 @@ func validThresholdSLO() SLO {
 		},
 	)
 }
-func validSLOWithSLIRef() SLO {
-	return NewSLO(
-		Metadata{
-			Name:        "web-availability",
-			DisplayName: "SLO for web availability",
-			Labels: Labels{
-				"team": {"team-a", "team-b"},
-				"env":  {"prod"},
-			},
-		},
-		SLOSpec{
-			Description:  "X% of search requests are successful",
-			Service:      "web",
-			IndicatorRef: ptr("my-sli"),
-			TimeWindow: []SLOTimeWindow{
-				{
-					Duration:  NewDurationShorthand(1, DurationShorthandUnitWeek),
-					IsRolling: false,
-					Calendar: &SLOCalendar{
-						StartTime: "2022-01-01 12:00:00",
-						TimeZone:  "America/New_York",
-					},
-				},
-			},
-			BudgetingMethod: SLOBudgetingMethodTimeslices,
-			Objectives: []SLOObjective{
-				{
-					DisplayName:     "Good",
-					Target:          ptr(0.995),
-					TimeSliceTarget: ptr(0.95),
-					TimeSliceWindow: ptr(NewDurationShorthand(1, "m")),
-				},
-			},
-			AlertPolicies: []SLOAlertPolicy{
-				{SLOAlertPolicyRef: &SLOAlertPolicyRef{AlertPolicyRef: "alert-policy-1"}},
-			},
-		},
-	)
+
+func validRatioSLOWithSLIRef() SLO {
+	slo := validRatioSLO()
+	slo.Spec.Indicator = nil
+	slo.Spec.IndicatorRef = ptr("my-sli")
+	return slo
 }
 
 func validRatioSLOWithInlinedAlertPolicy() SLO {
