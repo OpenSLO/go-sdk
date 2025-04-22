@@ -8,7 +8,7 @@ import (
 	v1 "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
 )
 
-func TestFilterByKind(t *testing.T) {
+func TestFilterByType(t *testing.T) {
 	tests := map[string]struct {
 		objects  []openslo.Object
 		expected any
@@ -63,13 +63,13 @@ func TestFilterByKind(t *testing.T) {
 			var result any
 			switch name {
 			case "Filter v1.SLO":
-				result = FilterByKind[v1.SLO](tc.objects)
+				result = FilterByType[v1.SLO](tc.objects)
 			case "Filter v1.Service":
-				result = FilterByKind[v1.Service](tc.objects)
+				result = FilterByType[v1.Service](tc.objects)
 			case "Filter v1.DataSource":
-				result = FilterByKind[v1.DataSource](tc.objects)
+				result = FilterByType[v1.DataSource](tc.objects)
 			case "Filter mockObject":
-				result = FilterByKind[mockObject](tc.objects)
+				result = FilterByType[mockObject](tc.objects)
 			default:
 				t.Fatalf("unexpected test case: %s", name)
 			}

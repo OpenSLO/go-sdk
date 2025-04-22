@@ -8,7 +8,7 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = openslo.Object(Service{})
+var _ = Object(Service{})
 
 func NewService(metadata Metadata, spec ServiceSpec) Service {
 	return Service{
@@ -44,6 +44,10 @@ func (s Service) Validate() error {
 
 func (s Service) String() string {
 	return internal.GetObjectName(s)
+}
+
+func (s Service) GetMetadata() Metadata {
+	return s.Metadata
 }
 
 type ServiceSpec struct {

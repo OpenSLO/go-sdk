@@ -8,7 +8,7 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = openslo.Object(AlertNotificationTarget{})
+var _ = Object(AlertNotificationTarget{})
 
 func NewAlertNotificationTarget(metadata Metadata, spec AlertNotificationTargetSpec) AlertNotificationTarget {
 	return AlertNotificationTarget{
@@ -44,6 +44,10 @@ func (a AlertNotificationTarget) Validate() error {
 
 func (a AlertNotificationTarget) String() string {
 	return internal.GetObjectName(a)
+}
+
+func (a AlertNotificationTarget) GetMetadata() Metadata {
+	return a.Metadata
 }
 
 type AlertNotificationTargetSpec struct {

@@ -10,7 +10,7 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = openslo.Object(DataSource{})
+var _ = Object(DataSource{})
 
 func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 	return DataSource{
@@ -46,6 +46,10 @@ func (d DataSource) Validate() error {
 
 func (d DataSource) String() string {
 	return internal.GetObjectName(d)
+}
+
+func (d DataSource) GetMetadata() Metadata {
+	return d.Metadata
 }
 
 type DataSourceSpec struct {

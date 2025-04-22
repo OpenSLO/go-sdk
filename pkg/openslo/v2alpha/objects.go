@@ -26,6 +26,11 @@ func GetSupportedKinds() []openslo.Kind {
 	return slices.Clone(supportedKinds)
 }
 
+type Object interface {
+	openslo.Object
+	GetMetadata() Metadata
+}
+
 type Metadata struct {
 	Name        string      `json:"name"`
 	Labels      Labels      `json:"labels,omitempty"`
