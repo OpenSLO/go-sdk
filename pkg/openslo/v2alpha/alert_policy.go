@@ -8,7 +8,7 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = openslo.Object(AlertPolicy{})
+var _ = Object(AlertPolicy{})
 
 func NewAlertPolicy(metadata Metadata, spec AlertPolicySpec) AlertPolicy {
 	return AlertPolicy{
@@ -44,6 +44,10 @@ func (a AlertPolicy) Validate() error {
 
 func (a AlertPolicy) String() string {
 	return internal.GetObjectName(a)
+}
+
+func (a AlertPolicy) GetMetadata() Metadata {
+	return a.Metadata
 }
 
 type AlertPolicySpec struct {

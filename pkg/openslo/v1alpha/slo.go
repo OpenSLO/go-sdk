@@ -11,7 +11,7 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = openslo.Object(SLO{})
+var _ = Object(SLO{})
 
 func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	return SLO{
@@ -47,6 +47,10 @@ func (s SLO) Validate() error {
 
 func (s SLO) String() string {
 	return internal.GetObjectName(s)
+}
+
+func (s SLO) GetMetadata() Metadata {
+	return s.Metadata
 }
 
 type SLOSpec struct {

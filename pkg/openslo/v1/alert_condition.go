@@ -8,7 +8,7 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = openslo.Object(AlertCondition{})
+var _ = Object(AlertCondition{})
 
 func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertCondition {
 	return AlertCondition{
@@ -44,6 +44,10 @@ func (a AlertCondition) Validate() error {
 
 func (a AlertCondition) String() string {
 	return internal.GetObjectName(a)
+}
+
+func (a AlertCondition) GetMetadata() Metadata {
+	return a.Metadata
 }
 
 type AlertConditionSpec struct {
