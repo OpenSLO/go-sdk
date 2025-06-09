@@ -42,7 +42,7 @@ func runMetadataTests[T openslo.Object](t *testing.T, path string, objectGetter 
 			t.Run(name, func(t *testing.T) {
 				object := objectGetter(Metadata{
 					Name:   "ok",
-					Labels: test.Labels,
+					Labels: test.labels,
 				})
 				test.Test(t, object)
 			})
@@ -53,7 +53,7 @@ func runMetadataTests[T openslo.Object](t *testing.T, path string, objectGetter 
 			t.Run(name, func(t *testing.T) {
 				object := objectGetter(Metadata{
 					Name:        "ok",
-					Annotations: test.Annotations,
+					Annotations: test.annotations,
 				})
 				test.Test(t, object)
 			})
@@ -62,7 +62,7 @@ func runMetadataTests[T openslo.Object](t *testing.T, path string, objectGetter 
 }
 
 type labelsTestCase struct {
-	Labels  Labels
+	labels  Labels
 	isValid bool
 	error   govytest.ExpectedRuleError
 }
@@ -101,15 +101,15 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 	testCases := make(map[string]labelsTestCase, len(validLabels)+len(invalidLabels))
 	for _, labels := range validLabels {
 		testCases[fmt.Sprintf("valid: %v", labels)] = labelsTestCase{
-			Labels:  labels,
+			labels:  labels,
 			isValid: true,
 		}
 	}
 	for _, labels := range invalidLabels {
 		testCases[fmt.Sprintf("invalid: %v", labels)] = labelsTestCase{
-			Labels: labels,
+			labels: labels,
 			error: govytest.ExpectedRuleError{
-				PropertyName: propertyPath + "." + getMapFirstKey(labels),
+				PropertyName: propertyPath + "." + escapeJSONPathKey(getMapFirstKey(labels)),
 				IsKeyError:   true,
 				Code:         rules.ErrorCodeStringMatchRegexp,
 			},
@@ -119,7 +119,7 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 }
 
 type annotationsTestCase struct {
-	Annotations Annotations
+	annotations Annotations
 	isValid     bool
 	error       govytest.ExpectedRuleError
 }
@@ -183,15 +183,15 @@ func getAnnotationsTestCases(t *testing.T, propertyPath string) map[string]annot
 	testCases := make(map[string]annotationsTestCase, len(validAnnotations)+len(invalidAnnotations))
 	for _, annotations := range validAnnotations {
 		testCases[fmt.Sprintf("valid: %v", annotations)] = annotationsTestCase{
-			Annotations: annotations,
+			annotations: annotations,
 			isValid:     true,
 		}
 	}
 	for _, annotations := range invalidAnnotations {
 		testCases[fmt.Sprintf("invalid: %v", annotations)] = annotationsTestCase{
-			Annotations: annotations,
+			annotations: annotations,
 			error: govytest.ExpectedRuleError{
-				PropertyName: propertyPath + "." + getMapFirstKey(annotations),
+				PropertyName: propertyPath + "." + escapeJSONPathKey(getMapFirstKey(annotations)),
 				IsKeyError:   true,
 				Code:         rules.ErrorCodeStringMatchRegexp,
 			},
@@ -223,4 +223,11 @@ func getMapFirstKey[V any](l map[string]V) string {
 		return k
 	}
 	return ""
+}
+
+func escapeJSONPathKey(v string) string {
+	if strings.Contains(v, ".") {
+		return "['" + v + "']"
+	}
+	return v
 }

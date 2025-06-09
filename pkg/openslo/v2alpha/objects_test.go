@@ -35,7 +35,7 @@ func runMetadataTests[T openslo.Object](t *testing.T, path string, objectGetter 
 			t.Run(name, func(t *testing.T) {
 				object := objectGetter(Metadata{
 					Name:   "ok",
-					Labels: test.Labels,
+					Labels: test.labels,
 				})
 				test.Test(t, object)
 			})
@@ -46,7 +46,7 @@ func runMetadataTests[T openslo.Object](t *testing.T, path string, objectGetter 
 			t.Run(name, func(t *testing.T) {
 				object := objectGetter(Metadata{
 					Name:        "ok",
-					Annotations: test.Annotations,
+					Annotations: test.annotations,
 				})
 				test.Test(t, object)
 			})
@@ -98,7 +98,7 @@ var labelKeyTestCases = []struct {
 }
 
 type labelsTestCase struct {
-	Labels  Labels
+	labels  Labels
 	isValid bool
 	error   govytest.ExpectedRuleError
 }
@@ -139,7 +139,7 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 	for _, tc := range labelValues {
 		if tc.shouldFail {
 			testCases[fmt.Sprintf("invalid value: %s", tc.in)] = labelsTestCase{
-				Labels: Labels{"ok": tc.in},
+				labels: Labels{"ok": tc.in},
 				error: govytest.ExpectedRuleError{
 					PropertyName: propertyPath + ".ok",
 					Code:         rules.ErrorCodeStringMatchRegexp,
@@ -147,7 +147,7 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 			}
 		} else {
 			testCases[fmt.Sprintf("valid value: %s", tc.in)] = labelsTestCase{
-				Labels:  Labels{"ok": tc.in},
+				labels:  Labels{"ok": tc.in},
 				isValid: true,
 			}
 		}
@@ -155,16 +155,16 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 	for _, tc := range labelKeyTestCases {
 		if tc.shouldFail {
 			testCases[fmt.Sprintf("invalid key: %s", tc.in)] = labelsTestCase{
-				Labels: Labels{tc.in: ""},
+				labels: Labels{tc.in: ""},
 				error: govytest.ExpectedRuleError{
-					PropertyName: propertyPath + "." + tc.in,
+					PropertyName: propertyPath + "." + escapeJSONPathKey(tc.in),
 					IsKeyError:   true,
 					Code:         rules.ErrorCodeStringKubernetesQualifiedName,
 				},
 			}
 		} else {
 			testCases[fmt.Sprintf("valid key: %s", tc.in)] = labelsTestCase{
-				Labels:  Labels{tc.in: ""},
+				labels:  Labels{tc.in: ""},
 				isValid: true,
 			}
 		}
@@ -173,7 +173,7 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 }
 
 type annotationsTestCase struct {
-	Annotations Annotations
+	annotations Annotations
 	isValid     bool
 	error       govytest.ExpectedRuleError
 }
@@ -194,16 +194,16 @@ func getAnnotationsTestCases(t *testing.T, propertyPath string) map[string]annot
 	for _, tc := range labelKeyTestCases {
 		if tc.shouldFail {
 			testCases[fmt.Sprintf("invalid: %s", tc.in)] = annotationsTestCase{
-				Annotations: Annotations{tc.in: ""},
+				annotations: Annotations{tc.in: ""},
 				error: govytest.ExpectedRuleError{
-					PropertyName: propertyPath + "." + tc.in,
+					PropertyName: propertyPath + "." + escapeJSONPathKey(tc.in),
 					IsKeyError:   true,
 					Code:         rules.ErrorCodeStringKubernetesQualifiedName,
 				},
 			}
 		} else {
 			testCases[fmt.Sprintf("valid: %s", tc.in)] = annotationsTestCase{
-				Annotations: Annotations{tc.in: ""},
+				annotations: Annotations{tc.in: ""},
 				isValid:     true,
 			}
 		}
@@ -233,4 +233,11 @@ func runOperatorTests[T openslo.Object](t *testing.T, path string, objectGetter 
 			Code:         rules.ErrorCodeOneOf,
 		})
 	})
+}
+
+func escapeJSONPathKey(v string) string {
+	if strings.Contains(v, ".") {
+		return "['" + v + "']"
+	}
+	return v
 }
