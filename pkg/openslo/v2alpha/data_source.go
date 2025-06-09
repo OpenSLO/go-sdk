@@ -52,6 +52,10 @@ func (d DataSource) GetMetadata() Metadata {
 	return d.Metadata
 }
 
+func (d DataSource) GetValidator() govy.Validator[DataSource] {
+	return dataSourceValidation
+}
+
 type DataSourceSpec struct {
 	Description       string          `json:"description,omitempty"`
 	Type              string          `json:"type"`
