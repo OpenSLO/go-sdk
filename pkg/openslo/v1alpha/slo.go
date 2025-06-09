@@ -53,6 +53,10 @@ func (s SLO) GetMetadata() Metadata {
 	return s.Metadata
 }
 
+func (s SLO) GetValidator() govy.Validator[SLO] {
+	return sloValidation
+}
+
 type SLOSpec struct {
 	TimeWindows     []SLOTimeWindow    `json:"timeWindows"`
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`

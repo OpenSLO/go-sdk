@@ -50,6 +50,10 @@ func (a AlertNotificationTarget) GetMetadata() Metadata {
 	return a.Metadata
 }
 
+func (a AlertNotificationTarget) GetValidator() govy.Validator[AlertNotificationTarget] {
+	return alertNotificationTargetValidation
+}
+
 type AlertNotificationTargetSpec struct {
 	Description string `json:"description,omitempty"`
 	Target      string `json:"target"`

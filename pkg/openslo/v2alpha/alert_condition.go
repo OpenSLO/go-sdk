@@ -50,6 +50,10 @@ func (a AlertCondition) GetMetadata() Metadata {
 	return a.Metadata
 }
 
+func (a AlertCondition) GetValidator() govy.Validator[AlertCondition] {
+	return alertConditionValidation
+}
+
 type AlertConditionSpec struct {
 	Severity    string             `json:"severity"`
 	Condition   AlertConditionType `json:"condition"`

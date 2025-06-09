@@ -50,6 +50,10 @@ func (a AlertPolicy) GetMetadata() Metadata {
 	return a.Metadata
 }
 
+func (a AlertPolicy) GetValidator() govy.Validator[AlertPolicy] {
+	return alertPolicyValidation
+}
+
 type AlertPolicySpec struct {
 	Description         string                          `json:"description,omitempty"`
 	AlertWhenNoData     bool                            `json:"alertWhenNoData,omitempty"`

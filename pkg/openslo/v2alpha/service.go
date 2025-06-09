@@ -50,6 +50,10 @@ func (s Service) GetMetadata() Metadata {
 	return s.Metadata
 }
 
+func (s Service) GetValidator() govy.Validator[Service] {
+	return serviceValidation
+}
+
 type ServiceSpec struct {
 	Description string `json:"description,omitempty"`
 }
