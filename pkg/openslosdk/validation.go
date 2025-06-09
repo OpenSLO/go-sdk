@@ -8,19 +8,22 @@ import (
 )
 
 func Validate(objects ...openslo.Object) error {
-	return objectsValidator.ValidateSlice(objects)
+	errs := make(govy.ValidatorErrors, 0)
+	for i, object := range objects {
+		err := object.Validate()
+		if err == nil {
+			continue
+		}
+		vErr, ok := err.(*govy.ValidatorError)
+		if !ok {
+			return err
+		}
+		vErr.SliceIndex = &i
+		vErr.Name = internal.GetObjectName(object)
+		errs = append(errs, vErr)
+	}
+	if len(errs) == 0 {
+		return nil
+	}
+	return errs
 }
-
-var objectsValidator = govy.New(
-	govy.For(govy.GetSelf[openslo.Object]()).
-		Rules(
-			govy.NewRule(func(o openslo.Object) error {
-				err := o.Validate()
-				if vErr, ok := err.(*govy.ValidatorError); ok {
-					return vErr.Errors
-				}
-				return err
-			}),
-		),
-).
-	WithNameFunc(internal.GetObjectName)
