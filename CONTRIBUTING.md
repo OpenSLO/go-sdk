@@ -16,7 +16,7 @@ Use the button `Join our Slack` from the official website [openslo.com](https://
 ## Making a pull request
 
 Please make a fork of the repo, and summit a PR from there. More information can
-be found [here](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
+be found in the [GitHub documentation](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
 This project utilizes [devbox](https://github.com/jetify-com/devbox) in order
 to provide a consistent and reliable development environment.
