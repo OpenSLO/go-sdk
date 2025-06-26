@@ -156,7 +156,7 @@ var sliFractionMetricValidation = govy.New(
 var sliRawMetricSpecValidation = govy.New(
 	govy.ForPointer(func(m SLIRatioMetric) *SLIMetricSpec { return m.Raw }).
 		WithName("raw").
-		Rules(sliMetricSpecValidation),
+		Include(sliMetricSpecValidation),
 	govy.For(func(m SLIRatioMetric) SLIRawMetricType { return m.RawType }).
 		WithName("rawType").
 		Required().
