@@ -91,7 +91,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 	}
 	t.Run("missing service", func(t *testing.T) {
 		slo := validRatioSLO()
-		slo.Spec.Service = ""
+		slo.Spec.ServiceRef = ""
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
 			PropertyName: "spec.service",
@@ -553,7 +553,7 @@ func validRatioSLO() SLO {
 		},
 		SLOSpec{
 			Description: "X% of search requests are successful",
-			Service:     "web",
+			ServiceRef:  "web",
 			SLI: &SLOSLIInline{
 				Metadata: Metadata{
 					Name: "web-successful-requests-ratio",
@@ -613,7 +613,7 @@ func validThresholdSLO() SLO {
 		},
 		SLOSpec{
 			Description: "X% of time messages are processed without delay by the processing pipeline (expected value ~100%)",
-			Service:     "annotator",
+			ServiceRef:  "annotator",
 			SLI: &SLOSLIInline{
 				Metadata: Metadata{
 					Name: "inlined-sli",
