@@ -57,6 +57,10 @@ func (s SLO) GetMetadata() Metadata {
 	return s.Metadata
 }
 
+func (s SLO) GetValidator() govy.Validator[SLO] {
+	return sloValidation
+}
+
 type SLOSpec struct {
 	Description     string              `json:"description,omitempty"`
 	Service         string              `json:"service"`

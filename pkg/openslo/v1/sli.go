@@ -50,6 +50,10 @@ func (s SLI) GetMetadata() Metadata {
 	return s.Metadata
 }
 
+func (s SLI) GetValidator() govy.Validator[SLI] {
+	return sliValidation
+}
+
 type SLISpec struct {
 	Description     string          `json:"description,omitempty"`
 	ThresholdMetric *SLIMetricSpec  `json:"thresholdMetric,omitempty"`
