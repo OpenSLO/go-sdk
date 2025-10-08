@@ -8,7 +8,10 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = Object(AlertCondition{})
+var (
+	_ = Object(AlertCondition{})
+	_ = openslo.ObjectValidator[AlertCondition](AlertCondition{})
+)
 
 func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertCondition {
 	return AlertCondition{
@@ -48,6 +51,10 @@ func (a AlertCondition) String() string {
 
 func (a AlertCondition) GetMetadata() Metadata {
 	return a.Metadata
+}
+
+func (a AlertCondition) GetValidator() govy.Validator[AlertCondition] {
+	return alertConditionValidation
 }
 
 type AlertConditionSpec struct {
