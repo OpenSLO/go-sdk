@@ -8,7 +8,10 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = Object(SLI{})
+var (
+	_ = Object(SLI{})
+	_ = openslo.ObjectValidator[SLI](SLI{})
+)
 
 func NewSLI(metadata Metadata, spec SLISpec) SLI {
 	return SLI{

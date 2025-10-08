@@ -8,7 +8,10 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = Object(Service{})
+var (
+	_ = Object(Service{})
+	_ = openslo.ObjectValidator[Service](Service{})
+)
 
 func NewService(metadata Metadata, spec ServiceSpec) Service {
 	return Service{

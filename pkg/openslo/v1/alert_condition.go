@@ -8,7 +8,10 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = Object(AlertCondition{})
+var (
+	_ = Object(AlertCondition{})
+	_ = openslo.ObjectValidator[AlertCondition](AlertCondition{})
+)
 
 func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertCondition {
 	return AlertCondition{

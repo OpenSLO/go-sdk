@@ -8,7 +8,10 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = Object(AlertPolicy{})
+var (
+	_ = Object(AlertPolicy{})
+	_ = openslo.ObjectValidator[AlertPolicy](AlertPolicy{})
+)
 
 func NewAlertPolicy(metadata Metadata, spec AlertPolicySpec) AlertPolicy {
 	return AlertPolicy{

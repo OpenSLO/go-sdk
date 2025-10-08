@@ -8,7 +8,10 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = Object(AlertNotificationTarget{})
+var (
+	_ = Object(AlertNotificationTarget{})
+	_ = openslo.ObjectValidator[AlertNotificationTarget](AlertNotificationTarget{})
+)
 
 func NewAlertNotificationTarget(metadata Metadata, spec AlertNotificationTargetSpec) AlertNotificationTarget {
 	return AlertNotificationTarget{

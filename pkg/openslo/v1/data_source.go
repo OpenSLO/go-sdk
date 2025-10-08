@@ -10,7 +10,10 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = Object(DataSource{})
+var (
+	_ = Object(DataSource{})
+	_ = openslo.ObjectValidator[DataSource](DataSource{})
+)
 
 func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 	return DataSource{
