@@ -66,7 +66,7 @@ func (s SLO) GetValidator() govy.Validator[SLO] {
 
 type SLOSpec struct {
 	Description     string             `json:"description,omitempty"`
-	Service         string             `json:"service"`
+	ServiceRef      string             `json:"serviceRef"`
 	SLI             *SLOSLIInline      `json:"sli,omitempty"`
 	SLIRef          *string            `json:"sliRef,omitempty"`
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
@@ -165,8 +165,8 @@ var sloSpecValidation = govy.New(
 	govy.For(func(spec SLOSpec) string { return spec.Description }).
 		WithName("description").
 		Rules(rules.StringMaxLength(1050)),
-	govy.For(func(spec SLOSpec) string { return spec.Service }).
-		WithName("service").
+	govy.For(func(spec SLOSpec) string { return spec.ServiceRef }).
+		WithName("serviceRef").
 		Required(),
 	govy.For(func(spec SLOSpec) SLOBudgetingMethod { return spec.BudgetingMethod }).
 		WithName("budgetingMethod").

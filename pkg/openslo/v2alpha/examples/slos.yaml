@@ -7,7 +7,7 @@
       team: team-a
   spec:
     description: X% of search requests are successful
-    service: web
+    serviceRef: web
     sli:
       metadata:
         name: web-successful-requests-ratio

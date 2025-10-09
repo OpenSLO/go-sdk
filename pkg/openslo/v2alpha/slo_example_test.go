@@ -21,7 +21,7 @@ func ExampleSLO() {
       team: team-a
   spec:
     description: X% of search requests are successful
-    service: web
+    serviceRef: web
     sli:
       metadata:
         name: web-successful-requests-ratio
@@ -60,7 +60,7 @@ func ExampleSLO() {
 		},
 		v2alpha.SLOSpec{
 			Description: "X% of search requests are successful",
-			Service:     "web",
+			ServiceRef:  "web",
 			SLI: &v2alpha.SLOSLIInline{
 				Metadata: v2alpha.Metadata{
 					Name: "web-successful-requests-ratio",
@@ -138,7 +138,7 @@ func ExampleSLO() {
 	//       target: 0.995
 	//       timeSliceTarget: 0.95
 	//       timeSliceWindow: 1m
-	//     service: web
+	//     serviceRef: web
 	//     sli:
 	//       metadata:
 	//         name: web-successful-requests-ratio
