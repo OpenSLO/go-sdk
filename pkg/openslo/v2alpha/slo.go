@@ -166,7 +166,7 @@ var sloSpecValidation = govy.New(
 		WithName("description").
 		Rules(rules.StringMaxLength(1050)),
 	govy.For(func(spec SLOSpec) string { return spec.ServiceRef }).
-		WithName("service").
+		WithName("serviceRef").
 		Required(),
 	govy.For(func(spec SLOSpec) SLOBudgetingMethod { return spec.BudgetingMethod }).
 		WithName("budgetingMethod").

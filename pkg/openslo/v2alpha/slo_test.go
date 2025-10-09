@@ -94,7 +94,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec.ServiceRef = ""
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.service",
+			PropertyName: "spec.serviceRef",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
