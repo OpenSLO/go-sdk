@@ -10,7 +10,10 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = Object(DataSource{})
+var (
+	_ = Object(DataSource{})
+	_ = openslo.ObjectValidator[DataSource](DataSource{})
+)
 
 func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 	return DataSource{
@@ -50,6 +53,10 @@ func (d DataSource) String() string {
 
 func (d DataSource) GetMetadata() Metadata {
 	return d.Metadata
+}
+
+func (d DataSource) GetValidator() govy.Validator[DataSource] {
+	return dataSourceValidation
 }
 
 type DataSourceSpec struct {

@@ -4,7 +4,7 @@ go 1.24
 
 require (
 	github.com/nobl9/govy v0.20.0
-	sigs.k8s.io/yaml v1.5.0
+	sigs.k8s.io/yaml v1.6.0
 )
 
 require (

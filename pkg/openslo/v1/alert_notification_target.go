@@ -8,7 +8,10 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = Object(AlertNotificationTarget{})
+var (
+	_ = Object(AlertNotificationTarget{})
+	_ = openslo.ObjectValidator[AlertNotificationTarget](AlertNotificationTarget{})
+)
 
 func NewAlertNotificationTarget(metadata Metadata, spec AlertNotificationTargetSpec) AlertNotificationTarget {
 	return AlertNotificationTarget{
@@ -48,6 +51,10 @@ func (a AlertNotificationTarget) String() string {
 
 func (a AlertNotificationTarget) GetMetadata() Metadata {
 	return a.Metadata
+}
+
+func (a AlertNotificationTarget) GetValidator() govy.Validator[AlertNotificationTarget] {
+	return alertNotificationTargetValidation
 }
 
 type AlertNotificationTargetSpec struct {

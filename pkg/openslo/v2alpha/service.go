@@ -8,7 +8,10 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
-var _ = Object(Service{})
+var (
+	_ = Object(Service{})
+	_ = openslo.ObjectValidator[Service](Service{})
+)
 
 func NewService(metadata Metadata, spec ServiceSpec) Service {
 	return Service{
@@ -48,6 +51,10 @@ func (s Service) String() string {
 
 func (s Service) GetMetadata() Metadata {
 	return s.Metadata
+}
+
+func (s Service) GetValidator() govy.Validator[Service] {
+	return serviceValidation
 }
 
 type ServiceSpec struct {
