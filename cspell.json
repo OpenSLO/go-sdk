@@ -19,7 +19,9 @@
     "**/*.lock",
     "package.json",
     "go.mod",
-    "go.sum"
+    "go.sum",
+    "go.work",
+    "go.work.sum"
   ],
   "ignoreRegExpList": [
     "/\\|\\s+[T|G]{2,}\\s+\\|/g",
@@ -44,6 +46,7 @@
     "gosec",
     "govulncheck",
     "govy",
+    "govydoc",
     "govytest",
     "mhdw",
     "nocomments",

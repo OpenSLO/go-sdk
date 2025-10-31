@@ -32,9 +32,9 @@ test/go/unit:
 	$(call _print_step,Running Go unit tests)
 	go test -race -cover ./...
 
-.PHONY: check check/vet check/lint check/gosec check/spell check/trailing check/markdown check/format
+.PHONY: check check/vet check/lint check/gosec check/spell check/trailing check/markdown check/format check/generate
 ## Run all checks.
-check: check/vet check/lint check/gosec check/spell check/trailing check/markdown check/format
+check: check/vet check/lint check/gosec check/spell check/trailing check/markdown check/format check/generate
 
 ## Run 'go vet' on the whole project.
 check/vet:
@@ -77,11 +77,24 @@ check/format:
 	$(call _print_step,Checking if files are formatted)
 	$(SCRIPTS_DIR)/check-formatting.sh
 
-.PHONY: generate
+## Verify if the auto generated code has been committed.
+check/generate:
+	$(call _print_step,Checking if generated code matches the provided definitions)
+	$(SCRIPTS_DIR)/check-generate.sh
+
+.PHONY: generate generate/go generate/govydoc
+## Auto generate files.
+generate: generate/go generate/govydoc
+
 ## Generate Golang code.
-generate:
-	echo "Generating Go code..."
+generate/go:
+	$(call _print_step,Generating Go code)
 	go generate ./...
+
+## Generate object docs using govydoc.
+generate/govydoc:
+	$(call _print_step,Generating object docs)
+	go run ./internal/cmd/objectdoc/main.go > ./internal/cmd/objectdoc/docs.json
 
 .PHONY: format format/go format/cspell
 ## Format files.
@@ -89,14 +102,14 @@ format: format/go format/cspell
 
 ## Format Go files.
 format/go:
-	echo "Formatting Go files..."
+	$(call _print_step,Formatting Go files)
 	gofumpt -l -w -extra .
 	goimports -local=$$(head -1 go.mod | awk '{print $$2}') -w .
 	golines -m 120 --ignore-generated --reformat-tags -w .
 
 ## Format cspell config file.
 format/cspell:
-	echo "Formatting cspell.yaml configuration (words list)..."
+	$(call _print_step,Formatting cspell.yaml configuration \(words list\))
 	yarn --silent format-cspell-config
 
 .PHONY: install
@@ -105,7 +118,7 @@ install: install/yarn
 
 ## Install JS dependencies with yarn.
 install/yarn:
-	echo "Installing yarn dependencies..."
+	$(call _print_step,Installing yarn dependencies)
 	yarn --silent install
 	
 .PHONY: help
