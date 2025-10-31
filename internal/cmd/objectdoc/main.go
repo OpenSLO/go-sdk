@@ -7,10 +7,11 @@ import (
 	"slices"
 	"sync"
 
-	"github.com/OpenSLO/go-sdk/pkg/openslo/v1"
+	"github.com/nieomylnieja/govydoc/pkg/govydoc"
+
+	v1 "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
 	"github.com/OpenSLO/go-sdk/pkg/openslo/v1alpha"
 	"github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
-	"github.com/nieomylnieja/govydoc/pkg/govydoc"
 )
 
 type (
