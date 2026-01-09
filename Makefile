@@ -2,7 +2,7 @@
 MAKEFLAGS += --silent --no-print-directory
 
 BIN_DIR := ./.bin
-SCRIPTS_DIR := ./internal/scripts
+SCRIPTS_DIR := ./scripts
 
 # Print Makefile target step description for check.
 # Only print 'check' steps this way, and not dependent steps, like 'install'.
@@ -54,7 +54,7 @@ check/gosec:
 ## Check spelling, rules are defined in cspell.json.
 check/spell:
 	$(call _print_step,Verifying spelling)
-	yarn --silent cspell --no-progress '**/**'
+	cspell --no-progress '**/**'
 
 ## Check for trailing whitespaces in any of the projects' files.
 check/trailing:
@@ -64,7 +64,7 @@ check/trailing:
 ## Check markdown files for potential issues with markdownlint.
 check/markdown:
 	$(call _print_step,Verifying Markdown files)
-	yarn --silent markdownlint '**/*.md' --ignore 'node_modules'
+	markdownlint '**/*.md'
 
 ## Check for potential vulnerabilities across all Go dependencies.
 check/vulns:
@@ -93,20 +93,6 @@ format/go:
 	gofumpt -l -w -extra .
 	goimports -local=$$(head -1 go.mod | awk '{print $$2}') -w .
 	golines -m 120 --ignore-generated --reformat-tags -w .
-
-## Format cspell config file.
-format/cspell:
-	echo "Formatting cspell.yaml configuration (words list)..."
-	yarn --silent format-cspell-config
-
-.PHONY: install
-## Install all dev dependencies.
-install: install/yarn
-
-## Install JS dependencies with yarn.
-install/yarn:
-	echo "Installing yarn dependencies..."
-	yarn --silent install
 	
 .PHONY: help
 ## Print this help message.
