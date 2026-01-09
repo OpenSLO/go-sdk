@@ -32,9 +32,9 @@ test/go/unit:
 	$(call _print_step,Running Go unit tests)
 	go test -race -cover ./...
 
-.PHONY: check check/vet check/lint check/gosec check/spell check/trailing check/markdown check/format
+.PHONY: check check/vet check/lint check/gosec check/spell check/trailing check/markdown
 ## Run all checks.
-check: check/vet check/lint check/gosec check/spell check/trailing check/markdown check/format
+check: check/vet check/lint check/gosec check/spell check/trailing check/markdown
 
 ## Run 'go vet' on the whole project.
 check/vet:
@@ -71,28 +71,20 @@ check/vulns:
 	$(call _print_step,Running govulncheck)
 	govulncheck ./...
 
-## Verify if the files are formatted.
-## You must first commit the changes, otherwise it won't detect the diffs.
-check/format:
-	$(call _print_step,Checking if files are formatted)
-	$(SCRIPTS_DIR)/check-formatting.sh
-
 .PHONY: generate
 ## Generate Golang code.
 generate:
-	echo "Generating Go code..."
+	$(call _print_step,Generating Go code)
 	go generate ./...
 
-.PHONY: format format/go format/cspell
+.PHONY: format format/go
 ## Format files.
-format: format/go format/cspell
+format: format/go
 
 ## Format Go files.
 format/go:
-	echo "Formatting Go files..."
-	gofumpt -l -w -extra .
-	goimports -local=$$(head -1 go.mod | awk '{print $$2}') -w .
-	golines -m 120 --ignore-generated --reformat-tags -w .
+	$(call _print_step,Formatting Go files)
+	golangci-lint fmt
 	
 .PHONY: help
 ## Print this help message.
