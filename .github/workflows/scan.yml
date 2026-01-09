@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Install devbox
         uses: jetpack-io/devbox-install-action@v0.14.0
         with:
           enable-cache: true
-      - name: Run Golang Vulncheck
+      - name: Run Golang vulnerability scanner
         run: devbox run -- make check/vulns
