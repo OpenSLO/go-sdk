@@ -13,5 +13,5 @@ jobs:
         uses: jetpack-io/devbox-install-action@v0.14.0
         with:
           enable-cache: true
-      - name: Run Golang Vulncheck
+      - name: Run Golang vulnerability scanner
         run: devbox run -- make check/vulns

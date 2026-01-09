@@ -1,19 +1,17 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
   "packages": [
-    "yarn@1.22",
-    "golines@0.12",
-    "govulncheck@latest",
-    "gofumpt@0.7",
-    "golangci-lint@1.64",
-    "gosec@latest",
-    "go@1.24",
-    "gotools@0.30"
+    "govulncheck@1.1.4",
+    "golangci-lint@2.7.2",
+    "gosec@2.22.11",
+    "gotools@0.34.0",
+    "markdownlint-cli@0.47.0",
+    "go@1.25.5",
+    "cspell@9.5.0"
   ],
   "shell": {
     "init_hook": [
-      "export \"GOROOT=$(go env GOROOT)\"",
-      "make install/yarn"
+      "export \"GOROOT=$(go env GOROOT)\""
     ]
   }
 }
