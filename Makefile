@@ -32,9 +32,9 @@ test/go/unit:
 	$(call _print_step,Running Go unit tests)
 	go test -race -cover ./...
 
-.PHONY: check check/vet check/lint check/gosec check/spell check/trailing check/markdown
+.PHONY: check check/vet check/lint check/gosec check/spell check/trailing check/markdown check/generate
 ## Run all checks.
-check: check/vet check/lint check/gosec check/spell check/trailing check/markdown
+check: check/vet check/lint check/gosec check/spell check/trailing check/markdown check/generate
 
 ## Run 'go vet' on the whole project.
 check/vet:
@@ -71,11 +71,19 @@ check/vulns:
 	$(call _print_step,Running govulncheck)
 	govulncheck ./...
 
-.PHONY: generate
+.PHONY: generate generate/go generate/govydoc
+## Auto generate files.
+generate: generate/go generate/govydoc
+
 ## Generate Golang code.
-generate:
+generate/go:
 	$(call _print_step,Generating Go code)
 	go generate ./...
+
+## Generate object docs using govydoc.
+generate/govydoc:
+	$(call _print_step,Generating object docs)
+	go run ./internal/cmd/objectdoc/main.go > ./internal/cmd/objectdoc/docs.json
 
 .PHONY: format format/go
 ## Format files.

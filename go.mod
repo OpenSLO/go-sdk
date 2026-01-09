@@ -3,7 +3,7 @@ module github.com/OpenSLO/go-sdk
 go 1.24
 
 require (
-	github.com/nobl9/govy v0.22.0
+	github.com/nobl9/govy v0.22.0-rc1
 	sigs.k8s.io/yaml v1.6.0
 )
 
