@@ -73,6 +73,7 @@ var alertNotificationTargetValidation = govy.New(
 	validationRulesMetadata(func(a AlertNotificationTarget) Metadata { return a.Metadata }),
 	govy.For(func(a AlertNotificationTarget) AlertNotificationTargetSpec { return a.Spec }).
 		WithName("spec").
+		Required().
 		Include(alertNotificationTargetSpecValidation),
 ).WithNameFunc(internal.GetObjectName[AlertNotificationTarget])
 

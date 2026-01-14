@@ -71,6 +71,7 @@ var dataSourceValidation = govy.New(
 	validationRulesMetadata(func(d DataSource) Metadata { return d.Metadata }),
 	govy.For(func(d DataSource) DataSourceSpec { return d.Spec }).
 		WithName("spec").
+		Required().
 		Include(dataSourceSpecValidation),
 ).WithNameFunc(internal.GetObjectName[DataSource])
 

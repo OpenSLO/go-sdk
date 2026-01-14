@@ -174,6 +174,7 @@ var sliRawMetricSpecValidation = govy.New(
 var sliMetricSpecValidation = govy.New(
 	govy.For(func(spec SLIMetricSpec) SLIMetricSource { return spec.MetricSource }).
 		WithName("metricSource").
+		Required().
 		Include(govy.New(
 			govy.For(func(source SLIMetricSource) string { return source.MetricSourceRef }).
 				WithName("metricSourceRef").

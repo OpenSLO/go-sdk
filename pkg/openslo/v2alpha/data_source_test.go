@@ -46,6 +46,15 @@ func TestDataSource_Validate_Metadata(t *testing.T) {
 }
 
 func TestDataSource_Validate_Spec(t *testing.T) {
+	t.Run("empty spec", func(t *testing.T) {
+		dataSource := validDataSource()
+		dataSource.Spec = DataSourceSpec{}
+		err := dataSource.Validate()
+		govytest.AssertError(t, err, govytest.ExpectedRuleError{
+			PropertyName: "spec",
+			Code:         rules.ErrorCodeRequired,
+		})
+	})
 	runDataSourceSpecTests(t, "spec", func(d DataSourceSpec) DataSource {
 		dataSource := validDataSource()
 		dataSource.Spec = d
@@ -81,6 +90,7 @@ func runDataSourceSpecTests[T openslo.Object](
 		dataSource := validDataSource()
 		dataSource.Spec.Type = ""
 		dataSource.Spec.ConnectionDetails = nil
+		dataSource.Spec.Description = "test"
 		object := objectGetter(dataSource.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err,
