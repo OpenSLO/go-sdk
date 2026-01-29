@@ -52,6 +52,15 @@ func TestSLO_Validate_Metadata(t *testing.T) {
 }
 
 func TestSLO_Validate_Spec(t *testing.T) {
+	t.Run("empty spec", func(t *testing.T) {
+		slo := validSLO()
+		slo.Spec = SLOSpec{}
+		err := slo.Validate()
+		govytest.AssertError(t, err, govytest.ExpectedRuleError{
+			PropertyName: "spec",
+			Code:         rules.ErrorCodeRequired,
+		})
+	})
 	t.Run("description ok", func(t *testing.T) {
 		slo := validSLO()
 		slo.Spec.Description = strings.Repeat("A", 1050)
@@ -233,6 +242,24 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
 			PropertyName: "spec.objectives[0].op",
 			Code:         rules.ErrorCodeOneOf,
+		})
+	})
+	t.Run("empty good in ratioMetrics", func(t *testing.T) {
+		slo := validSLO()
+		slo.Spec.Objectives[0].RatioMetrics.Good = SLOMetricSourceSpec{}
+		err := slo.Validate()
+		govytest.AssertError(t, err, govytest.ExpectedRuleError{
+			PropertyName: "spec.objectives[0].ratioMetrics.good",
+			Code:         rules.ErrorCodeRequired,
+		})
+	})
+	t.Run("empty total in ratioMetrics", func(t *testing.T) {
+		slo := validSLO()
+		slo.Spec.Objectives[0].RatioMetrics.Total = SLOMetricSourceSpec{}
+		err := slo.Validate()
+		govytest.AssertError(t, err, govytest.ExpectedRuleError{
+			PropertyName: "spec.objectives[0].ratioMetrics.total",
+			Code:         rules.ErrorCodeRequired,
 		})
 	})
 	t.Run("budgeting method timeslices - missing timeSliceTarget", func(t *testing.T) {
