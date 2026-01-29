@@ -60,6 +60,14 @@ func runAlertNotificationTargetSpecTests[T openslo.Object](
 ) {
 	t.Helper()
 
+	t.Run("empty spec", func(t *testing.T) {
+		object := objectGetter(AlertNotificationTargetSpec{})
+		err := object.Validate()
+		govytest.AssertError(t, err, govytest.ExpectedRuleError{
+			PropertyName: path,
+			Code:         rules.ErrorCodeRequired,
+		})
+	})
 	t.Run("description ok", func(t *testing.T) {
 		target := validAlertNotificationTarget()
 		target.Spec.Description = strings.Repeat("A", 1050)

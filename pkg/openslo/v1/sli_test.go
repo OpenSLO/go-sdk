@@ -245,7 +245,7 @@ func runSLIMetricSpecTests[T openslo.Object](t *testing.T, path string, objectGe
 		object := objectGetter(SLIMetricSpec{})
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".metricSource.spec",
+			PropertyName: path + ".metricSource",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})

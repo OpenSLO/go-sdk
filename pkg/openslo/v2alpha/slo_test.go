@@ -57,6 +57,15 @@ func TestSLO_Validate_Metadata(t *testing.T) {
 }
 
 func TestSLO_Validate_Spec(t *testing.T) {
+	t.Run("empty spec", func(t *testing.T) {
+		slo := validRatioSLO()
+		slo.Spec = SLOSpec{}
+		err := slo.Validate()
+		govytest.AssertError(t, err, govytest.ExpectedRuleError{
+			PropertyName: "spec",
+			Code:         rules.ErrorCodeRequired,
+		})
+	})
 	t.Run("description ok", func(t *testing.T) {
 		slo := validRatioSLO()
 		slo.Spec.Description = strings.Repeat("A", 1050)
