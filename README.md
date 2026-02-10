@@ -24,7 +24,7 @@ To add the latest version to your Go module run:
 go get github.com/OpenSLO/go-sdk
 ```
 
-## Who uses this?
+## Use cases
 
 You can look for inspiration on using this library in the following projects:
 
