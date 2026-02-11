@@ -29,7 +29,8 @@ go get github.com/OpenSLO/go-sdk
 You can look for inspiration on using this library in the following projects:
 
 - [oslo](https://github.com/OpenSLO/oslo) - official OpenSLO CLI
-- [nobl9-openslo](https://github.com/nobl9/nobl9-openslo) - OpenSLO to [Nobl9](https://www.nobl9.com) format converter
+- [nobl9-openslo](https://github.com/nobl9/nobl9-openslo) -
+  OpenSLO to [Nobl9](https://www.nobl9.com) format converter
 
 ## Usage
 
