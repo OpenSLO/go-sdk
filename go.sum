@@ -1,7 +1,7 @@
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/nobl9/govy v0.25.0-rc1 h1:sTEcUrO864AL++4HaXQhyPmOnwwuzN++VTuz1N2IubU=
-github.com/nobl9/govy v0.25.0-rc1/go.mod h1:fExiIzXORe0ktwg2bWasOAmCZtEFMQkR4PpgzhHcZSA=
+github.com/nobl9/govy v0.25.0 h1:oOWNLnO4ZgGMxa96lDCFIWkrQTRYgRfrG8DqwL0I3Fc=
+github.com/nobl9/govy v0.25.0/go.mod h1:fExiIzXORe0ktwg2bWasOAmCZtEFMQkR4PpgzhHcZSA=
 go.yaml.in/yaml/v2 v2.4.2 h1:DzmwEr2rDGHl7lsFgAHxmNz/1NlQ7xLIrlN2h5d1eGI=
 go.yaml.in/yaml/v2 v2.4.2/go.mod h1:081UH+NErpNdqlCXm3TtEran0rJZGxAYx9hb/ELlsPU=
 go.yaml.in/yaml/v3 v3.0.3 h1:bXOww4E/J3f66rav3pX3m8w6jDE4knZjGOw8b5Y6iNE=
