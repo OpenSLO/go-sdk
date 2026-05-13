@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/nobl9/govy/pkg/govytest"
+	"github.com/nobl9/govy/pkg/jsonpath"
 	"github.com/nobl9/govy/pkg/rules"
 
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
@@ -26,7 +27,7 @@ func runMetadataTests[T openslo.Object](t *testing.T, path string, objectGetter 
 		})
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".name",
+			PropertyPath: path + ".name",
 			Code:         rules.ErrorCodeStringDNSLabel,
 		})
 	})
@@ -141,7 +142,7 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 			testCases[fmt.Sprintf("invalid value: %s", tc.in)] = labelsTestCase{
 				labels: Labels{"ok": tc.in},
 				error: govytest.ExpectedRuleError{
-					PropertyName: propertyPath + ".ok",
+					PropertyPath: propertyPath + ".ok",
 					Code:         rules.ErrorCodeStringMatchRegexp,
 				},
 			}
@@ -157,7 +158,7 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 			testCases[fmt.Sprintf("invalid key: %s", tc.in)] = labelsTestCase{
 				labels: Labels{tc.in: ""},
 				error: govytest.ExpectedRuleError{
-					PropertyName: propertyPath + "." + escapeJSONPathKey(tc.in),
+					PropertyPath: getMapPropertyPath(propertyPath, tc.in),
 					IsKeyError:   true,
 					Code:         rules.ErrorCodeStringKubernetesQualifiedName,
 				},
@@ -196,7 +197,7 @@ func getAnnotationsTestCases(t *testing.T, propertyPath string) map[string]annot
 			testCases[fmt.Sprintf("invalid: %s", tc.in)] = annotationsTestCase{
 				annotations: Annotations{tc.in: ""},
 				error: govytest.ExpectedRuleError{
-					PropertyName: propertyPath + "." + escapeJSONPathKey(tc.in),
+					PropertyPath: getMapPropertyPath(propertyPath, tc.in),
 					IsKeyError:   true,
 					Code:         rules.ErrorCodeStringKubernetesQualifiedName,
 				},
@@ -229,15 +230,12 @@ func runOperatorTests[T openslo.Object](t *testing.T, path string, objectGetter 
 		object := objectGetter("lessThan")
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path,
+			PropertyPath: path,
 			Code:         rules.ErrorCodeOneOf,
 		})
 	})
 }
 
-func escapeJSONPathKey(v string) string {
-	if strings.Contains(v, ".") {
-		return "['" + v + "']"
-	}
-	return v
+func getMapPropertyPath(propertyPath, key string) string {
+	return jsonpath.Parse(propertyPath).Key(key).String()
 }

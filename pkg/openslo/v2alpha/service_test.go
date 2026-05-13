@@ -27,11 +27,11 @@ func TestService_Validate_VersionAndKind(t *testing.T) {
 	assert.True(t, serviceValidationMessageRegexp.MatchString(err.Error()))
 	govytest.AssertError(t, err,
 		govytest.ExpectedRuleError{
-			PropertyName: "apiVersion",
+			PropertyPath: "apiVersion",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 		govytest.ExpectedRuleError{
-			PropertyName: "kind",
+			PropertyPath: "kind",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 	)
@@ -57,7 +57,7 @@ func TestService_Validate_Spec(t *testing.T) {
 		svc.Spec.Description = strings.Repeat("A", 1051)
 		err := svc.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.description",
+			PropertyPath: "spec.description",
 			Code:         rules.ErrorCodeStringMaxLength,
 		})
 	})

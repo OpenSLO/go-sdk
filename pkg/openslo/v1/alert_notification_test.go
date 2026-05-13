@@ -27,11 +27,11 @@ func TestAlertNotificationTarget_Validate_VersionAndKind(t *testing.T) {
 	assert.True(t, alertNotificationTargetValidationMessageRegexp.MatchString(err.Error()))
 	govytest.AssertError(t, err,
 		govytest.ExpectedRuleError{
-			PropertyName: "apiVersion",
+			PropertyPath: "apiVersion",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 		govytest.ExpectedRuleError{
-			PropertyName: "kind",
+			PropertyPath: "kind",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 	)
@@ -75,11 +75,11 @@ func runAlertNotificationTargetSpecTests[T openslo.Object](
 		err := object.Validate()
 		govytest.AssertError(t, err,
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".target",
+				PropertyPath: path + ".target",
 				Code:         rules.ErrorCodeRequired,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".description",
+				PropertyPath: path + ".description",
 				Code:         rules.ErrorCodeStringMaxLength,
 			},
 		)

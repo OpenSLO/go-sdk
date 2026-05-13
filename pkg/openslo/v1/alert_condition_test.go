@@ -27,11 +27,11 @@ func TestAlertCondition_Validate_VersionAndKind(t *testing.T) {
 	assert.True(t, alertConditionValidationMessageRegexp.MatchString(err.Error()))
 	govytest.AssertError(t, err,
 		govytest.ExpectedRuleError{
-			PropertyName: "apiVersion",
+			PropertyPath: "apiVersion",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 		govytest.ExpectedRuleError{
-			PropertyName: "kind",
+			PropertyPath: "kind",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 	)
@@ -64,7 +64,7 @@ func runAlertConditionSpecTests[T openslo.Object](
 		object := objectGetter(AlertConditionSpec{})
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path,
+			PropertyPath: path,
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -83,11 +83,11 @@ func runAlertConditionSpecTests[T openslo.Object](
 		err := object.Validate()
 		govytest.AssertError(t, err,
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".severity",
+				PropertyPath: path + ".severity",
 				Code:         rules.ErrorCodeRequired,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".description",
+				PropertyPath: path + ".description",
 				Code:         rules.ErrorCodeStringMaxLength,
 			},
 		)
@@ -115,7 +115,7 @@ func runAlertConditionTypeTests[T openslo.Object](
 		object := objectGetter(condition.Spec.Condition)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".condition.kind",
+			PropertyPath: path + ".condition.kind",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -125,7 +125,7 @@ func runAlertConditionTypeTests[T openslo.Object](
 		object := objectGetter(condition.Spec.Condition)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".condition.kind",
+			PropertyPath: path + ".condition.kind",
 			Code:         rules.ErrorCodeOneOf,
 		})
 	})
@@ -141,15 +141,15 @@ func runAlertConditionTypeTests[T openslo.Object](
 		err := object.Validate()
 		govytest.AssertError(t, err,
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".condition.op",
+				PropertyPath: path + ".condition.op",
 				Code:         rules.ErrorCodeRequired,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".condition.threshold",
+				PropertyPath: path + ".condition.threshold",
 				Code:         rules.ErrorCodeRequired,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".condition.lookbackWindow",
+				PropertyPath: path + ".condition.lookbackWindow",
 				Code:         rules.ErrorCodeRequired,
 			},
 		)

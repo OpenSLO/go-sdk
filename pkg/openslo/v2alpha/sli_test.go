@@ -37,11 +37,11 @@ func TestSLI_Validate_VersionAndKind(t *testing.T) {
 	assert.True(t, sliValidationMessageRegexp.MatchString(err.Error()))
 	govytest.AssertError(t, err,
 		govytest.ExpectedRuleError{
-			PropertyName: "apiVersion",
+			PropertyPath: "apiVersion",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 		govytest.ExpectedRuleError{
-			PropertyName: "kind",
+			PropertyPath: "kind",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 	)
@@ -79,7 +79,7 @@ func runSLISpecTests[T openslo.Object](t *testing.T, path string, objectGetter f
 		object := objectGetter(sli.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".description",
+			PropertyPath: path + ".description",
 			Code:         rules.ErrorCodeStringMaxLength,
 		})
 	})
@@ -89,7 +89,7 @@ func runSLISpecTests[T openslo.Object](t *testing.T, path string, objectGetter f
 		object := objectGetter(sli.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path,
+			PropertyPath: path,
 			Message:      "one of [ratioMetric, thresholdMetric] properties must be set, none was provided",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
@@ -103,7 +103,7 @@ func runSLISpecTests[T openslo.Object](t *testing.T, path string, objectGetter f
 		object := objectGetter(sli.Spec)
 		err := object.Validate()
 		govytest.AssertErrorContains(t, err, govytest.ExpectedRuleError{
-			PropertyName: path,
+			PropertyPath: path,
 			Message:      "[ratioMetric, thresholdMetric] properties are mutually exclusive, provide only one of them",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
@@ -188,7 +188,7 @@ func runSLIRatioMetricTests[T openslo.Object](t *testing.T, path string, objectG
 			object := objectGetter(sli.Spec)
 			err := object.Validate()
 			govytest.AssertError(t, err, govytest.ExpectedRuleError{
-				PropertyName: path,
+				PropertyPath: path,
 				Code:         tc.code,
 			})
 		})
@@ -225,7 +225,7 @@ func runSLIRatioMetricTests[T openslo.Object](t *testing.T, path string, objectG
 			object := objectGetter(sli.Spec)
 			err := object.Validate()
 			govytest.AssertError(t, err, govytest.ExpectedRuleError{
-				PropertyName: path + ".rawType",
+				PropertyPath: path + ".rawType",
 				Code:         rules.ErrorCodeOneOf,
 			})
 		})
@@ -246,7 +246,7 @@ func runSLIMetricSpecTests[T openslo.Object](t *testing.T, path string, objectGe
 		object := objectGetter(SLIMetricSpec{})
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path,
+			PropertyPath: path,
 			Message:      "one of [dataSourceRef, dataSourceSpec] properties must be set, none was provided",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
@@ -261,7 +261,7 @@ func runSLIMetricSpecTests[T openslo.Object](t *testing.T, path string, objectGe
 		})
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path,
+			PropertyPath: path,
 			Message:      "[dataSourceRef, dataSourceSpec] properties are mutually exclusive, provide only one of them",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
@@ -273,7 +273,7 @@ func runSLIMetricSpecTests[T openslo.Object](t *testing.T, path string, objectGe
 		})
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".dataSourceRef",
+			PropertyPath: path + ".dataSourceRef",
 			Code:         rules.ErrorCodeStringDNSLabel,
 		})
 	})

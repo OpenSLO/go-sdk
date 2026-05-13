@@ -38,11 +38,11 @@ func TestSLO_Validate_VersionAndKind(t *testing.T) {
 	assert.True(t, sloValidationMessageRegexp.MatchString(err.Error()))
 	govytest.AssertError(t, err,
 		govytest.ExpectedRuleError{
-			PropertyName: "apiVersion",
+			PropertyPath: "apiVersion",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 		govytest.ExpectedRuleError{
-			PropertyName: "kind",
+			PropertyPath: "kind",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 	)
@@ -62,7 +62,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec = SLOSpec{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec",
+			PropertyPath: "spec",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -77,7 +77,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec.Description = strings.Repeat("A", 1051)
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.description",
+			PropertyPath: "spec.description",
 			Code:         rules.ErrorCodeStringMaxLength,
 		})
 	})
@@ -86,7 +86,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec.BudgetingMethod = "invalid"
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.budgetingMethod",
+			PropertyPath: "spec.budgetingMethod",
 			Code:         rules.ErrorCodeOneOf,
 		})
 	})
@@ -103,7 +103,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec.Service = ""
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.service",
+			PropertyPath: "spec.service",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -112,7 +112,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec.Indicator = nil
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec",
+			PropertyPath: "spec",
 			Message: "'indicator' or 'indicatorRef' fields must either be defined on the 'spec' level (standard SLOs)" +
 				" or on the 'spec.objectives[*]' level (composite SLOs), but none were provided",
 			Code: rules.ErrorCodeMutuallyExclusive,
@@ -123,7 +123,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec.IndicatorRef = ptr("my-sli")
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec",
+			PropertyPath: "spec",
 			Message: "'indicator' or 'indicatorRef' fields must either be defined on the 'spec' level (standard SLOs)" +
 				" or on the 'spec.objectives[*]' level (composite SLOs), but not both",
 			Code: rules.ErrorCodeMutuallyExclusive,
@@ -149,7 +149,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		slo.Spec.TimeWindow = []SLOTimeWindow{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.timeWindow",
+			PropertyPath: "spec.timeWindow",
 			Code:         rules.ErrorCodeSliceLength,
 		})
 	})
@@ -161,7 +161,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.timeWindow",
+			PropertyPath: "spec.timeWindow",
 			Code:         rules.ErrorCodeSliceLength,
 		})
 	})
@@ -170,7 +170,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		slo.Spec.TimeWindow[0].Duration = DurationShorthand{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.timeWindow[0].duration",
+			PropertyPath: "spec.timeWindow[0].duration",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -193,7 +193,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.timeWindow[0]",
+			PropertyPath: "spec.timeWindow[0]",
 			Message:      "'calendar' cannot be set when 'isRolling' is true",
 		})
 	})
@@ -206,7 +206,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.timeWindow[0]",
+			PropertyPath: "spec.timeWindow[0]",
 			Message:      "'calendar' must be set when 'isRolling' is false",
 		})
 	})
@@ -229,7 +229,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 			err := slo.Validate()
 			if tc.errorCode != "" {
 				govytest.AssertError(t, err, govytest.ExpectedRuleError{
-					PropertyName: "spec.objectives[0].target",
+					PropertyPath: "spec.objectives[0].target",
 					Code:         tc.errorCode,
 				})
 			} else {
@@ -254,7 +254,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 			err := slo.Validate()
 			if tc.errorCode != "" {
 				govytest.AssertError(t, err, govytest.ExpectedRuleError{
-					PropertyName: "spec.objectives[0].targetPercent",
+					PropertyPath: "spec.objectives[0].targetPercent",
 					Code:         tc.errorCode,
 				})
 			} else {
@@ -268,7 +268,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		slo.Spec.Objectives[0].TargetPercent = nil
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.objectives[0]",
+			PropertyPath: "spec.objectives[0]",
 			Message:      "one of [target, targetPercent] properties must be set, none was provided",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
@@ -279,7 +279,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		slo.Spec.Objectives[0].TargetPercent = ptr(10.0)
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.objectives[0]",
+			PropertyPath: "spec.objectives[0]",
 			Message:      "[target, targetPercent] properties are mutually exclusive, provide only one of them",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
@@ -307,11 +307,11 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		err := slo.Validate()
 		govytest.AssertError(t, err,
 			govytest.ExpectedRuleError{
-				PropertyName: "spec.objectives[0].op",
+				PropertyPath: "spec.objectives[0].op",
 				Code:         rules.ErrorCodeRequired,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: "spec.objectives[0].value",
+				PropertyPath: "spec.objectives[0].value",
 				Code:         rules.ErrorCodeRequired,
 			},
 		)
@@ -351,7 +351,7 @@ func TestSLO_Validate_Spec_CompositeObjectives(t *testing.T) {
 			err := slo.Validate()
 			if tc.errorCode != "" {
 				govytest.AssertError(t, err, govytest.ExpectedRuleError{
-					PropertyName: "spec.objectives[0].compositeWeight",
+					PropertyPath: "spec.objectives[0].compositeWeight",
 					Code:         tc.errorCode,
 				})
 			} else {
@@ -372,7 +372,7 @@ func TestSLO_Validate_Spec_Objectives_TimeSliceTarget(t *testing.T) {
 			switch method {
 			case SLOBudgetingMethodTimeslices:
 				govytest.AssertError(t, err, govytest.ExpectedRuleError{
-					PropertyName: "spec.objectives[0].timeSliceTarget",
+					PropertyPath: "spec.objectives[0].timeSliceTarget",
 					Code:         rules.ErrorCodeRequired,
 				})
 			default:
@@ -395,7 +395,7 @@ func TestSLO_Validate_Spec_Objectives_TimeSliceTarget(t *testing.T) {
 		err := slo.Validate()
 		if tc.errorCode != "" {
 			govytest.AssertError(t, err, govytest.ExpectedRuleError{
-				PropertyName: "spec.objectives[0].timeSliceTarget",
+				PropertyPath: "spec.objectives[0].timeSliceTarget",
 				Code:         tc.errorCode,
 			})
 		} else {
@@ -415,7 +415,7 @@ func TestSLO_Validate_Spec_Objectives_TimeSliceWindow(t *testing.T) {
 			switch method {
 			case SLOBudgetingMethodTimeslices, SLOBudgetingMethodRatioTimeslices:
 				govytest.AssertError(t, err, govytest.ExpectedRuleError{
-					PropertyName: "spec.objectives[0].timeSliceWindow",
+					PropertyPath: "spec.objectives[0].timeSliceWindow",
 					Code:         rules.ErrorCodeRequired,
 				})
 			default:
@@ -445,7 +445,7 @@ func TestSLO_Validate_Spec_AlertPolicies(t *testing.T) {
 		slo.Spec.AlertPolicies[0].SLOAlertPolicyInline = &SLOAlertPolicyInline{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.alertPolicies[0]",
+			PropertyPath: "spec.alertPolicies[0]",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
 	})
@@ -454,7 +454,7 @@ func TestSLO_Validate_Spec_AlertPolicies(t *testing.T) {
 		slo.Spec.AlertPolicies[0].SLOAlertPolicyRef = &SLOAlertPolicyRef{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.alertPolicies[0].alertPolicyRef",
+			PropertyPath: "spec.alertPolicies[0].alertPolicyRef",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -465,7 +465,7 @@ func TestSLO_Validate_Spec_AlertPolicies(t *testing.T) {
 		}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.alertPolicies[0].alertPolicyRef",
+			PropertyPath: "spec.alertPolicies[0].alertPolicyRef",
 			Code:         rules.ErrorCodeStringDNSLabel,
 		})
 	})
@@ -474,7 +474,7 @@ func TestSLO_Validate_Spec_AlertPolicies(t *testing.T) {
 		slo.Spec.AlertPolicies[0].Kind = openslo.KindDataSource
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.alertPolicies[0].kind",
+			PropertyPath: "spec.alertPolicies[0].kind",
 			Code:         rules.ErrorCodeEqualTo,
 		})
 	})
@@ -501,7 +501,7 @@ func runSLOIndicatorTests(t *testing.T, path string, sloGetter func(*SLOIndicato
 		slo := sloGetter(&SLOIndicatorInline{}, new(string))
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path,
+			PropertyPath: path,
 			Message:      "[indicator, indicatorRef] properties are mutually exclusive, provide only one of them",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
@@ -515,7 +515,7 @@ func runSLOIndicatorTests(t *testing.T, path string, sloGetter func(*SLOIndicato
 		slo := sloGetter(nil, ptr("my sli"))
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".indicatorRef",
+			PropertyPath: path + ".indicatorRef",
 			Code:         rules.ErrorCodeStringDNSLabel,
 		})
 	})
