@@ -116,27 +116,27 @@ func runDurationShorthandTests[T openslo.Object](t *testing.T, path string, obje
 		{DurationShorthand{value: 1, unit: DurationShorthandUnitWeek}, nil},
 		{
 			DurationShorthand{value: 1, unit: "M"},
-			[]govytest.ExpectedRuleError{{PropertyName: "unit", Code: rules.ErrorCodeOneOf}},
+			[]govytest.ExpectedRuleError{{PropertyPath: "unit", Code: rules.ErrorCodeOneOf}},
 		},
 		{
 			DurationShorthand{value: 1, unit: "Q"},
-			[]govytest.ExpectedRuleError{{PropertyName: "unit", Code: rules.ErrorCodeOneOf}},
+			[]govytest.ExpectedRuleError{{PropertyPath: "unit", Code: rules.ErrorCodeOneOf}},
 		},
 		{
 			DurationShorthand{value: 1, unit: "Y"},
-			[]govytest.ExpectedRuleError{{PropertyName: "unit", Code: rules.ErrorCodeOneOf}},
+			[]govytest.ExpectedRuleError{{PropertyPath: "unit", Code: rules.ErrorCodeOneOf}},
 		},
 		{
 			DurationShorthand{value: -1, unit: DurationShorthandUnitMinute},
-			[]govytest.ExpectedRuleError{{PropertyName: "value", Code: rules.ErrorCodeGreaterThanOrEqualTo}},
+			[]govytest.ExpectedRuleError{{PropertyPath: "value", Code: rules.ErrorCodeGreaterThanOrEqualTo}},
 		},
 		{
 			DurationShorthand{value: 1, unit: ""},
-			[]govytest.ExpectedRuleError{{PropertyName: "unit", Code: rules.ErrorCodeRequired}},
+			[]govytest.ExpectedRuleError{{PropertyPath: "unit", Code: rules.ErrorCodeRequired}},
 		},
 		{
 			DurationShorthand{value: 1, unit: "invalid"},
-			[]govytest.ExpectedRuleError{{PropertyName: "unit", Code: rules.ErrorCodeOneOf}},
+			[]govytest.ExpectedRuleError{{PropertyPath: "unit", Code: rules.ErrorCodeOneOf}},
 		},
 	}
 
@@ -145,7 +145,7 @@ func runDurationShorthandTests[T openslo.Object](t *testing.T, path string, obje
 		err := object.Validate()
 		if tc.expectedErrs != nil {
 			for i := range tc.expectedErrs {
-				tc.expectedErrs[i].PropertyName = path + "." + tc.expectedErrs[i].PropertyName
+				tc.expectedErrs[i].PropertyPath = path + "." + tc.expectedErrs[i].PropertyPath
 			}
 			govytest.AssertError(t, err, tc.expectedErrs...)
 		} else {

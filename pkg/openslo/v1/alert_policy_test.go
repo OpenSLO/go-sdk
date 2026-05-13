@@ -33,11 +33,11 @@ func TestAlertPolicy_Validate_VersionAndKind(t *testing.T) {
 	assert.True(t, alertPolicyValidationMessageRegexp.MatchString(err.Error()))
 	govytest.AssertError(t, err,
 		govytest.ExpectedRuleError{
-			PropertyName: "apiVersion",
+			PropertyPath: "apiVersion",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 		govytest.ExpectedRuleError{
-			PropertyName: "kind",
+			PropertyPath: "kind",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 	)
@@ -79,7 +79,7 @@ func runAlertPolicySpecTests[T openslo.Object](
 		object := objectGetter(policy.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".description",
+			PropertyPath: path + ".description",
 			Code:         rules.ErrorCodeStringMaxLength,
 		})
 	})
@@ -100,11 +100,11 @@ func runAlertPolicySpecTests[T openslo.Object](
 		err := object.Validate()
 		govytest.AssertError(t, err,
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".conditions",
+				PropertyPath: path + ".conditions",
 				Code:         rules.ErrorCodeSliceLength,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".notificationTargets",
+				PropertyPath: path + ".notificationTargets",
 				Code:         rules.ErrorCodeSliceMinLength,
 			},
 		)
@@ -118,7 +118,7 @@ func runAlertPolicySpecTests[T openslo.Object](
 		object := objectGetter(policy.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".conditions",
+			PropertyPath: path + ".conditions",
 			Code:         rules.ErrorCodeSliceLength,
 		})
 	})
@@ -145,7 +145,7 @@ func runAlertPolicySpecConditionsTests[T openslo.Object](
 		err := object.Validate()
 		fmt.Println(err)
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".conditions[0]",
+			PropertyPath: path + ".conditions[0]",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
 	})
@@ -155,7 +155,7 @@ func runAlertPolicySpecConditionsTests[T openslo.Object](
 		object := objectGetter(policy.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".conditions[0].conditionRef",
+			PropertyPath: path + ".conditions[0].conditionRef",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -167,7 +167,7 @@ func runAlertPolicySpecConditionsTests[T openslo.Object](
 		object := objectGetter(policy.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".conditions[0].conditionRef",
+			PropertyPath: path + ".conditions[0].conditionRef",
 			Code:         rules.ErrorCodeStringDNSLabel,
 		})
 	})
@@ -177,7 +177,7 @@ func runAlertPolicySpecConditionsTests[T openslo.Object](
 		object := objectGetter(policy.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".conditions[0].kind",
+			PropertyPath: path + ".conditions[0].kind",
 			Code:         rules.ErrorCodeEqualTo,
 		})
 	})
@@ -213,7 +213,7 @@ func runAlertPolicySpecNotificationTargetsTests[T openslo.Object](
 		object := objectGetter(policy.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".notificationTargets[0]",
+			PropertyPath: path + ".notificationTargets[0]",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
 	})
@@ -223,7 +223,7 @@ func runAlertPolicySpecNotificationTargetsTests[T openslo.Object](
 		object := objectGetter(policy.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".notificationTargets[0].targetRef",
+			PropertyPath: path + ".notificationTargets[0].targetRef",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -235,7 +235,7 @@ func runAlertPolicySpecNotificationTargetsTests[T openslo.Object](
 		object := objectGetter(policy.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".notificationTargets[0].targetRef",
+			PropertyPath: path + ".notificationTargets[0].targetRef",
 			Code:         rules.ErrorCodeStringDNSLabel,
 		})
 	})
@@ -245,7 +245,7 @@ func runAlertPolicySpecNotificationTargetsTests[T openslo.Object](
 		object := objectGetter(policy.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".notificationTargets[0].kind",
+			PropertyPath: path + ".notificationTargets[0].kind",
 			Code:         rules.ErrorCodeEqualTo,
 		})
 	})

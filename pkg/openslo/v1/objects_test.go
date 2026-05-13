@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/nobl9/govy/pkg/govytest"
+	"github.com/nobl9/govy/pkg/jsonpath"
 	"github.com/nobl9/govy/pkg/rules"
 
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
@@ -28,11 +29,11 @@ func runMetadataTests[T openslo.Object](t *testing.T, path string, objectGetter 
 		err := object.Validate()
 		govytest.AssertError(t, err,
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".name",
+				PropertyPath: path + ".name",
 				Code:         rules.ErrorCodeStringDNSLabel,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".displayName",
+				PropertyPath: path + ".displayName",
 				Code:         rules.ErrorCodeStringMaxLength,
 			},
 		)
@@ -109,7 +110,7 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 		testCases[fmt.Sprintf("invalid: %v", labels)] = labelsTestCase{
 			labels: labels,
 			error: govytest.ExpectedRuleError{
-				PropertyName: propertyPath + "." + escapeJSONPathKey(getMapFirstKey(labels)),
+				PropertyPath: getMapPropertyPath(propertyPath, getMapFirstKey(labels)),
 				IsKeyError:   true,
 				Code:         rules.ErrorCodeStringMatchRegexp,
 			},
@@ -191,7 +192,7 @@ func getAnnotationsTestCases(t *testing.T, propertyPath string) map[string]annot
 		testCases[fmt.Sprintf("invalid: %v", annotations)] = annotationsTestCase{
 			annotations: annotations,
 			error: govytest.ExpectedRuleError{
-				PropertyName: propertyPath + "." + escapeJSONPathKey(getMapFirstKey(annotations)),
+				PropertyPath: getMapPropertyPath(propertyPath, getMapFirstKey(annotations)),
 				IsKeyError:   true,
 				Code:         rules.ErrorCodeStringMatchRegexp,
 			},
@@ -212,7 +213,7 @@ func runOperatorTests[T openslo.Object](t *testing.T, path string, objectGetter 
 		object := objectGetter("lessThan")
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path,
+			PropertyPath: path,
 			Code:         rules.ErrorCodeOneOf,
 		})
 	})
@@ -225,9 +226,6 @@ func getMapFirstKey[V any](l map[string]V) string {
 	return ""
 }
 
-func escapeJSONPathKey(v string) string {
-	if strings.Contains(v, ".") {
-		return "['" + v + "']"
-	}
-	return v
+func getMapPropertyPath(propertyPath, key string) string {
+	return jsonpath.Parse(propertyPath).Key(key).String()
 }
