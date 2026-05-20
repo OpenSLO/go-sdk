@@ -110,7 +110,7 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 		testCases[fmt.Sprintf("invalid: %v", labels)] = labelsTestCase{
 			labels: labels,
 			error: govytest.ExpectedRuleError{
-				PropertyPath: getMapPropertyPath(propertyPath, getMapFirstKey(labels)),
+				PropertyPath: jsonpath.Parse(propertyPath).Name(getMapFirstKey(labels)).String(),
 				IsKeyError:   true,
 				Code:         rules.ErrorCodeStringMatchRegexp,
 			},
@@ -192,7 +192,7 @@ func getAnnotationsTestCases(t *testing.T, propertyPath string) map[string]annot
 		testCases[fmt.Sprintf("invalid: %v", annotations)] = annotationsTestCase{
 			annotations: annotations,
 			error: govytest.ExpectedRuleError{
-				PropertyPath: getMapPropertyPath(propertyPath, getMapFirstKey(annotations)),
+				PropertyPath: jsonpath.Parse(propertyPath).Name(getMapFirstKey(annotations)).String(),
 				IsKeyError:   true,
 				Code:         rules.ErrorCodeStringMatchRegexp,
 			},
@@ -224,8 +224,4 @@ func getMapFirstKey[V any](l map[string]V) string {
 		return k
 	}
 	return ""
-}
-
-func getMapPropertyPath(propertyPath, key string) string {
-	return jsonpath.Parse(propertyPath).Key(key).String()
 }
