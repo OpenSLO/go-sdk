@@ -158,6 +158,7 @@ var sloValidation = govy.New(
 	validationRulesMetadata(func(s SLO) Metadata { return s.Metadata }),
 	govy.For(func(s SLO) SLOSpec { return s.Spec }).
 		WithName("spec").
+		Required().
 		Cascade(govy.CascadeModeStop).
 		Rules(
 			govy.NewRule(func(s SLOSpec) error {
@@ -289,9 +290,11 @@ var sloTimeSlicesObjectiveValidation = govy.New(
 var sloRatioMetricsValidation = govy.New(
 	govy.For(func(s SLORatioMetrics) SLOMetricSourceSpec { return s.Good }).
 		WithName("good").
+		Required().
 		Include(sloMetricSourceSpecValidation),
 	govy.For(func(s SLORatioMetrics) SLOMetricSourceSpec { return s.Total }).
 		WithName("total").
+		Required().
 		Include(sloMetricSourceSpecValidation),
 )
 

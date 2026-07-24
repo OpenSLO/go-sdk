@@ -11,7 +11,7 @@ The output is a structured JSON which is written to stdout.
 
 ## Usage
 
-The generated file is used to build https://openslo.com website.
+The generated file is used to build the [OpenSLO website](https://openslo.com).
 There are checks in place which will fail if the generated file has not been updated.
 
 In order to update the file simply run `make generate`.

@@ -158,7 +158,7 @@ func getLabelsTestCases(t *testing.T, propertyPath string) map[string]labelsTest
 			testCases[fmt.Sprintf("invalid key: %s", tc.in)] = labelsTestCase{
 				labels: Labels{tc.in: ""},
 				error: govytest.ExpectedRuleError{
-					PropertyPath: mapKeyPropertyPath(propertyPath, tc.in),
+					PropertyPath: jsonpath.Parse(propertyPath).Name(tc.in).String(),
 					IsKeyError:   true,
 					Code:         rules.ErrorCodeStringKubernetesQualifiedName,
 				},
@@ -197,7 +197,7 @@ func getAnnotationsTestCases(t *testing.T, propertyPath string) map[string]annot
 			testCases[fmt.Sprintf("invalid: %s", tc.in)] = annotationsTestCase{
 				annotations: Annotations{tc.in: ""},
 				error: govytest.ExpectedRuleError{
-					PropertyPath: mapKeyPropertyPath(propertyPath, tc.in),
+					PropertyPath: jsonpath.Parse(propertyPath).Name(tc.in).String(),
 					IsKeyError:   true,
 					Code:         rules.ErrorCodeStringKubernetesQualifiedName,
 				},
@@ -234,8 +234,4 @@ func runOperatorTests[T openslo.Object](t *testing.T, path string, objectGetter 
 			Code:         rules.ErrorCodeOneOf,
 		})
 	})
-}
-
-func mapKeyPropertyPath(propertyPath, key string) string {
-	return jsonpath.Parse(propertyPath).Name(key).String()
 }

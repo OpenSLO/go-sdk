@@ -148,6 +148,7 @@ var sloValidation = govy.New(
 	validationRulesMetadata(func(s SLO) Metadata { return s.Metadata }),
 	govy.For(func(s SLO) SLOSpec { return s.Spec }).
 		WithName("spec").
+		Required().
 		Include(sloSpecValidation),
 ).WithNameFunc(internal.GetObjectName[SLO])
 

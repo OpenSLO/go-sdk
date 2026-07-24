@@ -83,6 +83,7 @@ var alertConditionValidation = govy.New(
 	validationRulesMetadata(func(a AlertCondition) Metadata { return a.Metadata }),
 	govy.For(func(a AlertCondition) AlertConditionSpec { return a.Spec }).
 		WithName("spec").
+		Required().
 		Include(alertConditionSpecValidation),
 ).WithNameFunc(internal.GetObjectName[AlertCondition])
 

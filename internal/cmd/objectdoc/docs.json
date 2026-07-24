@@ -209,6 +209,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.severity",
             "$.spec.condition",
@@ -561,6 +567,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.description",
             "$.spec.target"
@@ -1711,6 +1723,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.description",
             "$.spec.type",
@@ -2981,6 +2999,10 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            },
             {
               "description": "'sli' or 'sliRef' fields must either be defined on the 'spec' level (standard SLOs) or on the 'spec.objectives[*]' level (composite SLOs)",
               "errorCode": "mutually_exclusive"
@@ -6904,6 +6926,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.severity",
             "$.spec.condition",
@@ -8738,6 +8766,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.thresholdMetric.metricSource.metricSourceRef",
             "$.spec.thresholdMetric.metricSource.type",
@@ -8877,6 +8911,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.ratioMetric.good.metricSource.metricSourceRef",
             "$.spec.ratioMetric.good.metricSource.type",
@@ -8975,6 +9015,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.ratioMetric.bad.metricSource.metricSourceRef",
             "$.spec.ratioMetric.bad.metricSource.type",
@@ -9073,6 +9119,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.ratioMetric.total.metricSource.metricSourceRef",
             "$.spec.ratioMetric.total.metricSource.type",
@@ -9193,6 +9245,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.ratioMetric.raw.metricSource.metricSourceRef",
             "$.spec.ratioMetric.raw.metricSource.type",
@@ -9483,6 +9541,10 @@
           },
           "rules": [
             {
+              "description": "property is required",
+              "errorCode": "required"
+            },
+            {
               "description": "'indicator' or 'indicatorRef' fields must either be defined on the 'spec' level (standard SLOs) or on the 'spec.objectives[*]' level (composite SLOs)",
               "errorCode": "mutually_exclusive"
             },
@@ -9749,6 +9811,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.indicator.spec.thresholdMetric.metricSource.metricSourceRef",
             "$.spec.indicator.spec.thresholdMetric.metricSource.type",
@@ -9888,6 +9956,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.indicator.spec.ratioMetric.good.metricSource.metricSourceRef",
             "$.spec.indicator.spec.ratioMetric.good.metricSource.type",
@@ -9986,6 +10060,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.indicator.spec.ratioMetric.bad.metricSource.metricSourceRef",
             "$.spec.indicator.spec.ratioMetric.bad.metricSource.type",
@@ -10084,6 +10164,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.indicator.spec.ratioMetric.total.metricSource.metricSourceRef",
             "$.spec.indicator.spec.ratioMetric.total.metricSource.type",
@@ -10204,6 +10290,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.indicator.spec.ratioMetric.raw.metricSource.metricSourceRef",
             "$.spec.indicator.spec.ratioMetric.raw.metricSource.type",
@@ -10827,6 +10919,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.objectives[*].indicator.spec.thresholdMetric.metricSource.metricSourceRef",
             "$.spec.objectives[*].indicator.spec.thresholdMetric.metricSource.type",
@@ -10966,6 +11064,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.objectives[*].indicator.spec.ratioMetric.good.metricSource.metricSourceRef",
             "$.spec.objectives[*].indicator.spec.ratioMetric.good.metricSource.type",
@@ -11064,6 +11168,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.objectives[*].indicator.spec.ratioMetric.bad.metricSource.metricSourceRef",
             "$.spec.objectives[*].indicator.spec.ratioMetric.bad.metricSource.type",
@@ -11162,6 +11272,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.objectives[*].indicator.spec.ratioMetric.total.metricSource.metricSourceRef",
             "$.spec.objectives[*].indicator.spec.ratioMetric.total.metricSource.type",
@@ -11282,6 +11398,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.objectives[*].indicator.spec.ratioMetric.raw.metricSource.metricSourceRef",
             "$.spec.objectives[*].indicator.spec.ratioMetric.raw.metricSource.type",
@@ -12705,6 +12827,10 @@
           },
           "rules": [
             {
+              "description": "property is required",
+              "errorCode": "required"
+            },
+            {
               "description": "",
               "errorCode": "mutually_exclusive"
             }
@@ -13001,6 +13127,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1alpha"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.objectives[*].ratioMetrics.good.source",
             "$.spec.objectives[*].ratioMetrics.good.queryType",
@@ -13065,6 +13197,12 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1alpha"
           },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
           "childrenPaths": [
             "$.spec.objectives[*].ratioMetrics.total.source",
             "$.spec.objectives[*].ratioMetrics.total.queryType",
