@@ -85,7 +85,7 @@ generate/go:
 ## Generate object docs using govydoc.
 generate/govydoc:
 	$(call _print_step,Generating object docs)
-	$(GO_ENV) go run ./internal/cmd/objectdoc/main.go > ./internal/cmd/objectdoc/docs.json
+	$(GO_ENV) go run ./internal/cmd/objectdoc/main.go > ./docs/manifest.json
 
 .PHONY: format format/go
 ## Format files.
