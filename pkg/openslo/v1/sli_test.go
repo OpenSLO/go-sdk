@@ -36,11 +36,11 @@ func TestSLI_Validate_VersionAndKind(t *testing.T) {
 	assert.True(t, sliValidationMessageRegexp.MatchString(err.Error()))
 	govytest.AssertError(t, err,
 		govytest.ExpectedRuleError{
-			PropertyName: "apiVersion",
+			PropertyPath: "apiVersion",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 		govytest.ExpectedRuleError{
-			PropertyName: "kind",
+			PropertyPath: "kind",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 	)
@@ -78,7 +78,7 @@ func runSLISpecTests[T openslo.Object](t *testing.T, path string, objectGetter f
 		object := objectGetter(sli.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".description",
+			PropertyPath: path + ".description",
 			Code:         rules.ErrorCodeStringMaxLength,
 		})
 	})
@@ -88,7 +88,7 @@ func runSLISpecTests[T openslo.Object](t *testing.T, path string, objectGetter f
 		object := objectGetter(sli.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path,
+			PropertyPath: path,
 			Message:      "one of [ratioMetric, thresholdMetric] properties must be set, none was provided",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
@@ -102,7 +102,7 @@ func runSLISpecTests[T openslo.Object](t *testing.T, path string, objectGetter f
 		object := objectGetter(sli.Spec)
 		err := object.Validate()
 		govytest.AssertErrorContains(t, err, govytest.ExpectedRuleError{
-			PropertyName: path,
+			PropertyPath: path,
 			Message:      "[ratioMetric, thresholdMetric] properties are mutually exclusive, provide only one of them",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
@@ -187,7 +187,7 @@ func runSLIRatioMetricTests[T openslo.Object](t *testing.T, path string, objectG
 			object := objectGetter(sli.Spec)
 			err := object.Validate()
 			govytest.AssertError(t, err, govytest.ExpectedRuleError{
-				PropertyName: path,
+				PropertyPath: path,
 				Code:         tc.code,
 			})
 		})
@@ -224,7 +224,7 @@ func runSLIRatioMetricTests[T openslo.Object](t *testing.T, path string, objectG
 			object := objectGetter(sli.Spec)
 			err := object.Validate()
 			govytest.AssertError(t, err, govytest.ExpectedRuleError{
-				PropertyName: path + ".rawType",
+				PropertyPath: path + ".rawType",
 				Code:         rules.ErrorCodeOneOf,
 			})
 		})
@@ -245,7 +245,7 @@ func runSLIMetricSpecTests[T openslo.Object](t *testing.T, path string, objectGe
 		object := objectGetter(SLIMetricSpec{})
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".metricSource.spec",
+			PropertyPath: path + ".metricSource.spec",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -257,7 +257,7 @@ func runSLIMetricSpecTests[T openslo.Object](t *testing.T, path string, objectGe
 		})
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".metricSource.spec",
+			PropertyPath: path + ".metricSource.spec",
 			Code:         rules.ErrorCodeMapMinLength,
 		})
 	})
@@ -270,7 +270,7 @@ func runSLIMetricSpecTests[T openslo.Object](t *testing.T, path string, objectGe
 		})
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".metricSource.metricSourceRef",
+			PropertyPath: path + ".metricSource.metricSourceRef",
 			Code:         rules.ErrorCodeStringDNSLabel,
 		})
 	})
@@ -298,7 +298,7 @@ func validGoodOverTotalSLI() SLI {
 					MetricSource: SLIMetricSource{
 						MetricSourceRef: "my-datadog",
 						Type:            "Datadog",
-						Spec: map[string]interface{}{
+						Spec: map[string]any{
 							"query": "sum:trace.http.request.hits.by_http_status{http.status_code:200}.as_count()",
 						},
 					},
@@ -307,7 +307,7 @@ func validGoodOverTotalSLI() SLI {
 					MetricSource: SLIMetricSource{
 						MetricSourceRef: "my-datadog",
 						Type:            "Datadog",
-						Spec: map[string]interface{}{
+						Spec: map[string]any{
 							"query": "sum:trace.http.request.hits.by_http_status{*}.as_count()",
 						},
 					},
@@ -325,7 +325,7 @@ func validBadOverTotalSLI() SLI {
 		MetricSource: SLIMetricSource{
 			MetricSourceRef: "my-datadog",
 			Type:            "Datadog",
-			Spec: map[string]interface{}{
+			Spec: map[string]any{
 				"query": "sum:trace.http.request.hits.by_http_status{!http.status_code:200}.as_count()",
 			},
 		},
@@ -351,7 +351,7 @@ func validRawSLI() SLI {
 					MetricSource: SLIMetricSource{
 						MetricSourceRef: "my-prometheus",
 						Type:            "Prometheus",
-						Spec: map[string]interface{}{
+						Spec: map[string]any{
 							"query": `
 1 - (
   sum(sum_over_time(poller_client_satisfaction_ratio[{{.window}}]))
@@ -382,7 +382,7 @@ func validThresholdSLI() SLI {
 				MetricSource: SLIMetricSource{
 					MetricSourceRef: "my-prometheus",
 					Type:            "Prometheus",
-					Spec: map[string]interface{}{
+					Spec: map[string]any{
 						// nolint: lll
 						"query": `sum(min_over_time(kafka_consumergroup_lag{k8s_cluster="prod", consumergroup="annotator", topic="annotator-in"}[2m]))`,
 					},

@@ -27,11 +27,11 @@ func TestAlertCondition_Validate_VersionAndKind(t *testing.T) {
 	assert.True(t, alertConditionValidationMessageRegexp.MatchString(err.Error()))
 	govytest.AssertError(t, err,
 		govytest.ExpectedRuleError{
-			PropertyName: "apiVersion",
+			PropertyPath: "apiVersion",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 		govytest.ExpectedRuleError{
-			PropertyName: "kind",
+			PropertyPath: "kind",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 	)
@@ -75,11 +75,11 @@ func runAlertConditionSpecTests[T openslo.Object](
 		err := object.Validate()
 		govytest.AssertError(t, err,
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".severity",
+				PropertyPath: path + ".severity",
 				Code:         rules.ErrorCodeRequired,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".description",
+				PropertyPath: path + ".description",
 				Code:         rules.ErrorCodeStringMaxLength,
 			},
 		)
@@ -107,7 +107,7 @@ func runAlertConditionTypeTests[T openslo.Object](
 		object := objectGetter(condition.Spec.Condition)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".condition.kind",
+			PropertyPath: path + ".condition.kind",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -117,7 +117,7 @@ func runAlertConditionTypeTests[T openslo.Object](
 		object := objectGetter(condition.Spec.Condition)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".condition.kind",
+			PropertyPath: path + ".condition.kind",
 			Code:         rules.ErrorCodeOneOf,
 		})
 	})
@@ -133,15 +133,15 @@ func runAlertConditionTypeTests[T openslo.Object](
 		err := object.Validate()
 		govytest.AssertError(t, err,
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".condition.op",
+				PropertyPath: path + ".condition.op",
 				Code:         rules.ErrorCodeRequired,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".condition.threshold",
+				PropertyPath: path + ".condition.threshold",
 				Code:         rules.ErrorCodeRequired,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".condition.lookbackWindow",
+				PropertyPath: path + ".condition.lookbackWindow",
 				Code:         rules.ErrorCodeRequired,
 			},
 		)
@@ -190,13 +190,11 @@ func validAlertCondition() AlertCondition {
 			Condition: AlertConditionType{
 				Kind:           AlertConditionKindBurnRate,
 				Operator:       OperatorLTE,
-				Threshold:      ptr(2.0),
+				Threshold:      new(2.0),
 				LookbackWindow: NewDurationShorthand(1, DurationShorthandUnitHour),
-				AlertAfter:     ptr(NewDurationShorthand(5, DurationShorthandUnitMinute)),
+				AlertAfter:     new(NewDurationShorthand(5, DurationShorthandUnitMinute)),
 			},
 			Description: "If the CPU usage is too high for given period then it should alert",
 		},
 	)
 }
-
-func ptr[T any](v T) *T { return &v }

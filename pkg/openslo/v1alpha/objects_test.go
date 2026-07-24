@@ -28,11 +28,11 @@ func runMetadataTests[T openslo.Object](t *testing.T, path string, objectGetter 
 		err := object.Validate()
 		govytest.AssertError(t, err,
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".name",
+				PropertyPath: path + ".name",
 				Code:         rules.ErrorCodeStringDNSLabel,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".displayName",
+				PropertyPath: path + ".displayName",
 				Code:         rules.ErrorCodeStringMaxLength,
 			},
 		)

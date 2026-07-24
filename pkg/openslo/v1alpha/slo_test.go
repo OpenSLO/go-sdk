@@ -33,11 +33,11 @@ func TestSLO_Validate_VersionAndKind(t *testing.T) {
 	assert.True(t, sloValidationMessageRegexp.MatchString(err.Error()))
 	govytest.AssertError(t, err,
 		govytest.ExpectedRuleError{
-			PropertyName: "apiVersion",
+			PropertyPath: "apiVersion",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 		govytest.ExpectedRuleError{
-			PropertyName: "kind",
+			PropertyPath: "kind",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 	)
@@ -63,7 +63,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec.Description = strings.Repeat("A", 1051)
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.description",
+			PropertyPath: "spec.description",
 			Code:         rules.ErrorCodeStringMaxLength,
 		})
 	})
@@ -72,7 +72,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec.BudgetingMethod = "invalid"
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.budgetingMethod",
+			PropertyPath: "spec.budgetingMethod",
 			Code:         rules.ErrorCodeOneOf,
 		})
 	})
@@ -89,7 +89,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec.Service = ""
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.service",
+			PropertyPath: "spec.service",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -100,7 +100,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec",
+			PropertyPath: "spec",
 			Message:      "only one of 'indicator' and 'objectives[*].ratioMetrics' can be set",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
@@ -111,7 +111,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec.Objectives[0].RatioMetrics = nil
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec",
+			PropertyPath: "spec",
 			Message:      "one of 'indicator' or 'objectives[*].ratioMetrics' must be set",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
@@ -121,7 +121,7 @@ func TestSLO_Validate_Spec(t *testing.T) {
 		slo.Spec.Indicator.ThresholdMetric = SLOMetricSourceSpec{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.indicator.thresholdMetric",
+			PropertyPath: "spec.indicator.thresholdMetric",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -140,7 +140,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		slo.Spec.TimeWindows = []SLOTimeWindow{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.timeWindow",
+			PropertyPath: "spec.timeWindow",
 			Code:         rules.ErrorCodeSliceLength,
 		})
 	})
@@ -152,7 +152,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.timeWindow",
+			PropertyPath: "spec.timeWindow",
 			Code:         rules.ErrorCodeSliceLength,
 		})
 	})
@@ -170,11 +170,11 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 			{-0.1, rules.ErrorCodeGreaterThanOrEqualTo},
 		} {
 			slo := validSLO()
-			slo.Spec.Objectives[0].BudgetTarget = ptr(tc.in)
+			slo.Spec.Objectives[0].BudgetTarget = new(tc.in)
 			err := slo.Validate()
 			if tc.errorCode != "" {
 				govytest.AssertError(t, err, govytest.ExpectedRuleError{
-					PropertyName: "spec.objectives[0].target",
+					PropertyPath: "spec.objectives[0].target",
 					Code:         tc.errorCode,
 				})
 			} else {
@@ -187,7 +187,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		slo.Spec.Objectives[0].BudgetTarget = nil
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.objectives[0].target",
+			PropertyPath: "spec.objectives[0].target",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -196,7 +196,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		slo.Spec.Objectives[0].Value = nil
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.objectives[0].value",
+			PropertyPath: "spec.objectives[0].value",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -205,7 +205,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		slo.Spec.Objectives[0].Operator = OperatorGT
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.objectives[0].op",
+			PropertyPath: "spec.objectives[0].op",
 			Code:         rules.ErrorCodeForbidden,
 		})
 	})
@@ -214,7 +214,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		slo.Spec.Objectives[0].Operator = ""
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.objectives[0].op",
+			PropertyPath: "spec.objectives[0].op",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -231,7 +231,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		slo.Spec.Objectives[0].Operator = "less_than"
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.objectives[0].op",
+			PropertyPath: "spec.objectives[0].op",
 			Code:         rules.ErrorCodeOneOf,
 		})
 	})
@@ -241,7 +241,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		slo.Spec.Objectives[0].TimeSliceTarget = nil
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: "spec.objectives[0].timeSliceTarget",
+			PropertyPath: "spec.objectives[0].timeSliceTarget",
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
@@ -276,7 +276,7 @@ func runMetricSourceSpecTests(t *testing.T, path string, sloGetter func(s SLOMet
 			err := slo.Validate()
 			fmt.Println(err)
 			govytest.AssertError(t, err, govytest.ExpectedRuleError{
-				PropertyName: path + name,
+				PropertyPath: path + name,
 				Code:         rules.ErrorCodeRequired,
 			})
 		})
@@ -307,9 +307,9 @@ func validSLO() SLO {
 			Objectives: []SLOObjective{
 				{
 					DisplayName:     "Good",
-					BudgetTarget:    ptr(0.995),
-					TimeSliceTarget: ptr(0.95),
-					Value:           ptr(1.0),
+					BudgetTarget:    new(0.995),
+					TimeSliceTarget: new(0.95),
+					Value:           new(1.0),
 					RatioMetrics: &SLORatioMetrics{
 						Incremental: true,
 						Good: SLOMetricSourceSpec{
@@ -360,13 +360,11 @@ func validThresholdSLO() SLO {
 				{
 					Operator:        OperatorGT,
 					DisplayName:     "Good",
-					BudgetTarget:    ptr(0.995),
-					TimeSliceTarget: ptr(0.95),
-					Value:           ptr(1.0),
+					BudgetTarget:    new(0.995),
+					TimeSliceTarget: new(0.95),
+					Value:           new(1.0),
 				},
 			},
 		},
 	)
 }
-
-func ptr[T any](v T) *T { return &v }

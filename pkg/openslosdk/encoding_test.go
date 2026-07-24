@@ -190,7 +190,7 @@ func TestDecode(t *testing.T) {
 						Objectives: []v1.SLOObjective{
 							{
 								DisplayName: "Foo Availability",
-								Target:      ptr(0.98),
+								Target:      new(0.98),
 							},
 						},
 					},
@@ -252,7 +252,7 @@ func TestDecode(t *testing.T) {
 						Objectives: []v2alpha.SLOObjective{
 							{
 								DisplayName: "Foo Total Errors",
-								Target:      ptr(0.98),
+								Target:      new(0.98),
 							},
 						},
 					},
@@ -354,7 +354,7 @@ func TestEncode(t *testing.T) {
 			Objectives: []v1.SLOObjective{
 				{
 					DisplayName: "Foo Availability",
-					Target:      ptr(0.98),
+					Target:      new(0.98),
 				},
 			},
 		},
@@ -442,5 +442,3 @@ func readTestData(t *testing.T, fileSystem embed.FS, path string) []byte {
 	}
 	return data
 }
-
-func ptr[T any](v T) *T { return &v }

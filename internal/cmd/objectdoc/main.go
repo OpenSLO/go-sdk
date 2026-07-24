@@ -5,20 +5,15 @@ import (
 	"encoding/json"
 	"os"
 	"slices"
-	"sync"
 
 	"github.com/nieomylnieja/govydoc/pkg/govydoc"
+	"golang.org/x/sync/errgroup"
+
+	"github.com/nobl9/govy/pkg/jsonpath"
 
 	v1 "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
 	"github.com/OpenSLO/go-sdk/pkg/openslo/v1alpha"
 	"github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
-)
-
-type (
-	Versions map[Version]map[Kind]govydoc.ObjectDoc
-
-	Version = string
-	Kind    = string
 )
 
 var allDocsGeneratorFuncs = []func() (govydoc.ObjectDoc, error){
@@ -44,24 +39,34 @@ var allDocsGeneratorFuncs = []func() (govydoc.ObjectDoc, error){
 	func() (govydoc.ObjectDoc, error) { return govydoc.Generate(v2alpha.DataSource{}.GetValidator()) },
 }
 
+var (
+	apiVersionPath = jsonpath.NewRoot().Name("apiVersion")
+	kindPath       = jsonpath.NewRoot().Name("kind")
+)
+
+type (
+	Versions map[Version]map[Kind]govydoc.ObjectDoc
+
+	Version = string
+	Kind    = string
+)
+
 func main() {
-	wg := sync.WaitGroup{}
-	wg.Add(len(allDocsGeneratorFuncs))
-	docs := make([]govydoc.ObjectDoc, 0, len(allDocsGeneratorFuncs))
-	mu := sync.Mutex{}
-	for _, f := range allDocsGeneratorFuncs {
-		go func() {
-			defer wg.Done()
-			doc, err := f()
+	docs := make([]govydoc.ObjectDoc, len(allDocsGeneratorFuncs))
+	var group errgroup.Group
+	for i, generate := range allDocsGeneratorFuncs {
+		group.Go(func() error {
+			doc, err := generate()
 			if err != nil {
-				panic(err)
+				return err
 			}
-			mu.Lock()
-			docs = append(docs, doc)
-			mu.Unlock()
-		}()
+			docs[i] = doc
+			return nil
+		})
 	}
-	wg.Wait()
+	if err := group.Wait(); err != nil {
+		panic(err)
+	}
 
 	slices.SortFunc(docs, func(o1, o2 govydoc.ObjectDoc) int { return cmp.Compare(o1.Name, o2.Name) })
 
@@ -72,10 +77,10 @@ func main() {
 			kind    Kind
 		)
 		for _, prop := range doc.Properties {
-			switch prop.Path {
-			case "$.apiVersion":
+			switch {
+			case prop.Path.Equal(apiVersionPath):
 				version = prop.Values[0]
-			case "$.kind":
+			case prop.Path.Equal(kindPath):
 				kind = prop.Values[0]
 			}
 		}

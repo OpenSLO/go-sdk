@@ -68,9 +68,9 @@ func ExampleSLO() {
 			Objectives: []v1alpha.SLOObjective{
 				{
 					DisplayName:     "Good",
-					BudgetTarget:    ptr(0.995),
-					TimeSliceTarget: ptr(0.95),
-					Value:           ptr(1.0),
+					BudgetTarget:    new(0.995),
+					TimeSliceTarget: new(0.95),
+					Value:           new(1.0),
 					RatioMetrics: &v1alpha.SLORatioMetrics{
 						Incremental: true,
 						Good: v1alpha.SLOMetricSourceSpec{
@@ -140,5 +140,3 @@ func ExampleSLO() {
 	//       isRolling: false
 	//       unit: Week
 }
-
-func ptr[T any](v T) *T { return &v }

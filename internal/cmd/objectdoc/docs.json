@@ -33,7 +33,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo.com/v2alpha'",
+              "description": "must be equal to 'openslo.com/v2alpha'",
               "errorCode": "equal_to"
             }
           ],
@@ -55,7 +55,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertCondition'",
+              "description": "must be equal to 'AlertCondition'",
               "errorCode": "equal_to"
             }
           ],
@@ -114,12 +114,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -167,12 +167,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -385,7 +385,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo.com/v2alpha'",
+              "description": "must be equal to 'openslo.com/v2alpha'",
               "errorCode": "equal_to"
             }
           ],
@@ -407,7 +407,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertNotificationTarget'",
+              "description": "must be equal to 'AlertNotificationTarget'",
               "errorCode": "equal_to"
             }
           ],
@@ -466,12 +466,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -519,12 +519,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -627,7 +627,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo.com/v2alpha'",
+              "description": "must be equal to 'openslo.com/v2alpha'",
               "errorCode": "equal_to"
             }
           ],
@@ -649,7 +649,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertPolicy'",
+              "description": "must be equal to 'AlertPolicy'",
               "errorCode": "equal_to"
             }
           ],
@@ -708,12 +708,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -761,12 +761,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -928,7 +928,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertCondition'",
+              "description": "must be equal to 'AlertCondition'",
               "errorCode": "equal_to"
             }
           ],
@@ -987,12 +987,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.conditions[*].metadata.labels.~",
+            "$.spec.conditions[*].metadata.labels.*~",
             "$.spec.conditions[*].metadata.labels.*"
           ]
         },
         {
-          "path": "$.spec.conditions[*].metadata.labels.~",
+          "path": "$.spec.conditions[*].metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -1040,12 +1040,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.conditions[*].metadata.annotations.~",
+            "$.spec.conditions[*].metadata.annotations.*~",
             "$.spec.conditions[*].metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.conditions[*].metadata.annotations.~",
+          "path": "$.spec.conditions[*].metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -1309,7 +1309,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertNotificationTarget'",
+              "description": "must be equal to 'AlertNotificationTarget'",
               "errorCode": "equal_to"
             }
           ],
@@ -1368,12 +1368,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.notificationTargets[*].metadata.labels.~",
+            "$.spec.notificationTargets[*].metadata.labels.*~",
             "$.spec.notificationTargets[*].metadata.labels.*"
           ]
         },
         {
-          "path": "$.spec.notificationTargets[*].metadata.labels.~",
+          "path": "$.spec.notificationTargets[*].metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -1421,12 +1421,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.notificationTargets[*].metadata.annotations.~",
+            "$.spec.notificationTargets[*].metadata.annotations.*~",
             "$.spec.notificationTargets[*].metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.notificationTargets[*].metadata.annotations.~",
+          "path": "$.spec.notificationTargets[*].metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -1535,7 +1535,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo.com/v2alpha'",
+              "description": "must be equal to 'openslo.com/v2alpha'",
               "errorCode": "equal_to"
             }
           ],
@@ -1557,7 +1557,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'DataSource'",
+              "description": "must be equal to 'DataSource'",
               "errorCode": "equal_to"
             }
           ],
@@ -1616,12 +1616,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -1669,12 +1669,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -1800,7 +1800,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo.com/v2alpha'",
+              "description": "must be equal to 'openslo.com/v2alpha'",
               "errorCode": "equal_to"
             }
           ],
@@ -1822,7 +1822,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'SLI'",
+              "description": "must be equal to 'SLI'",
               "errorCode": "equal_to"
             }
           ],
@@ -1881,12 +1881,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -1934,12 +1934,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -2124,12 +2124,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.thresholdMetric.spec.~",
+            "$.spec.thresholdMetric.spec.*~",
             "$.spec.thresholdMetric.spec.*"
           ]
         },
         {
-          "path": "$.spec.thresholdMetric.spec.~",
+          "path": "$.spec.thresholdMetric.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -2306,12 +2306,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.ratioMetric.good.spec.~",
+            "$.spec.ratioMetric.good.spec.*~",
             "$.spec.ratioMetric.good.spec.*"
           ]
         },
         {
-          "path": "$.spec.ratioMetric.good.spec.~",
+          "path": "$.spec.ratioMetric.good.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -2447,12 +2447,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.ratioMetric.bad.spec.~",
+            "$.spec.ratioMetric.bad.spec.*~",
             "$.spec.ratioMetric.bad.spec.*"
           ]
         },
         {
-          "path": "$.spec.ratioMetric.bad.spec.~",
+          "path": "$.spec.ratioMetric.bad.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -2588,12 +2588,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.ratioMetric.total.spec.~",
+            "$.spec.ratioMetric.total.spec.*~",
             "$.spec.ratioMetric.total.spec.*"
           ]
         },
         {
-          "path": "$.spec.ratioMetric.total.spec.~",
+          "path": "$.spec.ratioMetric.total.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -2751,12 +2751,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.ratioMetric.raw.spec.~",
+            "$.spec.ratioMetric.raw.spec.*~",
             "$.spec.ratioMetric.raw.spec.*"
           ]
         },
         {
-          "path": "$.spec.ratioMetric.raw.spec.~",
+          "path": "$.spec.ratioMetric.raw.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -2804,7 +2804,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo.com/v2alpha'",
+              "description": "must be equal to 'openslo.com/v2alpha'",
               "errorCode": "equal_to"
             }
           ],
@@ -2826,7 +2826,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'SLO'",
+              "description": "must be equal to 'SLO'",
               "errorCode": "equal_to"
             }
           ],
@@ -2885,12 +2885,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -2938,12 +2938,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -3101,12 +3101,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.sli.metadata.labels.~",
+            "$.spec.sli.metadata.labels.*~",
             "$.spec.sli.metadata.labels.*"
           ]
         },
         {
-          "path": "$.spec.sli.metadata.labels.~",
+          "path": "$.spec.sli.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -3154,12 +3154,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.sli.metadata.annotations.~",
+            "$.spec.sli.metadata.annotations.*~",
             "$.spec.sli.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.sli.metadata.annotations.~",
+          "path": "$.spec.sli.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -3344,12 +3344,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.sli.spec.thresholdMetric.spec.~",
+            "$.spec.sli.spec.thresholdMetric.spec.*~",
             "$.spec.sli.spec.thresholdMetric.spec.*"
           ]
         },
         {
-          "path": "$.spec.sli.spec.thresholdMetric.spec.~",
+          "path": "$.spec.sli.spec.thresholdMetric.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -3526,12 +3526,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.sli.spec.ratioMetric.good.spec.~",
+            "$.spec.sli.spec.ratioMetric.good.spec.*~",
             "$.spec.sli.spec.ratioMetric.good.spec.*"
           ]
         },
         {
-          "path": "$.spec.sli.spec.ratioMetric.good.spec.~",
+          "path": "$.spec.sli.spec.ratioMetric.good.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -3667,12 +3667,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.sli.spec.ratioMetric.bad.spec.~",
+            "$.spec.sli.spec.ratioMetric.bad.spec.*~",
             "$.spec.sli.spec.ratioMetric.bad.spec.*"
           ]
         },
         {
-          "path": "$.spec.sli.spec.ratioMetric.bad.spec.~",
+          "path": "$.spec.sli.spec.ratioMetric.bad.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -3808,12 +3808,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.sli.spec.ratioMetric.total.spec.~",
+            "$.spec.sli.spec.ratioMetric.total.spec.*~",
             "$.spec.sli.spec.ratioMetric.total.spec.*"
           ]
         },
         {
-          "path": "$.spec.sli.spec.ratioMetric.total.spec.~",
+          "path": "$.spec.sli.spec.ratioMetric.total.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -3971,12 +3971,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.sli.spec.ratioMetric.raw.spec.~",
+            "$.spec.sli.spec.ratioMetric.raw.spec.*~",
             "$.spec.sli.spec.ratioMetric.raw.spec.*"
           ]
         },
         {
-          "path": "$.spec.sli.spec.ratioMetric.raw.spec.~",
+          "path": "$.spec.sli.spec.ratioMetric.raw.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -4257,11 +4257,11 @@
               "errorCode": "optional"
             },
             {
-              "description": "should be greater than or equal to '0'",
+              "description": "must be greater than or equal to '0'",
               "errorCode": "greater_than_or_equal_to"
             },
             {
-              "description": "should be less than '1'",
+              "description": "must be less than '1'",
               "errorCode": "less_than"
             }
           ]
@@ -4278,11 +4278,11 @@
               "errorCode": "optional"
             },
             {
-              "description": "should be greater than or equal to '0'",
+              "description": "must be greater than or equal to '0'",
               "errorCode": "greater_than_or_equal_to"
             },
             {
-              "description": "should be less than '100'",
+              "description": "must be less than '100'",
               "errorCode": "less_than"
             }
           ]
@@ -4299,11 +4299,11 @@
               "errorCode": "required"
             },
             {
-              "description": "should be greater than '0'",
+              "description": "must be greater than '0'",
               "errorCode": "greater_than"
             },
             {
-              "description": "should be less than or equal to '1'",
+              "description": "must be less than or equal to '1'",
               "errorCode": "less_than_or_equal_to"
             }
           ]
@@ -4409,12 +4409,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.objectives[*].sli.metadata.labels.~",
+            "$.spec.objectives[*].sli.metadata.labels.*~",
             "$.spec.objectives[*].sli.metadata.labels.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].sli.metadata.labels.~",
+          "path": "$.spec.objectives[*].sli.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -4471,12 +4471,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.objectives[*].sli.metadata.annotations.~",
+            "$.spec.objectives[*].sli.metadata.annotations.*~",
             "$.spec.objectives[*].sli.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].sli.metadata.annotations.~",
+          "path": "$.spec.objectives[*].sli.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -4700,12 +4700,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.objectives[*].sli.spec.thresholdMetric.spec.~",
+            "$.spec.objectives[*].sli.spec.thresholdMetric.spec.*~",
             "$.spec.objectives[*].sli.spec.thresholdMetric.spec.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].sli.spec.thresholdMetric.spec.~",
+          "path": "$.spec.objectives[*].sli.spec.thresholdMetric.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -4921,12 +4921,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.objectives[*].sli.spec.ratioMetric.good.spec.~",
+            "$.spec.objectives[*].sli.spec.ratioMetric.good.spec.*~",
             "$.spec.objectives[*].sli.spec.ratioMetric.good.spec.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].sli.spec.ratioMetric.good.spec.~",
+          "path": "$.spec.objectives[*].sli.spec.ratioMetric.good.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -5089,12 +5089,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.objectives[*].sli.spec.ratioMetric.bad.spec.~",
+            "$.spec.objectives[*].sli.spec.ratioMetric.bad.spec.*~",
             "$.spec.objectives[*].sli.spec.ratioMetric.bad.spec.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].sli.spec.ratioMetric.bad.spec.~",
+          "path": "$.spec.objectives[*].sli.spec.ratioMetric.bad.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -5257,12 +5257,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.objectives[*].sli.spec.ratioMetric.total.spec.~",
+            "$.spec.objectives[*].sli.spec.ratioMetric.total.spec.*~",
             "$.spec.objectives[*].sli.spec.ratioMetric.total.spec.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].sli.spec.ratioMetric.total.spec.~",
+          "path": "$.spec.objectives[*].sli.spec.ratioMetric.total.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -5453,12 +5453,12 @@
             "kind": "map[string]interface"
           },
           "childrenPaths": [
-            "$.spec.objectives[*].sli.spec.ratioMetric.raw.spec.~",
+            "$.spec.objectives[*].sli.spec.ratioMetric.raw.spec.*~",
             "$.spec.objectives[*].sli.spec.ratioMetric.raw.spec.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].sli.spec.ratioMetric.raw.spec.~",
+          "path": "$.spec.objectives[*].sli.spec.ratioMetric.raw.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -5521,7 +5521,7 @@
               ]
             },
             {
-              "description": "should be greater than '0'",
+              "description": "must be greater than '0'",
               "errorCode": "greater_than",
               "conditions": [
                 "is composite SLO"
@@ -5577,7 +5577,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertPolicy'",
+              "description": "must be equal to 'AlertPolicy'",
               "errorCode": "equal_to"
             }
           ],
@@ -5636,12 +5636,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].metadata.labels.~",
+            "$.spec.alertPolicies[*].metadata.labels.*~",
             "$.spec.alertPolicies[*].metadata.labels.*"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].metadata.labels.~",
+          "path": "$.spec.alertPolicies[*].metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -5689,12 +5689,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].metadata.annotations.~",
+            "$.spec.alertPolicies[*].metadata.annotations.*~",
             "$.spec.alertPolicies[*].metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].metadata.annotations.~",
+          "path": "$.spec.alertPolicies[*].metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -5862,7 +5862,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertCondition'",
+              "description": "must be equal to 'AlertCondition'",
               "errorCode": "equal_to"
             }
           ],
@@ -5921,12 +5921,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels.~",
+            "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels.*~",
             "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels.*"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels.~",
+          "path": "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -5974,12 +5974,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].spec.conditions[*].metadata.annotations.~",
+            "$.spec.alertPolicies[*].spec.conditions[*].metadata.annotations.*~",
             "$.spec.alertPolicies[*].spec.conditions[*].metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].spec.conditions[*].metadata.annotations.~",
+          "path": "$.spec.alertPolicies[*].spec.conditions[*].metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -6243,7 +6243,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertNotificationTarget'",
+              "description": "must be equal to 'AlertNotificationTarget'",
               "errorCode": "equal_to"
             }
           ],
@@ -6302,12 +6302,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels.~",
+            "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels.*~",
             "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels.*"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels.~",
+          "path": "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -6355,12 +6355,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.annotations.~",
+            "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.annotations.*~",
             "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.annotations.~",
+          "path": "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -6495,7 +6495,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo.com/v2alpha'",
+              "description": "must be equal to 'openslo.com/v2alpha'",
               "errorCode": "equal_to"
             }
           ],
@@ -6517,7 +6517,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'Service'",
+              "description": "must be equal to 'Service'",
               "errorCode": "equal_to"
             }
           ],
@@ -6576,12 +6576,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -6629,12 +6629,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -6725,7 +6725,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo/v1'",
+              "description": "must be equal to 'openslo/v1'",
               "errorCode": "equal_to"
             }
           ],
@@ -6747,7 +6747,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertCondition'",
+              "description": "must be equal to 'AlertCondition'",
               "errorCode": "equal_to"
             }
           ],
@@ -6824,13 +6824,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*",
             "$.metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -6865,12 +6865,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -7080,7 +7080,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo/v1'",
+              "description": "must be equal to 'openslo/v1'",
               "errorCode": "equal_to"
             }
           ],
@@ -7102,7 +7102,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertNotificationTarget'",
+              "description": "must be equal to 'AlertNotificationTarget'",
               "errorCode": "equal_to"
             }
           ],
@@ -7179,13 +7179,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*",
             "$.metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -7220,12 +7220,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -7325,7 +7325,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo/v1'",
+              "description": "must be equal to 'openslo/v1'",
               "errorCode": "equal_to"
             }
           ],
@@ -7347,7 +7347,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertPolicy'",
+              "description": "must be equal to 'AlertPolicy'",
               "errorCode": "equal_to"
             }
           ],
@@ -7424,13 +7424,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*",
             "$.metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -7465,12 +7465,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -7629,7 +7629,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertCondition'",
+              "description": "must be equal to 'AlertCondition'",
               "errorCode": "equal_to"
             }
           ],
@@ -7706,13 +7706,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.conditions[*].metadata.labels.~",
+            "$.spec.conditions[*].metadata.labels.*~",
             "$.spec.conditions[*].metadata.labels.*",
             "$.spec.conditions[*].metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.spec.conditions[*].metadata.labels.~",
+          "path": "$.spec.conditions[*].metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -7747,12 +7747,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.conditions[*].metadata.annotations.~",
+            "$.spec.conditions[*].metadata.annotations.*~",
             "$.spec.conditions[*].metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.conditions[*].metadata.annotations.~",
+          "path": "$.spec.conditions[*].metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -8013,7 +8013,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertNotificationTarget'",
+              "description": "must be equal to 'AlertNotificationTarget'",
               "errorCode": "equal_to"
             }
           ],
@@ -8090,13 +8090,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.notificationTargets[*].metadata.labels.~",
+            "$.spec.notificationTargets[*].metadata.labels.*~",
             "$.spec.notificationTargets[*].metadata.labels.*",
             "$.spec.notificationTargets[*].metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.spec.notificationTargets[*].metadata.labels.~",
+          "path": "$.spec.notificationTargets[*].metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -8131,12 +8131,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.notificationTargets[*].metadata.annotations.~",
+            "$.spec.notificationTargets[*].metadata.annotations.*~",
             "$.spec.notificationTargets[*].metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.notificationTargets[*].metadata.annotations.~",
+          "path": "$.spec.notificationTargets[*].metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -8242,7 +8242,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo/v1'",
+              "description": "must be equal to 'openslo/v1'",
               "errorCode": "equal_to"
             }
           ],
@@ -8264,7 +8264,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'DataSource'",
+              "description": "must be equal to 'DataSource'",
               "errorCode": "equal_to"
             }
           ],
@@ -8341,13 +8341,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*",
             "$.metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -8382,12 +8382,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -8510,7 +8510,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo/v1'",
+              "description": "must be equal to 'openslo/v1'",
               "errorCode": "equal_to"
             }
           ],
@@ -8532,7 +8532,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'SLI'",
+              "description": "must be equal to 'SLI'",
               "errorCode": "equal_to"
             }
           ],
@@ -8609,13 +8609,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*",
             "$.metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -8650,12 +8650,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -8794,12 +8794,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.thresholdMetric.metricSource.spec.~",
+            "$.spec.thresholdMetric.metricSource.spec.*~",
             "$.spec.thresholdMetric.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.thresholdMetric.metricSource.spec.~",
+          "path": "$.spec.thresholdMetric.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -8933,12 +8933,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.ratioMetric.good.metricSource.spec.~",
+            "$.spec.ratioMetric.good.metricSource.spec.*~",
             "$.spec.ratioMetric.good.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.ratioMetric.good.metricSource.spec.~",
+          "path": "$.spec.ratioMetric.good.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -9031,12 +9031,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.ratioMetric.bad.metricSource.spec.~",
+            "$.spec.ratioMetric.bad.metricSource.spec.*~",
             "$.spec.ratioMetric.bad.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.ratioMetric.bad.metricSource.spec.~",
+          "path": "$.spec.ratioMetric.bad.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -9129,12 +9129,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.ratioMetric.total.metricSource.spec.~",
+            "$.spec.ratioMetric.total.metricSource.spec.*~",
             "$.spec.ratioMetric.total.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.ratioMetric.total.metricSource.spec.~",
+          "path": "$.spec.ratioMetric.total.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -9249,12 +9249,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.ratioMetric.raw.metricSource.spec.~",
+            "$.spec.ratioMetric.raw.metricSource.spec.*~",
             "$.spec.ratioMetric.raw.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.ratioMetric.raw.metricSource.spec.~",
+          "path": "$.spec.ratioMetric.raw.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -9302,7 +9302,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo/v1'",
+              "description": "must be equal to 'openslo/v1'",
               "errorCode": "equal_to"
             }
           ],
@@ -9324,7 +9324,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'SLO'",
+              "description": "must be equal to 'SLO'",
               "errorCode": "equal_to"
             }
           ],
@@ -9401,13 +9401,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*",
             "$.metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -9442,12 +9442,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -9620,13 +9620,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.indicator.metadata.labels.~",
+            "$.spec.indicator.metadata.labels.*~",
             "$.spec.indicator.metadata.labels.*",
             "$.spec.indicator.metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.spec.indicator.metadata.labels.~",
+          "path": "$.spec.indicator.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -9661,12 +9661,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.indicator.metadata.annotations.~",
+            "$.spec.indicator.metadata.annotations.*~",
             "$.spec.indicator.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.indicator.metadata.annotations.~",
+          "path": "$.spec.indicator.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -9805,12 +9805,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.indicator.spec.thresholdMetric.metricSource.spec.~",
+            "$.spec.indicator.spec.thresholdMetric.metricSource.spec.*~",
             "$.spec.indicator.spec.thresholdMetric.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.indicator.spec.thresholdMetric.metricSource.spec.~",
+          "path": "$.spec.indicator.spec.thresholdMetric.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -9944,12 +9944,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.indicator.spec.ratioMetric.good.metricSource.spec.~",
+            "$.spec.indicator.spec.ratioMetric.good.metricSource.spec.*~",
             "$.spec.indicator.spec.ratioMetric.good.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.indicator.spec.ratioMetric.good.metricSource.spec.~",
+          "path": "$.spec.indicator.spec.ratioMetric.good.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -10042,12 +10042,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.indicator.spec.ratioMetric.bad.metricSource.spec.~",
+            "$.spec.indicator.spec.ratioMetric.bad.metricSource.spec.*~",
             "$.spec.indicator.spec.ratioMetric.bad.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.indicator.spec.ratioMetric.bad.metricSource.spec.~",
+          "path": "$.spec.indicator.spec.ratioMetric.bad.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -10140,12 +10140,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.indicator.spec.ratioMetric.total.metricSource.spec.~",
+            "$.spec.indicator.spec.ratioMetric.total.metricSource.spec.*~",
             "$.spec.indicator.spec.ratioMetric.total.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.indicator.spec.ratioMetric.total.metricSource.spec.~",
+          "path": "$.spec.indicator.spec.ratioMetric.total.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -10260,12 +10260,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.indicator.spec.ratioMetric.raw.metricSource.spec.~",
+            "$.spec.indicator.spec.ratioMetric.raw.metricSource.spec.*~",
             "$.spec.indicator.spec.ratioMetric.raw.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.indicator.spec.ratioMetric.raw.metricSource.spec.~",
+          "path": "$.spec.indicator.spec.ratioMetric.raw.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -10543,11 +10543,11 @@
               "errorCode": "optional"
             },
             {
-              "description": "should be greater than or equal to '0'",
+              "description": "must be greater than or equal to '0'",
               "errorCode": "greater_than_or_equal_to"
             },
             {
-              "description": "should be less than '1'",
+              "description": "must be less than '1'",
               "errorCode": "less_than"
             }
           ]
@@ -10564,11 +10564,11 @@
               "errorCode": "optional"
             },
             {
-              "description": "should be greater than or equal to '0'",
+              "description": "must be greater than or equal to '0'",
               "errorCode": "greater_than_or_equal_to"
             },
             {
-              "description": "should be less than '100'",
+              "description": "must be less than '100'",
               "errorCode": "less_than"
             }
           ]
@@ -10585,11 +10585,11 @@
               "errorCode": "required"
             },
             {
-              "description": "should be greater than '0'",
+              "description": "must be greater than '0'",
               "errorCode": "greater_than"
             },
             {
-              "description": "should be less than or equal to '1'",
+              "description": "must be less than or equal to '1'",
               "errorCode": "less_than_or_equal_to"
             }
           ]
@@ -10698,13 +10698,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.objectives[*].indicator.metadata.labels.~",
+            "$.spec.objectives[*].indicator.metadata.labels.*~",
             "$.spec.objectives[*].indicator.metadata.labels.*",
             "$.spec.objectives[*].indicator.metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.spec.objectives[*].indicator.metadata.labels.~",
+          "path": "$.spec.objectives[*].indicator.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -10739,12 +10739,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.objectives[*].indicator.metadata.annotations.~",
+            "$.spec.objectives[*].indicator.metadata.annotations.*~",
             "$.spec.objectives[*].indicator.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].indicator.metadata.annotations.~",
+          "path": "$.spec.objectives[*].indicator.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -10883,12 +10883,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.objectives[*].indicator.spec.thresholdMetric.metricSource.spec.~",
+            "$.spec.objectives[*].indicator.spec.thresholdMetric.metricSource.spec.*~",
             "$.spec.objectives[*].indicator.spec.thresholdMetric.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].indicator.spec.thresholdMetric.metricSource.spec.~",
+          "path": "$.spec.objectives[*].indicator.spec.thresholdMetric.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -11022,12 +11022,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.objectives[*].indicator.spec.ratioMetric.good.metricSource.spec.~",
+            "$.spec.objectives[*].indicator.spec.ratioMetric.good.metricSource.spec.*~",
             "$.spec.objectives[*].indicator.spec.ratioMetric.good.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].indicator.spec.ratioMetric.good.metricSource.spec.~",
+          "path": "$.spec.objectives[*].indicator.spec.ratioMetric.good.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -11120,12 +11120,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.objectives[*].indicator.spec.ratioMetric.bad.metricSource.spec.~",
+            "$.spec.objectives[*].indicator.spec.ratioMetric.bad.metricSource.spec.*~",
             "$.spec.objectives[*].indicator.spec.ratioMetric.bad.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].indicator.spec.ratioMetric.bad.metricSource.spec.~",
+          "path": "$.spec.objectives[*].indicator.spec.ratioMetric.bad.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -11218,12 +11218,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.objectives[*].indicator.spec.ratioMetric.total.metricSource.spec.~",
+            "$.spec.objectives[*].indicator.spec.ratioMetric.total.metricSource.spec.*~",
             "$.spec.objectives[*].indicator.spec.ratioMetric.total.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].indicator.spec.ratioMetric.total.metricSource.spec.~",
+          "path": "$.spec.objectives[*].indicator.spec.ratioMetric.total.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -11338,12 +11338,12 @@
             }
           ],
           "childrenPaths": [
-            "$.spec.objectives[*].indicator.spec.ratioMetric.raw.metricSource.spec.~",
+            "$.spec.objectives[*].indicator.spec.ratioMetric.raw.metricSource.spec.*~",
             "$.spec.objectives[*].indicator.spec.ratioMetric.raw.metricSource.spec.*"
           ]
         },
         {
-          "path": "$.spec.objectives[*].indicator.spec.ratioMetric.raw.metricSource.spec.~",
+          "path": "$.spec.objectives[*].indicator.spec.ratioMetric.raw.metricSource.spec.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -11394,7 +11394,7 @@
               "errorCode": "optional"
             },
             {
-              "description": "should be greater than '0'",
+              "description": "must be greater than '0'",
               "errorCode": "greater_than"
             }
           ]
@@ -11447,7 +11447,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertPolicy'",
+              "description": "must be equal to 'AlertPolicy'",
               "errorCode": "equal_to"
             }
           ],
@@ -11524,13 +11524,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].metadata.labels.~",
+            "$.spec.alertPolicies[*].metadata.labels.*~",
             "$.spec.alertPolicies[*].metadata.labels.*",
             "$.spec.alertPolicies[*].metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].metadata.labels.~",
+          "path": "$.spec.alertPolicies[*].metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -11565,12 +11565,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].metadata.annotations.~",
+            "$.spec.alertPolicies[*].metadata.annotations.*~",
             "$.spec.alertPolicies[*].metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].metadata.annotations.~",
+          "path": "$.spec.alertPolicies[*].metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -11735,7 +11735,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertCondition'",
+              "description": "must be equal to 'AlertCondition'",
               "errorCode": "equal_to"
             }
           ],
@@ -11812,13 +11812,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels.~",
+            "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels.*~",
             "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels.*",
             "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels.~",
+          "path": "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -11853,12 +11853,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].spec.conditions[*].metadata.annotations.~",
+            "$.spec.alertPolicies[*].spec.conditions[*].metadata.annotations.*~",
             "$.spec.alertPolicies[*].spec.conditions[*].metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].spec.conditions[*].metadata.annotations.~",
+          "path": "$.spec.alertPolicies[*].spec.conditions[*].metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -12119,7 +12119,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'AlertNotificationTarget'",
+              "description": "must be equal to 'AlertNotificationTarget'",
               "errorCode": "equal_to"
             }
           ],
@@ -12196,13 +12196,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels.~",
+            "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels.*~",
             "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels.*",
             "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels.~",
+          "path": "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -12237,12 +12237,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.annotations.~",
+            "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.annotations.*~",
             "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.annotations.*"
           ]
         },
         {
-          "path": "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.annotations.~",
+          "path": "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -12374,7 +12374,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo/v1'",
+              "description": "must be equal to 'openslo/v1'",
               "errorCode": "equal_to"
             }
           ],
@@ -12396,7 +12396,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'Service'",
+              "description": "must be equal to 'Service'",
               "errorCode": "equal_to"
             }
           ],
@@ -12473,13 +12473,13 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.labels.~",
+            "$.metadata.labels.*~",
             "$.metadata.labels.*",
             "$.metadata.labels.*[*]"
           ]
         },
         {
-          "path": "$.metadata.labels.~",
+          "path": "$.metadata.labels.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -12514,12 +12514,12 @@
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v1"
           },
           "childrenPaths": [
-            "$.metadata.annotations.~",
+            "$.metadata.annotations.*~",
             "$.metadata.annotations.*"
           ]
         },
         {
-          "path": "$.metadata.annotations.~",
+          "path": "$.metadata.annotations.*~",
           "typeInfo": {
             "name": "string",
             "kind": "string"
@@ -12607,7 +12607,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo/v1alpha'",
+              "description": "must be equal to 'openslo/v1alpha'",
               "errorCode": "equal_to"
             }
           ],
@@ -12629,7 +12629,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'SLO'",
+              "description": "must be equal to 'SLO'",
               "errorCode": "equal_to"
             }
           ],
@@ -12907,7 +12907,7 @@
               "errorCode": "required"
             },
             {
-              "description": "string cannot be empty",
+              "description": "string must not be empty",
               "errorCode": "string_not_empty"
             }
           ]
@@ -13053,7 +13053,7 @@
               "errorCode": "required"
             },
             {
-              "description": "string cannot be empty",
+              "description": "string must not be empty",
               "errorCode": "string_not_empty"
             }
           ]
@@ -13117,7 +13117,7 @@
               "errorCode": "required"
             },
             {
-              "description": "string cannot be empty",
+              "description": "string must not be empty",
               "errorCode": "string_not_empty"
             }
           ]
@@ -13141,11 +13141,11 @@
               "errorCode": "required"
             },
             {
-              "description": "should be greater than or equal to '0'",
+              "description": "must be greater than or equal to '0'",
               "errorCode": "greater_than_or_equal_to"
             },
             {
-              "description": "should be less than '1'",
+              "description": "must be less than '1'",
               "errorCode": "less_than"
             }
           ]
@@ -13162,11 +13162,11 @@
               "errorCode": "required"
             },
             {
-              "description": "should be greater than or equal to '0'",
+              "description": "must be greater than or equal to '0'",
               "errorCode": "greater_than_or_equal_to"
             },
             {
-              "description": "should be less than or equal to '1'",
+              "description": "must be less than or equal to '1'",
               "errorCode": "less_than_or_equal_to"
             }
           ]
@@ -13243,7 +13243,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'openslo/v1alpha'",
+              "description": "must be equal to 'openslo/v1alpha'",
               "errorCode": "equal_to"
             }
           ],
@@ -13265,7 +13265,7 @@
               "errorCode": "required"
             },
             {
-              "description": "should be equal to 'Service'",
+              "description": "must be equal to 'Service'",
               "errorCode": "equal_to"
             }
           ],

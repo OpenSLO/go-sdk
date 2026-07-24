@@ -27,11 +27,11 @@ func TestDataSource_Validate_VersionAndKind(t *testing.T) {
 	assert.True(t, dataSourceValidationMessageRegexp.MatchString(err.Error()))
 	govytest.AssertError(t, err,
 		govytest.ExpectedRuleError{
-			PropertyName: "apiVersion",
+			PropertyPath: "apiVersion",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 		govytest.ExpectedRuleError{
-			PropertyName: "kind",
+			PropertyPath: "kind",
 			Code:         rules.ErrorCodeEqualTo,
 		},
 	)
@@ -73,7 +73,7 @@ func runDataSourceSpecTests[T openslo.Object](
 		object := objectGetter(dataSource.Spec)
 		err := object.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyName: path + ".description",
+			PropertyPath: path + ".description",
 			Code:         rules.ErrorCodeStringMaxLength,
 		})
 	})
@@ -85,11 +85,11 @@ func runDataSourceSpecTests[T openslo.Object](
 		err := object.Validate()
 		govytest.AssertError(t, err,
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".type",
+				PropertyPath: path + ".type",
 				Code:         rules.ErrorCodeRequired,
 			},
 			govytest.ExpectedRuleError{
-				PropertyName: path + ".connectionDetails",
+				PropertyPath: path + ".connectionDetails",
 				Code:         rules.ErrorCodeRequired,
 			},
 		)
