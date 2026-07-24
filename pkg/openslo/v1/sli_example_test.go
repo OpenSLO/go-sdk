@@ -58,7 +58,7 @@ func ExampleSLI() {
 					MetricSource: v1.SLIMetricSource{
 						MetricSourceRef: "my-datadog",
 						Type:            "Datadog",
-						Spec: map[string]interface{}{
+						Spec: map[string]any{
 							"query": "sum:trace.http.request.hits.by_http_status{http.status_code:200}.as_count()",
 						},
 					},
@@ -67,7 +67,7 @@ func ExampleSLI() {
 					MetricSource: v1.SLIMetricSource{
 						MetricSourceRef: "my-datadog",
 						Type:            "Datadog",
-						Spec: map[string]interface{}{
+						Spec: map[string]any{
 							"query": "sum:trace.http.request.hits.by_http_status{*}.as_count()",
 						},
 					},

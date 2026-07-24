@@ -97,9 +97,9 @@ func ExampleSLO() {
 			Objectives: []v2alpha.SLOObjective{
 				{
 					DisplayName:     "Good",
-					Target:          ptr(0.995),
-					TimeSliceTarget: ptr(0.95),
-					TimeSliceWindow: ptr(v2alpha.NewDurationShorthand(1, v2alpha.DurationShorthandUnitMinute)),
+					Target:          new(0.995),
+					TimeSliceTarget: new(0.95),
+					TimeSliceWindow: new(v2alpha.NewDurationShorthand(1, v2alpha.DurationShorthandUnitMinute)),
 				},
 			},
 		},

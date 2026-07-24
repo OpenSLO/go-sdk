@@ -198,13 +198,11 @@ func validAlertCondition() AlertCondition {
 			Condition: AlertConditionType{
 				Kind:           AlertConditionKindBurnRate,
 				Operator:       OperatorLTE,
-				Threshold:      ptr(2.0),
+				Threshold:      new(2.0),
 				LookbackWindow: NewDurationShorthand(1, DurationShorthandUnitHour),
-				AlertAfter:     ptr(NewDurationShorthand(5, DurationShorthandUnitMinute)),
+				AlertAfter:     new(NewDurationShorthand(5, DurationShorthandUnitMinute)),
 			},
 			Description: "If the CPU usage is too high for given period then it should alert",
 		},
 	)
 }
-
-func ptr[T any](v T) *T { return &v }

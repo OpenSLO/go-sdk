@@ -118,7 +118,7 @@ func isEmpty(v any) bool {
 	switch rv.Kind() {
 	case reflect.Map, reflect.Slice:
 		return rv.Len() == 0
-	case reflect.Ptr:
+	case reflect.Pointer:
 		if rv.IsNil() {
 			return true
 		}

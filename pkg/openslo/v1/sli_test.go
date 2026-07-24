@@ -298,7 +298,7 @@ func validGoodOverTotalSLI() SLI {
 					MetricSource: SLIMetricSource{
 						MetricSourceRef: "my-datadog",
 						Type:            "Datadog",
-						Spec: map[string]interface{}{
+						Spec: map[string]any{
 							"query": "sum:trace.http.request.hits.by_http_status{http.status_code:200}.as_count()",
 						},
 					},
@@ -307,7 +307,7 @@ func validGoodOverTotalSLI() SLI {
 					MetricSource: SLIMetricSource{
 						MetricSourceRef: "my-datadog",
 						Type:            "Datadog",
-						Spec: map[string]interface{}{
+						Spec: map[string]any{
 							"query": "sum:trace.http.request.hits.by_http_status{*}.as_count()",
 						},
 					},
@@ -325,7 +325,7 @@ func validBadOverTotalSLI() SLI {
 		MetricSource: SLIMetricSource{
 			MetricSourceRef: "my-datadog",
 			Type:            "Datadog",
-			Spec: map[string]interface{}{
+			Spec: map[string]any{
 				"query": "sum:trace.http.request.hits.by_http_status{!http.status_code:200}.as_count()",
 			},
 		},
@@ -351,7 +351,7 @@ func validRawSLI() SLI {
 					MetricSource: SLIMetricSource{
 						MetricSourceRef: "my-prometheus",
 						Type:            "Prometheus",
-						Spec: map[string]interface{}{
+						Spec: map[string]any{
 							"query": `
 1 - (
   sum(sum_over_time(poller_client_satisfaction_ratio[{{.window}}]))
@@ -382,7 +382,7 @@ func validThresholdSLI() SLI {
 				MetricSource: SLIMetricSource{
 					MetricSourceRef: "my-prometheus",
 					Type:            "Prometheus",
-					Spec: map[string]interface{}{
+					Spec: map[string]any{
 						// nolint: lll
 						"query": `sum(min_over_time(kafka_consumergroup_lag{k8s_cluster="prod", consumergroup="annotator", topic="annotator-in"}[2m]))`,
 					},

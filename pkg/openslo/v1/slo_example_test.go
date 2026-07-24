@@ -108,9 +108,9 @@ func ExampleSLO() {
 			Objectives: []v1.SLOObjective{
 				{
 					DisplayName:     "Good",
-					Target:          ptr(0.995),
-					TimeSliceTarget: ptr(0.95),
-					TimeSliceWindow: ptr(v1.NewDurationShorthand(1, v1.DurationShorthandUnitMinute)),
+					Target:          new(0.995),
+					TimeSliceTarget: new(0.95),
+					TimeSliceWindow: new(v1.NewDurationShorthand(1, v1.DurationShorthandUnitMinute)),
 				},
 			},
 		},

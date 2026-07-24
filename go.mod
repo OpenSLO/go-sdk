@@ -1,6 +1,6 @@
 module github.com/OpenSLO/go-sdk
 
-go 1.25.5
+go 1.26
 
 require (
 	github.com/nobl9/govy v0.26.0

@@ -179,7 +179,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 			{-0.1, rules.ErrorCodeGreaterThanOrEqualTo},
 		} {
 			slo := validSLO()
-			slo.Spec.Objectives[0].BudgetTarget = ptr(tc.in)
+			slo.Spec.Objectives[0].BudgetTarget = new(tc.in)
 			err := slo.Validate()
 			if tc.errorCode != "" {
 				govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -334,9 +334,9 @@ func validSLO() SLO {
 			Objectives: []SLOObjective{
 				{
 					DisplayName:     "Good",
-					BudgetTarget:    ptr(0.995),
-					TimeSliceTarget: ptr(0.95),
-					Value:           ptr(1.0),
+					BudgetTarget:    new(0.995),
+					TimeSliceTarget: new(0.95),
+					Value:           new(1.0),
 					RatioMetrics: &SLORatioMetrics{
 						Incremental: true,
 						Good: SLOMetricSourceSpec{
@@ -387,13 +387,11 @@ func validThresholdSLO() SLO {
 				{
 					Operator:        OperatorGT,
 					DisplayName:     "Good",
-					BudgetTarget:    ptr(0.995),
-					TimeSliceTarget: ptr(0.95),
-					Value:           ptr(1.0),
+					BudgetTarget:    new(0.995),
+					TimeSliceTarget: new(0.95),
+					Value:           new(1.0),
 				},
 			},
 		},
 	)
 }
-
-func ptr[T any](v T) *T { return &v }

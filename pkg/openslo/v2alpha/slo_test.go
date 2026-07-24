@@ -225,7 +225,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 			{-0.1, rules.ErrorCodeGreaterThanOrEqualTo},
 		} {
 			slo := validRatioSLO()
-			slo.Spec.Objectives[0].Target = ptr(tc.in)
+			slo.Spec.Objectives[0].Target = new(tc.in)
 			slo.Spec.Objectives[0].TargetPercent = nil
 			err := slo.Validate()
 			if tc.errorCode != "" {
@@ -251,7 +251,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 		} {
 			slo := validRatioSLO()
 			slo.Spec.Objectives[0].Target = nil
-			slo.Spec.Objectives[0].TargetPercent = ptr(tc.in)
+			slo.Spec.Objectives[0].TargetPercent = new(tc.in)
 			err := slo.Validate()
 			if tc.errorCode != "" {
 				govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -276,8 +276,8 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 	})
 	t.Run("both target and targetPercent are set", func(t *testing.T) {
 		slo := validRatioSLO()
-		slo.Spec.Objectives[0].Target = ptr(0.1)
-		slo.Spec.Objectives[0].TargetPercent = ptr(10.0)
+		slo.Spec.Objectives[0].Target = new(0.1)
+		slo.Spec.Objectives[0].TargetPercent = new(10.0)
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
 			PropertyPath: "spec.objectives[0]",
@@ -295,7 +295,7 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 	t.Run("empty operator and value for threshold SLO with SLI ref", func(t *testing.T) {
 		slo := validThresholdSLO()
 		slo.Spec.SLI = nil
-		slo.Spec.SLIRef = ptr("my-sli")
+		slo.Spec.SLIRef = new("my-sli")
 		slo.Spec.Objectives[0].Operator = ""
 		slo.Spec.Objectives[0].Value = nil
 		err := slo.Validate()
@@ -347,7 +347,7 @@ func TestSLO_Validate_Spec_CompositeObjectives(t *testing.T) {
 			{-2.0, rules.ErrorCodeGreaterThan},
 		} {
 			slo := validCompositeSLOWithSLIRef()
-			slo.Spec.Objectives[0].CompositeWeight = ptr(tc.in)
+			slo.Spec.Objectives[0].CompositeWeight = new(tc.in)
 			err := slo.Validate()
 			if tc.errorCode != "" {
 				govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -367,7 +367,7 @@ func TestSLO_Validate_Spec_Objectives_TimeSliceTarget(t *testing.T) {
 			slo := validRatioSLO()
 			slo.Spec.BudgetingMethod = method
 			slo.Spec.Objectives[0].TimeSliceTarget = nil
-			slo.Spec.Objectives[0].TimeSliceWindow = ptr(NewDurationShorthand(1, "w"))
+			slo.Spec.Objectives[0].TimeSliceWindow = new(NewDurationShorthand(1, "w"))
 			err := slo.Validate()
 			switch method {
 			case SLOBudgetingMethodTimeslices:
@@ -391,7 +391,7 @@ func TestSLO_Validate_Spec_Objectives_TimeSliceTarget(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		slo := validRatioSLO()
-		slo.Spec.Objectives[0].TimeSliceTarget = ptr(tc.in)
+		slo.Spec.Objectives[0].TimeSliceTarget = new(tc.in)
 		err := slo.Validate()
 		if tc.errorCode != "" {
 			govytest.AssertError(t, err, govytest.ExpectedRuleError{
@@ -409,7 +409,7 @@ func TestSLO_Validate_Spec_Objectives_TimeSliceWindow(t *testing.T) {
 		t.Run(fmt.Sprintf("missing for %s method", method), func(t *testing.T) {
 			slo := validRatioSLO()
 			slo.Spec.BudgetingMethod = method
-			slo.Spec.Objectives[0].TimeSliceTarget = ptr(0.9)
+			slo.Spec.Objectives[0].TimeSliceTarget = new(0.9)
 			slo.Spec.Objectives[0].TimeSliceWindow = nil
 			err := slo.Validate()
 			switch method {
@@ -507,12 +507,12 @@ func runSLOSLITests(t *testing.T, path string, sloGetter func(*SLOSLIInline, *st
 		})
 	})
 	t.Run("valid sliRef", func(t *testing.T) {
-		slo := sloGetter(nil, ptr("my-sli"))
+		slo := sloGetter(nil, new("my-sli"))
 		err := slo.Validate()
 		govytest.AssertNoError(t, err)
 	})
 	t.Run("invalid sliRef", func(t *testing.T) {
-		slo := sloGetter(nil, ptr("my sli"))
+		slo := sloGetter(nil, new("my sli"))
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
 			PropertyPath: path + ".sliRef",
@@ -599,9 +599,9 @@ func validRatioSLO() SLO {
 			Objectives: []SLOObjective{
 				{
 					DisplayName:     "Good",
-					Target:          ptr(0.995),
-					TimeSliceTarget: ptr(0.95),
-					TimeSliceWindow: ptr(NewDurationShorthand(1, "m")),
+					Target:          new(0.995),
+					TimeSliceTarget: new(0.95),
+					TimeSliceWindow: new(NewDurationShorthand(1, "m")),
 				},
 			},
 			AlertPolicies: []SLOAlertPolicy{
@@ -651,10 +651,10 @@ func validThresholdSLO() SLO {
 				{
 					DisplayName:     "Good",
 					Operator:        OperatorGTE,
-					Value:           ptr(10.0),
-					Target:          ptr(0.995),
-					TimeSliceTarget: ptr(0.95),
-					TimeSliceWindow: ptr(NewDurationShorthand(1, "m")),
+					Value:           new(10.0),
+					Target:          new(0.995),
+					TimeSliceTarget: new(0.95),
+					TimeSliceWindow: new(NewDurationShorthand(1, "m")),
 				},
 			},
 			AlertPolicies: []SLOAlertPolicy{
@@ -667,7 +667,7 @@ func validThresholdSLO() SLO {
 func validRatioSLOWithSLIRef() SLO {
 	slo := validRatioSLO()
 	slo.Spec.SLI = nil
-	slo.Spec.SLIRef = ptr("my-sli")
+	slo.Spec.SLIRef = new("my-sli")
 	return slo
 }
 
@@ -689,8 +689,8 @@ func validCompositeSLOWithSLIRef() SLO {
 	slo.Spec.SLI = nil
 	slo.Spec.SLIRef = nil
 	slo.Spec.Objectives[0].SLI = nil
-	slo.Spec.Objectives[0].SLIRef = ptr("my-sli")
-	slo.Spec.Objectives[0].CompositeWeight = ptr(1.0)
+	slo.Spec.Objectives[0].SLIRef = new("my-sli")
+	slo.Spec.Objectives[0].CompositeWeight = new(1.0)
 	return slo
 }
 
@@ -704,6 +704,6 @@ func validCompositeSLOWithInlinedSLI() SLO {
 		Metadata: sli.Metadata,
 		Spec:     sli.Spec,
 	}
-	slo.Spec.Objectives[0].CompositeWeight = ptr(1.0)
+	slo.Spec.Objectives[0].CompositeWeight = new(1.0)
 	return slo
 }

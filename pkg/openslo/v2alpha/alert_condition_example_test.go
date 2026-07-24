@@ -43,7 +43,7 @@ func ExampleAlertCondition() {
 			Condition: v2alpha.AlertConditionType{
 				Kind:           v2alpha.AlertConditionKindBurnRate,
 				Operator:       v2alpha.OperatorLTE,
-				Threshold:      ptr(2.0),
+				Threshold:      new(2.0),
 				LookbackWindow: v2alpha.NewDurationShorthand(1, v2alpha.DurationShorthandUnitHour),
 				AlertAfter:     v2alpha.NewDurationShorthand(5, v2alpha.DurationShorthandUnitMinute),
 			},
@@ -86,5 +86,3 @@ func ExampleAlertCondition() {
 	//     description: If the CPU usage is too high for given period then it should alert
 	//     severity: page
 }
-
-func ptr[T any](v T) *T { return &v }

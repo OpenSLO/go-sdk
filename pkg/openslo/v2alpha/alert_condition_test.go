@@ -202,7 +202,7 @@ func validAlertCondition() AlertCondition {
 			Condition: AlertConditionType{
 				Kind:           AlertConditionKindBurnRate,
 				Operator:       OperatorLTE,
-				Threshold:      ptr(2.0),
+				Threshold:      new(2.0),
 				LookbackWindow: NewDurationShorthand(1, DurationShorthandUnitHour),
 				AlertAfter:     NewDurationShorthand(5, DurationShorthandUnitMinute),
 			},
@@ -210,5 +210,3 @@ func validAlertCondition() AlertCondition {
 		},
 	)
 }
-
-func ptr[T any](v T) *T { return &v }
