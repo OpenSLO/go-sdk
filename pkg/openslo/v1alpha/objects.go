@@ -9,6 +9,7 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
+// APIVersion is the OpenSLO v1alpha API version.
 const APIVersion = openslo.VersionV1alpha
 
 var supportedKinds = []openslo.Kind{
@@ -16,17 +17,23 @@ var supportedKinds = []openslo.Kind{
 	openslo.KindService,
 }
 
+// GetSupportedKinds returns the object kinds implemented by v1alpha.
 func GetSupportedKinds() []openslo.Kind {
 	return slices.Clone(supportedKinds)
 }
 
+// Object is an OpenSLO v1alpha object with version-specific [Metadata].
 type Object interface {
 	openslo.Object
+	// GetMetadata returns the object's metadata.
 	GetMetadata() Metadata
 }
 
+// Metadata identifies an OpenSLO v1alpha object.
 type Metadata struct {
-	Name        string `json:"name"`
+	// Name is the object identifier used by references.
+	Name string `json:"name"`
+	// DisplayName is a human-readable name.
 	DisplayName string `json:"displayName,omitempty"`
 }
 

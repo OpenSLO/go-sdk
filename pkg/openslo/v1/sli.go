@@ -13,6 +13,7 @@ var (
 	_ = openslo.ObjectValidator[SLI](SLI{})
 )
 
+// NewSLI returns an SLI from metadata and spec.
 func NewSLI(metadata Metadata, spec SLISpec) SLI {
 	return SLI{
 		APIVersion: APIVersion,
@@ -22,6 +23,7 @@ func NewSLI(metadata Metadata, spec SLISpec) SLI {
 	}
 }
 
+// SLI describes how to read metric data used to evaluate an [SLO].
 type SLI struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -29,63 +31,97 @@ type SLI struct {
 	Spec       SLISpec         `json:"spec"`
 }
 
+// GetVersion returns [APIVersion].
 func (s SLI) GetVersion() openslo.Version {
 	return APIVersion
 }
 
+// GetKind returns [openslo.KindSLI].
 func (s SLI) GetKind() openslo.Kind {
 	return openslo.KindSLI
 }
 
+// GetName returns the name in the SLI's [Metadata].
 func (s SLI) GetName() string {
 	return s.Metadata.Name
 }
 
+// Validate returns an error for an invalid SLI.
 func (s SLI) Validate() error {
 	return sliValidation.Validate(s)
 }
 
+// String returns the SLI's formatted version, kind, and name.
 func (s SLI) String() string {
 	return internal.GetObjectName(s)
 }
 
+// GetMetadata returns the SLI's [Metadata].
 func (s SLI) GetMetadata() Metadata {
 	return s.Metadata
 }
 
+// GetValidator returns the validator for SLI objects.
 func (s SLI) GetValidator() govy.Validator[SLI] {
 	return sliValidation
 }
 
+// SLISpec defines the metric used by an [SLI].
 type SLISpec struct {
-	Description     string          `json:"description,omitempty"`
+	// Description summarizes the SLI.
+	Description string `json:"description,omitempty"`
+	// ThresholdMetric retrieves raw values for an [SLOObjective] to compare with
+	// its Operator and Value.
 	ThresholdMetric *SLIMetricSpec  `json:"thresholdMetric,omitempty"`
 	RatioMetric     *SLIRatioMetric `json:"ratioMetric,omitempty"`
 }
 
+// SLIRatioMetric defines a success ratio as good divided by total, total minus
+// bad divided by total, or a precomputed raw ratio. For example, 99 good events
+// out of 100 produce a ratio of 0.99. One bad event out of 100 produces the same
+// ratio.
 type SLIRatioMetric struct {
-	Counter bool             `json:"counter"`
-	Good    *SLIMetricSpec   `json:"good,omitempty"`
-	Bad     *SLIMetricSpec   `json:"bad,omitempty"`
-	Total   *SLIMetricSpec   `json:"total,omitempty"`
+	// Counter reports whether the queried good, bad, and total metrics are
+	// monotonically increasing. It has no effect when Raw is used.
+	Counter bool `json:"counter"`
+	// Good supplies the numerator for a good-over-total ratio.
+	Good *SLIMetricSpec `json:"good,omitempty"`
+	// Bad supplies the number subtracted from Total for a failure-based ratio.
+	Bad *SLIMetricSpec `json:"bad,omitempty"`
+	// Total supplies the denominator for a Good- or Bad-based ratio.
+	Total *SLIMetricSpec `json:"total,omitempty"`
+	// RawType selects whether Raw is interpreted as a success or failure ratio
+	// when Raw is used.
 	RawType SLIRawMetricType `json:"rawType,omitempty"`
-	Raw     *SLIMetricSpec   `json:"raw,omitempty"`
+	// Raw retrieves a precomputed ratio.
+	Raw *SLIMetricSpec `json:"raw,omitempty"`
 }
 
+// SLIMetricSpec defines how to retrieve one metric used by an [SLI].
 type SLIMetricSpec struct {
 	MetricSource SLIMetricSource `json:"metricSource"`
 }
 
+// SLIMetricSource identifies a metrics backend and supplies the configuration
+// needed to retrieve a metric.
 type SLIMetricSource struct {
-	MetricSourceRef string         `json:"metricSourceRef,omitempty"`
-	Type            string         `json:"type,omitempty"`
-	Spec            map[string]any `json:"spec"`
+	// MetricSourceRef names an existing [DataSource].
+	MetricSourceRef string `json:"metricSourceRef,omitempty"`
+	// Type identifies the implementation-defined metric-source type.
+	// OpenSLO requires it when MetricSourceRef does not supply one. This SDK does
+	// not validate that condition.
+	Type string `json:"type,omitempty"`
+	// Spec contains source-specific query or metric-retrieval configuration.
+	Spec map[string]any `json:"spec"`
 }
 
+// SLIRawMetricType identifies how a precomputed raw ratio is interpreted.
 type SLIRawMetricType string
 
 const (
+	// SLIRawMetricTypeSuccess interprets Raw as good divided by total.
 	SLIRawMetricTypeSuccess SLIRawMetricType = "success"
+	// SLIRawMetricTypeFailure interprets Raw as bad divided by total.
 	SLIRawMetricTypeFailure SLIRawMetricType = "failure"
 )
 
@@ -111,7 +147,8 @@ var sliSpecValidation = govy.New(
 		Rules(rules.MutuallyExclusive(true, map[string]func(s SLISpec) any{
 			"thresholdMetric": func(s SLISpec) any { return s.ThresholdMetric },
 			"ratioMetric":     func(s SLISpec) any { return s.RatioMetric },
-		})),
+		}).
+			WithDescription("exactly one of 'thresholdMetric' and 'ratioMetric' must be set")),
 	govy.ForPointer(func(spec SLISpec) *SLIMetricSpec { return spec.ThresholdMetric }).
 		WithName("thresholdMetric").
 		Include(sliMetricSpecValidation),
@@ -126,7 +163,8 @@ var sliRatioMetricValidation = govy.New(
 		Rules(rules.MutuallyExclusive(true, map[string]func(m SLIRatioMetric) any{
 			"total": func(m SLIRatioMetric) any { return m.Total },
 			"raw":   func(m SLIRatioMetric) any { return m.Raw },
-		})).
+		}).
+			WithDescription("exactly one of 'total' and 'raw' must be set")).
 		Rules(rules.MutuallyExclusive(false, map[string]func(m SLIRatioMetric) any{
 			"raw":  func(m SLIRatioMetric) any { return m.Raw },
 			"good": func(m SLIRatioMetric) any { return m.Good },
@@ -149,16 +187,25 @@ var sliFractionMetricValidation = govy.New(
 	govy.ForPointer(func(m SLIRatioMetric) *SLIMetricSpec { return m.Good }).
 		WithName("good").
 		Cascade(govy.CascadeModeContinue).
-		When(func(m SLIRatioMetric) bool { return m.Good != nil }).
+		When(
+			func(m SLIRatioMetric) bool { return m.Good != nil },
+			govy.WhenDescription("'good' is set"),
+		).
 		Include(sliMetricSpecValidation),
 	govy.ForPointer(func(m SLIRatioMetric) *SLIMetricSpec { return m.Bad }).
 		WithName("bad").
 		Cascade(govy.CascadeModeContinue).
-		When(func(m SLIRatioMetric) bool { return m.Bad != nil }).
+		When(
+			func(m SLIRatioMetric) bool { return m.Bad != nil },
+			govy.WhenDescription("'bad' is set"),
+		).
 		Include(sliMetricSpecValidation),
 ).
 	Cascade(govy.CascadeModeStop).
-	When(func(m SLIRatioMetric) bool { return m.Total != nil })
+	When(
+		func(m SLIRatioMetric) bool { return m.Total != nil },
+		govy.WhenDescription("'total' is set"),
+	)
 
 var sliRawMetricSpecValidation = govy.New(
 	govy.ForPointer(func(m SLIRatioMetric) *SLIMetricSpec { return m.Raw }).
@@ -169,7 +216,10 @@ var sliRawMetricSpecValidation = govy.New(
 		Required().
 		Rules(rules.OneOf(validSLIRawMetricTypes...)),
 ).
-	When(func(m SLIRatioMetric) bool { return m.Raw != nil })
+	When(
+		func(m SLIRatioMetric) bool { return m.Raw != nil },
+		govy.WhenDescription("'raw' is set"),
+	)
 
 var sliMetricSpecValidation = govy.New(
 	govy.For(func(spec SLIMetricSpec) SLIMetricSource { return spec.MetricSource }).

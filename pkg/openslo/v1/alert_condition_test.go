@@ -1,9 +1,11 @@
 package v1
 
 import (
+	"slices"
 	"strings"
 	"testing"
 
+	"github.com/nobl9/govy/pkg/govy"
 	"github.com/nobl9/govy/pkg/govytest"
 	"github.com/nobl9/govy/pkg/rules"
 
@@ -51,6 +53,19 @@ func TestAlertCondition_Validate_Spec(t *testing.T) {
 		condition.Spec = s
 		return condition
 	})
+}
+
+func TestAlertCondition_ValidationPlan(t *testing.T) {
+	plan, err := govy.Plan(alertConditionValidation, govy.PlanStrictMode())
+	assert.Require(t, assert.NoError(t, err))
+
+	assertValidationPlanRule(
+		t,
+		plan,
+		"$.spec.condition.op",
+		"must be one of: gt, lt, gte, lte",
+		"'kind' is 'burnrate'",
+	)
 }
 
 func runAlertConditionSpecTests[T openslo.Object](
@@ -205,4 +220,32 @@ func validAlertCondition() AlertCondition {
 			Description: "If the CPU usage is too high for given period then it should alert",
 		},
 	)
+}
+
+func assertValidationPlanRule(
+	t *testing.T,
+	plan *govy.ValidatorPlan,
+	path string,
+	description string,
+	conditions ...string,
+) {
+	t.Helper()
+	for _, property := range plan.Properties {
+		if property.Path.String() != path {
+			continue
+		}
+		for _, rule := range property.Rules {
+			if rule.Description != description {
+				continue
+			}
+			for _, condition := range conditions {
+				if !slices.Contains(rule.Conditions, condition) {
+					t.Errorf("validation rule %q at %s does not have condition %q", description, path, condition)
+					return
+				}
+			}
+			return
+		}
+	}
+	t.Errorf("validation plan does not contain rule %q at %s", description, path)
 }

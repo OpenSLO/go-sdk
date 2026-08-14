@@ -63,6 +63,42 @@ func TestSLI_Validate_Spec(t *testing.T) {
 	})
 }
 
+func TestSLI_ValidationPlan(t *testing.T) {
+	plan, err := govy.Plan(sliValidation, govy.PlanStrictMode())
+	assert.Require(t, assert.NoError(t, err))
+
+	for _, test := range []struct {
+		path        string
+		description string
+	}{
+		{
+			path:        "$.spec",
+			description: "exactly one of 'thresholdMetric' and 'ratioMetric' must be set",
+		},
+		{
+			path:        "$.spec.ratioMetric",
+			description: "exactly one of 'total' and 'raw' must be set",
+		},
+		{
+			path:        "$.spec.thresholdMetric",
+			description: "exactly one of 'dataSourceRef' and 'dataSourceSpec' must be set",
+		},
+	} {
+		assertValidationPlanRule(t, plan, test.path, test.description)
+	}
+	for _, test := range []struct {
+		path       string
+		conditions []string
+	}{
+		{path: "$.spec.ratioMetric.good", conditions: []string{"'total' is set", "'good' is set"}},
+		{path: "$.spec.ratioMetric.bad", conditions: []string{"'total' is set", "'bad' is set"}},
+		{path: "$.spec.ratioMetric.total", conditions: []string{"'total' is set"}},
+		{path: "$.spec.ratioMetric.raw", conditions: []string{"'raw' is set"}},
+	} {
+		assertValidationPlanRule(t, plan, test.path, "property is optional", test.conditions...)
+	}
+}
+
 func runSLISpecTests[T openslo.Object](t *testing.T, path string, objectGetter func(SLISpec) T) {
 	t.Helper()
 

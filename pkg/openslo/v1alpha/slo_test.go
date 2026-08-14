@@ -2,6 +2,7 @@ package v1alpha
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"testing"
 
@@ -22,6 +23,67 @@ func TestSLO_Validate_Ok(t *testing.T) {
 		err := slo.Validate()
 		govytest.AssertNoError(t, err)
 	}
+}
+
+func TestSLO_ValidationPlan(t *testing.T) {
+	plan, err := govy.Plan(sloValidation, govy.PlanStrictMode())
+	assert.Require(t, assert.NoError(t, err))
+
+	assertValidationPlanRule(
+		t,
+		plan,
+		"$.spec",
+		"exactly one of 'indicator' and 'objectives[*].ratioMetrics' must be set",
+	)
+	assertValidationPlanRule(
+		t,
+		plan,
+		"$.spec.objectives[*].value",
+		"property is required",
+		"'ratioMetrics' is not set",
+	)
+	assertValidationPlanRule(
+		t,
+		plan,
+		"$.spec.objectives[*].op",
+		"property is required",
+		"'ratioMetrics' is not set",
+	)
+	assertValidationPlanRule(
+		t,
+		plan,
+		"$.spec.objectives[*].op",
+		"must be one of: gt, lt, gte, lte",
+		"'ratioMetrics' is not set",
+	)
+}
+
+func assertValidationPlanRule(
+	t *testing.T,
+	plan *govy.ValidatorPlan,
+	path string,
+	description string,
+	conditions ...string,
+) {
+	t.Helper()
+	for _, property := range plan.Properties {
+		if property.Path.String() != path {
+			continue
+		}
+		for _, rule := range property.Rules {
+			if rule.Description != description {
+				continue
+			}
+			for _, condition := range conditions {
+				if !slices.Contains(rule.Conditions, condition) {
+					t.Errorf("validation rule %q at %s does not have condition %q", description, path, condition)
+					return
+				}
+			}
+			return
+		}
+	}
+	t.Errorf("validation plan does not contain rule %q at %s", description, path)
 }
 
 func TestSLO_Validate_VersionAndKind(t *testing.T) {
@@ -144,12 +206,12 @@ func TestSLO_Validate_Spec(t *testing.T) {
 }
 
 func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
-	t.Run("missing timeWindow", func(t *testing.T) {
+	t.Run("missing timeWindows", func(t *testing.T) {
 		slo := validSLO()
 		slo.Spec.TimeWindows = []SLOTimeWindow{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyPath: "spec.timeWindow",
+			PropertyPath: "spec.timeWindows",
 			Code:         rules.ErrorCodeSliceLength,
 		})
 	})
@@ -161,7 +223,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyPath: "spec.timeWindow",
+			PropertyPath: "spec.timeWindows",
 			Code:         rules.ErrorCodeSliceLength,
 		})
 	})
@@ -200,8 +262,14 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
-	t.Run("value is missing", func(t *testing.T) {
+	t.Run("ratioMetrics - value missing", func(t *testing.T) {
 		slo := validSLO()
+		slo.Spec.Objectives[0].Value = nil
+		err := slo.Validate()
+		govytest.AssertNoError(t, err)
+	})
+	t.Run("threshold - value missing", func(t *testing.T) {
+		slo := validThresholdSLO()
 		slo.Spec.Objectives[0].Value = nil
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{

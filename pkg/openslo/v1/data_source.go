@@ -15,6 +15,7 @@ var (
 	_ = openslo.ObjectValidator[DataSource](DataSource{})
 )
 
+// NewDataSource returns a data source from metadata and spec.
 func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 	return DataSource{
 		APIVersion: APIVersion,
@@ -24,6 +25,7 @@ func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 	}
 }
 
+// DataSource stores reusable connection details for a metrics backend.
 type DataSource struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -31,37 +33,48 @@ type DataSource struct {
 	Spec       DataSourceSpec  `json:"spec"`
 }
 
+// GetVersion returns [APIVersion].
 func (d DataSource) GetVersion() openslo.Version {
 	return APIVersion
 }
 
+// GetKind returns [openslo.KindDataSource].
 func (d DataSource) GetKind() openslo.Kind {
 	return openslo.KindDataSource
 }
 
+// GetName returns the name in the data source's [Metadata].
 func (d DataSource) GetName() string {
 	return d.Metadata.Name
 }
 
+// Validate returns an error for an invalid data source.
 func (d DataSource) Validate() error {
 	return dataSourceValidation.Validate(d)
 }
 
+// String returns the data source's formatted version, kind, and name.
 func (d DataSource) String() string {
 	return internal.GetObjectName(d)
 }
 
+// GetMetadata returns the data source's [Metadata].
 func (d DataSource) GetMetadata() Metadata {
 	return d.Metadata
 }
 
+// GetValidator returns the validator for DataSource objects.
 func (d DataSource) GetValidator() govy.Validator[DataSource] {
 	return dataSourceValidation
 }
 
+// DataSourceSpec defines reusable, source-specific connection configuration.
 type DataSourceSpec struct {
-	Description       string          `json:"description,omitempty"`
-	Type              string          `json:"type"`
+	// Description summarizes the data source.
+	Description string `json:"description,omitempty"`
+	// Type names the implementation-defined metric source.
+	Type string `json:"type"`
+	// ConnectionDetails stores source-specific connection configuration as JSON.
 	ConnectionDetails json.RawMessage `json:"connectionDetails"`
 }
 

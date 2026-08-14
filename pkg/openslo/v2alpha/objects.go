@@ -10,6 +10,7 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
+// APIVersion is the OpenSLO v2alpha API version.
 const APIVersion = openslo.VersionV2alpha
 
 var supportedKinds = []openslo.Kind{
@@ -22,25 +23,37 @@ var supportedKinds = []openslo.Kind{
 	openslo.KindAlertNotificationTarget,
 }
 
+// GetSupportedKinds returns a copy of the OpenSLO object kinds supported by v2alpha.
 func GetSupportedKinds() []openslo.Kind {
 	return slices.Clone(supportedKinds)
 }
 
+// Object is implemented by every OpenSLO v2alpha object and exposes its
+// version-specific [Metadata].
 type Object interface {
 	openslo.Object
+	// GetMetadata returns the object's version-specific metadata.
 	GetMetadata() Metadata
 }
 
+// Metadata is the Kubernetes-style identifying metadata used by v2alpha
+// objects. Unlike v1 object metadata, it does not contain a display name.
 type Metadata struct {
-	Name        string      `json:"name"`
-	Labels      Labels      `json:"labels,omitempty"`
+	// Name identifies the object when other OpenSLO objects refer to it.
+	Name string `json:"name"`
+	// Labels classifies the object with Kubernetes-style, single-valued labels.
+	Labels Labels `json:"labels,omitempty"`
+	// Annotations attaches non-identifying metadata with qualified keys.
 	Annotations Annotations `json:"annotations,omitempty"`
 }
 
+// Labels maps label keys to one string value each.
 type Labels map[string]string
 
+// Annotations maps annotation keys to arbitrary string values.
 type Annotations map[string]string
 
+// Operator specifies a comparison operation for an SLO objective or alert condition.
 type Operator string
 
 const (
@@ -62,6 +75,7 @@ var operatorValidation = govy.New(
 		Rules(rules.OneOf(validOperators...)),
 )
 
+// Validate returns an error for an unsupported comparison operator.
 func (o Operator) Validate() error {
 	return operatorValidation.Validate(o)
 }

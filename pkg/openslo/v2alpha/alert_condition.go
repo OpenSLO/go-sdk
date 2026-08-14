@@ -13,6 +13,7 @@ var (
 	_ = openslo.ObjectValidator[AlertCondition](AlertCondition{})
 )
 
+// NewAlertCondition returns an AlertCondition from metadata and spec.
 func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertCondition {
 	return AlertCondition{
 		APIVersion: APIVersion,
@@ -22,6 +23,7 @@ func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertConditio
 	}
 }
 
+// AlertCondition defines when an SLO alert is considered breaching.
 type AlertCondition struct {
 	APIVersion openslo.Version    `json:"apiVersion"`
 	Kind       openslo.Kind       `json:"kind"`
@@ -29,48 +31,71 @@ type AlertCondition struct {
 	Spec       AlertConditionSpec `json:"spec"`
 }
 
+// GetVersion returns [APIVersion].
 func (a AlertCondition) GetVersion() openslo.Version {
 	return APIVersion
 }
 
+// GetKind returns [openslo.KindAlertCondition].
 func (a AlertCondition) GetKind() openslo.Kind {
 	return openslo.KindAlertCondition
 }
 
+// GetName returns the alert condition's metadata name.
 func (a AlertCondition) GetName() string {
 	return a.Metadata.Name
 }
 
+// Validate returns an error for an invalid alert condition.
 func (a AlertCondition) Validate() error {
 	return alertConditionValidation.Validate(a)
 }
 
+// String returns the alert condition's formatted version, kind, and name.
 func (a AlertCondition) String() string {
 	return internal.GetObjectName(a)
 }
 
+// GetMetadata returns the alert condition's metadata.
 func (a AlertCondition) GetMetadata() Metadata {
 	return a.Metadata
 }
 
+// GetValidator returns the validator configured for [AlertCondition].
 func (a AlertCondition) GetValidator() govy.Validator[AlertCondition] {
 	return alertConditionValidation
 }
 
+// AlertConditionSpec defines an alert's severity and breach condition.
 type AlertConditionSpec struct {
-	Severity    string             `json:"severity"`
-	Condition   AlertConditionType `json:"condition"`
-	Description string             `json:"description,omitempty"`
+	// Severity is a consumer-defined alert classification.
+	Severity  string             `json:"severity"`
+	Condition AlertConditionType `json:"condition"`
+	// Description summarizes the alert condition.
+	Description string `json:"description,omitempty"`
 }
 
+// AlertConditionType defines a burn-rate comparison over a lookback window.
+// Burn rate is error-budget consumption relative to the rate allowed by the
+// SLO.
 type AlertConditionType struct {
-	Kind           AlertConditionKind `json:"kind"`
-	Operator       Operator           `json:"op"`
-	Threshold      *float64           `json:"threshold"`
-	LookbackWindow DurationShorthand  `json:"lookbackWindow"`
-	AlertAfter     DurationShorthand  `json:"alertAfter"`
+	// Kind selects the condition algorithm. OpenSLO defaults omitted values to
+	// [AlertConditionKindBurnRate]. This SDK does not apply that default.
+	Kind AlertConditionKind `json:"kind"`
+	// Operator compares the calculated burn rate with Threshold.
+	Operator Operator `json:"op"`
+	// Threshold sets the numeric burn-rate boundary.
+	Threshold *float64 `json:"threshold"`
+	// LookbackWindow sets the period for burn-rate calculation.
+	LookbackWindow DurationShorthand `json:"lookbackWindow"`
+	// AlertAfter sets how long the comparison must hold before the condition
+	// breaches. OpenSLO defaults omitted values to "0m". This SDK does not apply
+	// that default.
+	AlertAfter DurationShorthand `json:"alertAfter"`
 }
 
+// AlertConditionKind identifies the evaluation algorithm for an
+// [AlertConditionType].
 type AlertConditionKind string
 
 const (
@@ -127,4 +152,7 @@ var alertConditionBurnRateValidation = govy.New(
 		Required().
 		Include(durationShortHandValidation),
 ).
-	When(func(a AlertConditionType) bool { return a.Kind == AlertConditionKindBurnRate })
+	When(
+		func(a AlertConditionType) bool { return a.Kind == AlertConditionKindBurnRate },
+		govy.WhenDescription("'kind' is 'burnrate'"),
+	)

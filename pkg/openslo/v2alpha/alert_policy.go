@@ -13,6 +13,7 @@ var (
 	_ = openslo.ObjectValidator[AlertPolicy](AlertPolicy{})
 )
 
+// NewAlertPolicy returns an AlertPolicy from metadata and spec.
 func NewAlertPolicy(metadata Metadata, spec AlertPolicySpec) AlertPolicy {
 	return AlertPolicy{
 		APIVersion: APIVersion,
@@ -22,6 +23,7 @@ func NewAlertPolicy(metadata Metadata, spec AlertPolicySpec) AlertPolicy {
 	}
 }
 
+// AlertPolicy defines when the system emits an SLO alert and where it sends it.
 type AlertPolicy struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -29,70 +31,99 @@ type AlertPolicy struct {
 	Spec       AlertPolicySpec `json:"spec"`
 }
 
+// GetVersion returns [APIVersion].
 func (a AlertPolicy) GetVersion() openslo.Version {
 	return APIVersion
 }
 
+// GetKind returns [openslo.KindAlertPolicy].
 func (a AlertPolicy) GetKind() openslo.Kind {
 	return openslo.KindAlertPolicy
 }
 
+// GetName returns the alert policy's metadata name.
 func (a AlertPolicy) GetName() string {
 	return a.Metadata.Name
 }
 
+// Validate returns an error for an invalid alert policy.
 func (a AlertPolicy) Validate() error {
 	return alertPolicyValidation.Validate(a)
 }
 
+// String returns the alert policy's formatted version, kind, and name.
 func (a AlertPolicy) String() string {
 	return internal.GetObjectName(a)
 }
 
+// GetMetadata returns the alert policy's metadata.
 func (a AlertPolicy) GetMetadata() Metadata {
 	return a.Metadata
 }
 
+// GetValidator returns the validator configured for [AlertPolicy].
 func (a AlertPolicy) GetValidator() govy.Validator[AlertPolicy] {
 	return alertPolicyValidation
 }
 
+// AlertPolicySpec defines the trigger states, condition, and notification
+// destinations for an [AlertPolicy].
 type AlertPolicySpec struct {
-	Description         string                          `json:"description,omitempty"`
-	AlertWhenNoData     bool                            `json:"alertWhenNoData,omitempty"`
-	AlertWhenBreaching  bool                            `json:"alertWhenBreaching,omitempty"`
-	AlertWhenResolved   bool                            `json:"alertWhenResolved,omitempty"`
-	Conditions          []AlertPolicyCondition          `json:"conditions,omitempty"`
+	// Description summarizes the alert policy.
+	Description string `json:"description,omitempty"`
+	// AlertWhenNoData enables notifications when the associated SLO has no
+	// burn-rate value.
+	AlertWhenNoData bool `json:"alertWhenNoData,omitempty"`
+	// AlertWhenBreaching enables notifications when the condition starts breaching.
+	AlertWhenBreaching bool `json:"alertWhenBreaching,omitempty"`
+	// AlertWhenResolved enables notifications when the condition resolves.
+	AlertWhenResolved bool `json:"alertWhenResolved,omitempty"`
+	// Conditions supplies the policy's alert condition by reference or inline.
+	Conditions []AlertPolicyCondition `json:"conditions,omitempty"`
+	// NotificationTargets lists referenced or inline delivery destinations.
 	NotificationTargets []AlertPolicyNotificationTarget `json:"notificationTargets,omitempty"`
 }
 
+// AlertPolicyCondition supplies a condition to an [AlertPolicy] by reference
+// or inline definition.
 type AlertPolicyCondition struct {
 	*AlertPolicyConditionRef
 	*AlertPolicyConditionInline
 }
 
+// AlertPolicyConditionInline is an alert-condition definition embedded in an
+// [AlertPolicy].
 type AlertPolicyConditionInline struct {
 	Kind     openslo.Kind       `json:"kind"`
 	Metadata Metadata           `json:"metadata"`
 	Spec     AlertConditionSpec `json:"spec"`
 }
 
+// AlertPolicyConditionRef identifies a separately defined [AlertCondition].
 type AlertPolicyConditionRef struct {
+	// ConditionRef names the alert condition to use.
 	ConditionRef string `json:"conditionRef"`
 }
 
+// AlertPolicyNotificationTarget supplies a notification destination to an
+// [AlertPolicy] by reference or inline definition.
 type AlertPolicyNotificationTarget struct {
 	*AlertPolicyNotificationTargetRef
 	*AlertPolicyNotificationTargetInline
 }
 
+// AlertPolicyNotificationTargetInline is an alert-notification-target
+// definition embedded in an [AlertPolicy].
 type AlertPolicyNotificationTargetInline struct {
 	Kind     openslo.Kind                `json:"kind"`
 	Metadata Metadata                    `json:"metadata"`
 	Spec     AlertNotificationTargetSpec `json:"spec"`
 }
 
+// AlertPolicyNotificationTargetRef identifies a separately defined
+// [AlertNotificationTarget].
 type AlertPolicyNotificationTargetRef struct {
+	// TargetRef names the notification target to use.
 	TargetRef string `json:"targetRef"`
 }
 
@@ -126,7 +157,8 @@ var alertPolicyConditionValidation = govy.New(
 			// It's impossible to list all fields that constitute the inlined version in the error message,
 			// therefore 'spec' must suffice.
 			"spec": func(a AlertPolicyCondition) any { return a.AlertPolicyConditionInline },
-		})),
+		}).
+			WithDescription("exactly one of 'conditionRef' and 'spec' must be set")),
 	govy.ForPointer(func(a AlertPolicyCondition) *AlertPolicyConditionRef { return a.AlertPolicyConditionRef }).
 		Include(govy.New(
 			govy.For(func(ref AlertPolicyConditionRef) string { return ref.ConditionRef }).
@@ -155,7 +187,8 @@ var alertPolicyNotificationTargetValidation = govy.New(
 			// It's impossible to list all fields that constitute the inlined version in the error message,
 			// therefore 'spec' must suffice.
 			"spec": func(a AlertPolicyNotificationTarget) any { return a.AlertPolicyNotificationTargetInline },
-		})),
+		}).
+			WithDescription("exactly one of 'targetRef' and 'spec' must be set")),
 	govy.ForPointer(func(a AlertPolicyNotificationTarget) *AlertPolicyNotificationTargetRef {
 		return a.AlertPolicyNotificationTargetRef
 	}).

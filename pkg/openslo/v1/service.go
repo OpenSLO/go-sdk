@@ -13,6 +13,7 @@ var (
 	_ = openslo.ObjectValidator[Service](Service{})
 )
 
+// NewService returns a service from metadata and spec.
 func NewService(metadata Metadata, spec ServiceSpec) Service {
 	return Service{
 		APIVersion: APIVersion,
@@ -22,6 +23,7 @@ func NewService(metadata Metadata, spec ServiceSpec) Service {
 	}
 }
 
+// Service groups related [SLO] objects.
 type Service struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -29,35 +31,44 @@ type Service struct {
 	Spec       ServiceSpec     `json:"spec"`
 }
 
+// GetVersion returns [APIVersion].
 func (s Service) GetVersion() openslo.Version {
 	return APIVersion
 }
 
+// GetKind returns [openslo.KindService].
 func (s Service) GetKind() openslo.Kind {
 	return openslo.KindService
 }
 
+// GetName returns the name in the Service's [Metadata].
 func (s Service) GetName() string {
 	return s.Metadata.Name
 }
 
+// Validate returns an error for an invalid service.
 func (s Service) Validate() error {
 	return serviceValidation.Validate(s)
 }
 
+// String returns the Service's formatted version, kind, and name.
 func (s Service) String() string {
 	return internal.GetObjectName(s)
 }
 
+// GetMetadata returns the Service's [Metadata].
 func (s Service) GetMetadata() Metadata {
 	return s.Metadata
 }
 
+// GetValidator returns the validator for Service objects.
 func (s Service) GetValidator() govy.Validator[Service] {
 	return serviceValidation
 }
 
+// ServiceSpec contains the descriptive properties of a [Service].
 type ServiceSpec struct {
+	// Description summarizes the service.
 	Description string `json:"description,omitempty"`
 }
 
