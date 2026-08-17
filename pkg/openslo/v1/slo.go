@@ -114,9 +114,10 @@ func (s SLOSpec) HasCompositeObjectives() bool {
 
 // SLOBudgetingMethod identifies how an [SLO] calculates objective success and
 // error-budget use.
-// Occurrences counts good events. Timeslices counts slices that meet
-// [SLOObjective.TimeSliceTarget]. RatioTimeslices averages success ratios across
-// slices. Composite SLOs apply objective weights to each calculation.
+// Occurrences uses the ratio of good events to total events. Timeslices counts
+// slices that meet [SLOObjective.TimeSliceTarget]. RatioTimeslices averages
+// success ratios across slices. Composite SLOs apply objective weights to each
+// calculation.
 type SLOBudgetingMethod string
 
 const (

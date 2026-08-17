@@ -32,7 +32,7 @@ func (k Kind) String() string {
 	return string(k)
 }
 
-// Validate reports whether k is a supported object kind.
+// Validate returns an error if k is not a supported object kind.
 func (k Kind) Validate() error {
 	switch k {
 	case KindSLO,

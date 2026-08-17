@@ -8,7 +8,8 @@ import (
 	"github.com/nobl9/govy/pkg/rules"
 )
 
-// ParseDurationShorthand parses s into a [DurationShorthand].
+// ParseDurationShorthand parses s into a [DurationShorthand] without calling
+// [DurationShorthand.Validate].
 func ParseDurationShorthand(s string) (DurationShorthand, error) {
 	d := new(DurationShorthand)
 	err := d.UnmarshalText([]byte(s))
@@ -42,7 +43,7 @@ func (d *DurationShorthand) GetValue() int {
 	return d.value
 }
 
-// UnmarshalText decodes text into d as an [encoding.TextUnmarshaler].
+// UnmarshalText implements [encoding.TextUnmarshaler].
 func (d *DurationShorthand) UnmarshalText(text []byte) error {
 	if len(text) == 0 {
 		return nil
@@ -53,7 +54,7 @@ func (d *DurationShorthand) UnmarshalText(text []byte) error {
 	return nil
 }
 
-// MarshalText encodes d as an [encoding.TextMarshaler].
+// MarshalText implements [encoding.TextMarshaler].
 func (d DurationShorthand) MarshalText() ([]byte, error) {
 	if d.value == 0 {
 		return []byte{}, nil

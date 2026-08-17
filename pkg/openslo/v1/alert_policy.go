@@ -77,7 +77,7 @@ type AlertPolicySpec struct {
 	// AlertWhenNoData enables alerts when the associated SLO has no burn-rate
 	// value.
 	AlertWhenNoData bool `json:"alertWhenNoData,omitempty"`
-	// AlertWhenBreaching enables alerts when the condition starts breaching.
+	// AlertWhenBreaching enables alerts when the condition is breaching.
 	AlertWhenBreaching bool `json:"alertWhenBreaching,omitempty"`
 	// AlertWhenResolved enables alerts when the condition resolves.
 	AlertWhenResolved bool `json:"alertWhenResolved,omitempty"`

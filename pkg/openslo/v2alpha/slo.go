@@ -149,7 +149,7 @@ type SLOObjective struct {
 	Operator Operator `json:"op,omitempty"`
 	// Value is the comparison threshold for a threshold metric.
 	Value *float64 `json:"value,omitempty"`
-	// Target is the desired success proportion. For example, "0.995" means
+	// Target is the desired success proportion. For example, 0.995 means
 	// 99.5 percent.
 	Target *float64 `json:"target,omitempty"`
 	// TargetPercent is the desired success percentage.

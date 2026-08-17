@@ -25,7 +25,7 @@ func (v Version) String() string {
 	return string(v)
 }
 
-// Validate reports whether v is a supported API version.
+// Validate returns an error if v is not a supported API version.
 func (v Version) Validate() error {
 	switch v {
 	case VersionV1alpha,

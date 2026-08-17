@@ -373,7 +373,7 @@
             }
           ],
           "typeDoc": "DurationShorthand represents a duration as an integer with suffix \"m\", \"h\", \"d\", or \"w\". This SDK accepts zero and encodes it as empty text. OpenSLO specifies a positive integer.",
-          "fieldDoc": "AlertAfter sets how long the comparison must hold before the condition breaches. OpenSLO defaults omitted values to \"0m\". This SDK does not apply that default."
+          "fieldDoc": "AlertAfter sets how long the condition must remain valid before an alert is triggered. OpenSLO defaults omitted values to \"0m\". This SDK does not apply that default."
         },
         {
           "path": "$.spec.description",
@@ -905,7 +905,7 @@
             "name": "bool",
             "kind": "bool"
           },
-          "fieldDoc": "AlertWhenBreaching enables notifications when the condition starts breaching."
+          "fieldDoc": "AlertWhenBreaching enables notifications when the condition is breaching."
         },
         {
           "path": "$.spec.alertWhenResolved",
@@ -1315,7 +1315,7 @@
             }
           ],
           "typeDoc": "DurationShorthand represents a duration as an integer with suffix \"m\", \"h\", \"d\", or \"w\". This SDK accepts zero and encodes it as empty text. OpenSLO specifies a positive integer.",
-          "fieldDoc": "AlertAfter sets how long the comparison must hold before the condition breaches. OpenSLO defaults omitted values to \"0m\". This SDK does not apply that default."
+          "fieldDoc": "AlertAfter sets how long the condition must remain valid before an alert is triggered. OpenSLO defaults omitted values to \"0m\". This SDK does not apply that default."
         },
         {
           "path": "$.spec.conditions[*].spec.description",
@@ -2303,7 +2303,7 @@
               ]
             }
           ],
-          "typeDoc": "SLIRatioMetric derives a success ratio as good divided by total, total minus bad divided by total, or a precomputed raw ratio. For example, 990 good events out of 1,000 total events produce \"0.99\". 10 bad events with the same total produce the same success ratio.",
+          "typeDoc": "SLIRatioMetric derives a success ratio as good divided by total, total minus bad divided by total, or a precomputed raw ratio. For example, 990 good events out of 1,000 total events produce 0.99. 10 bad events with the same total produce the same success ratio.",
           "fieldDoc": "RatioMetric supplies a success ratio for an SLO objective.",
           "childrenPaths": [
             "$.spec.ratioMetric.counter",
@@ -3768,7 +3768,7 @@
               ]
             }
           ],
-          "typeDoc": "SLIRatioMetric derives a success ratio as good divided by total, total minus bad divided by total, or a precomputed raw ratio. For example, 990 good events out of 1,000 total events produce \"0.99\". 10 bad events with the same total produce the same success ratio.",
+          "typeDoc": "SLIRatioMetric derives a success ratio as good divided by total, total minus bad divided by total, or a precomputed raw ratio. For example, 990 good events out of 1,000 total events produce 0.99. 10 bad events with the same total produce the same success ratio.",
           "fieldDoc": "RatioMetric supplies a success ratio for an SLO objective.",
           "childrenPaths": [
             "$.spec.sli.spec.ratioMetric.counter",
@@ -4852,7 +4852,7 @@
               "errorCode": "less_than"
             }
           ],
-          "fieldDoc": "Target is the desired success proportion. For example, \"0.995\" means 99.5 percent."
+          "fieldDoc": "Target is the desired success proportion. For example, 0.995 means 99.5 percent."
         },
         {
           "path": "$.spec.objectives[*].targetPercent",
@@ -5402,7 +5402,7 @@
               ]
             }
           ],
-          "typeDoc": "SLIRatioMetric derives a success ratio as good divided by total, total minus bad divided by total, or a precomputed raw ratio. For example, 990 good events out of 1,000 total events produce \"0.99\". 10 bad events with the same total produce the same success ratio.",
+          "typeDoc": "SLIRatioMetric derives a success ratio as good divided by total, total minus bad divided by total, or a precomputed raw ratio. For example, 990 good events out of 1,000 total events produce 0.99. 10 bad events with the same total produce the same success ratio.",
           "fieldDoc": "RatioMetric supplies a success ratio for an SLO objective.",
           "childrenPaths": [
             "$.spec.objectives[*].sli.spec.ratioMetric.counter",
@@ -5436,7 +5436,7 @@
                 "is composite SLO",
                 "'sli' or 'sliRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             },
             {
@@ -5446,7 +5446,7 @@
                 "is composite SLO",
                 "'sli' or 'sliRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             }
           ],
@@ -5472,7 +5472,7 @@
                 "is composite SLO",
                 "'sli' or 'sliRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             },
             {
@@ -5482,7 +5482,7 @@
                 "is composite SLO",
                 "'sli' or 'sliRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             },
             {
@@ -5493,7 +5493,7 @@
                 "is composite SLO",
                 "'sli' or 'sliRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ],
               "examples": [
                 "my-name",
@@ -5518,7 +5518,7 @@
                 "is composite SLO",
                 "'sli' or 'sliRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             }
           ],
@@ -5544,7 +5544,7 @@
                 "is composite SLO",
                 "'sli' or 'sliRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             }
           ],
@@ -5564,7 +5564,7 @@
                 "is composite SLO",
                 "'sli' or 'sliRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             }
           ],
@@ -5585,7 +5585,7 @@
                 "is composite SLO",
                 "'sli' or 'sliRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             }
           ],
@@ -6540,7 +6540,7 @@
             "name": "bool",
             "kind": "bool"
           },
-          "fieldDoc": "AlertWhenBreaching enables notifications when the condition starts breaching."
+          "fieldDoc": "AlertWhenBreaching enables notifications when the condition is breaching."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.alertWhenResolved",
@@ -6950,7 +6950,7 @@
             }
           ],
           "typeDoc": "DurationShorthand represents a duration as an integer with suffix \"m\", \"h\", \"d\", or \"w\". This SDK accepts zero and encodes it as empty text. OpenSLO specifies a positive integer.",
-          "fieldDoc": "AlertAfter sets how long the comparison must hold before the condition breaches. OpenSLO defaults omitted values to \"0m\". This SDK does not apply that default."
+          "fieldDoc": "AlertAfter sets how long the condition must remain valid before an alert is triggered. OpenSLO defaults omitted values to \"0m\". This SDK does not apply that default."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.conditions[*].spec.description",
@@ -7894,7 +7894,7 @@
             }
           ],
           "typeDoc": "DurationShorthand represents a duration as an integer and a case-sensitive [DurationShorthandUnit](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#DurationShorthandUnit), such as \"1m\" or \"10d\". This SDK accepts zero and encodes it as empty text. OpenSLO specifies a positive integer.",
-          "fieldDoc": "AlertAfter sets how long the comparison must hold before the condition breaches. OpenSLO treats an omitted value as \"0m\". This SDK leaves it unset."
+          "fieldDoc": "AlertAfter sets how long the condition must remain valid before an alert is triggered. OpenSLO treats an omitted value as \"0m\". This SDK leaves it unset."
         },
         {
           "path": "$.spec.description",
@@ -8428,7 +8428,7 @@
             "name": "bool",
             "kind": "bool"
           },
-          "fieldDoc": "AlertWhenBreaching enables alerts when the condition starts breaching."
+          "fieldDoc": "AlertWhenBreaching enables alerts when the condition is breaching."
         },
         {
           "path": "$.spec.alertWhenResolved",
@@ -8842,7 +8842,7 @@
             }
           ],
           "typeDoc": "DurationShorthand represents a duration as an integer and a case-sensitive [DurationShorthandUnit](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#DurationShorthandUnit), such as \"1m\" or \"10d\". This SDK accepts zero and encodes it as empty text. OpenSLO specifies a positive integer.",
-          "fieldDoc": "AlertAfter sets how long the comparison must hold before the condition breaches. OpenSLO treats an omitted value as \"0m\". This SDK leaves it unset."
+          "fieldDoc": "AlertAfter sets how long the condition must remain valid before an alert is triggered. OpenSLO treats an omitted value as \"0m\". This SDK leaves it unset."
         },
         {
           "path": "$.spec.conditions[*].spec.description",
@@ -11756,7 +11756,7 @@
               "errorCode": "one_of"
             }
           ],
-          "typeDoc": "SLOBudgetingMethod identifies how an [SLO](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLO) calculates objective success and error-budget use. Occurrences counts good events. Timeslices counts slices that meet [SLOObjective.TimeSliceTarget](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLOObjective.TimeSliceTarget). RatioTimeslices averages success ratios across slices. Composite SLOs apply objective weights to each calculation.",
+          "typeDoc": "SLOBudgetingMethod identifies how an [SLO](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLO) calculates objective success and error-budget use. Occurrences uses the ratio of good events to total events. Timeslices counts slices that meet [SLOObjective.TimeSliceTarget](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLOObjective.TimeSliceTarget). RatioTimeslices averages success ratios across slices. Composite SLOs apply objective weights to each calculation.",
           "fieldDoc": "BudgetingMethod applies the selected error-budget calculation to every objective."
         },
         {
@@ -12548,7 +12548,7 @@
                 "is composite SLO",
                 "'indicator' or 'indicatorRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             }
           ],
@@ -12573,7 +12573,7 @@
                 "is composite SLO",
                 "'indicator' or 'indicatorRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             }
           ],
@@ -12598,7 +12598,7 @@
                 "is composite SLO",
                 "'indicator' or 'indicatorRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             },
             {
@@ -12608,7 +12608,7 @@
                 "is composite SLO",
                 "'indicator' or 'indicatorRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             },
             {
@@ -12619,7 +12619,7 @@
                 "is composite SLO",
                 "'indicator' or 'indicatorRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ],
               "examples": [
                 "my-name",
@@ -12651,7 +12651,7 @@
                 "is composite SLO",
                 "'indicator' or 'indicatorRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             },
             {
@@ -12661,7 +12661,7 @@
                 "is composite SLO",
                 "'indicator' or 'indicatorRef' is set",
                 "'total' is set",
-                "'bad' is set"
+                "'good' is set"
               ]
             }
           ],
@@ -13484,7 +13484,7 @@
             "name": "bool",
             "kind": "bool"
           },
-          "fieldDoc": "AlertWhenBreaching enables alerts when the condition starts breaching."
+          "fieldDoc": "AlertWhenBreaching enables alerts when the condition is breaching."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.alertWhenResolved",
@@ -13898,7 +13898,7 @@
             }
           ],
           "typeDoc": "DurationShorthand represents a duration as an integer and a case-sensitive [DurationShorthandUnit](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#DurationShorthandUnit), such as \"1m\" or \"10d\". This SDK accepts zero and encodes it as empty text. OpenSLO specifies a positive integer.",
-          "fieldDoc": "AlertAfter sets how long the comparison must hold before the condition breaches. OpenSLO treats an omitted value as \"0m\". This SDK leaves it unset."
+          "fieldDoc": "AlertAfter sets how long the condition must remain valid before an alert is triggered. OpenSLO treats an omitted value as \"0m\". This SDK leaves it unset."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.conditions[*].spec.description",

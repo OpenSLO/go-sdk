@@ -82,7 +82,7 @@ type SLISpec struct {
 
 // SLIRatioMetric derives a success ratio as good divided by total, total minus
 // bad divided by total, or a precomputed raw ratio.
-// For example, 990 good events out of 1,000 total events produce "0.99".
+// For example, 990 good events out of 1,000 total events produce 0.99.
 // 10 bad events with the same total produce the same success ratio.
 type SLIRatioMetric struct {
 	// Counter reports whether the good, bad, and total metrics are monotonically

@@ -88,8 +88,8 @@ type AlertConditionType struct {
 	Threshold *float64 `json:"threshold"`
 	// LookbackWindow sets the period for burn-rate calculation.
 	LookbackWindow DurationShorthand `json:"lookbackWindow"`
-	// AlertAfter sets how long the comparison must hold before the condition
-	// breaches. OpenSLO defaults omitted values to "0m". This SDK does not apply
+	// AlertAfter sets how long the condition must remain valid before an alert is
+	// triggered. OpenSLO defaults omitted values to "0m". This SDK does not apply
 	// that default.
 	AlertAfter DurationShorthand `json:"alertAfter"`
 }
