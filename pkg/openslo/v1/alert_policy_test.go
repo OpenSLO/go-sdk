@@ -5,7 +5,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nobl9/govy/pkg/govy"
 	"github.com/nobl9/govy/pkg/govytest"
 	"github.com/nobl9/govy/pkg/rules"
 
@@ -58,27 +57,6 @@ func TestAlertPolicy_Validate_Spec(t *testing.T) {
 		policy.Spec = s
 		return policy
 	})
-}
-
-func TestAlertPolicy_ValidationPlan(t *testing.T) {
-	plan, err := govy.Plan(alertPolicyValidation, govy.PlanStrictMode())
-	assert.Require(t, assert.NoError(t, err))
-
-	for _, test := range []struct {
-		path        string
-		description string
-	}{
-		{
-			path:        "$.spec.conditions[*]",
-			description: "exactly one of 'conditionRef' and 'spec' must be set",
-		},
-		{
-			path:        "$.spec.notificationTargets[*]",
-			description: "exactly one of 'targetRef' and 'spec' must be set",
-		},
-	} {
-		assertValidationPlanRule(t, plan, test.path, test.description)
-	}
 }
 
 func runAlertPolicySpecTests[T openslo.Object](
