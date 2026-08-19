@@ -26,7 +26,8 @@ func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	}
 }
 
-// SLO defines reliability targets for a service level measured by an indicator.
+// SLO is the legacy v1alpha SLO representation supported by this SDK. It
+// defines reliability targets for a service level measured by an indicator.
 type SLO struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -54,7 +55,8 @@ func (s SLO) Validate() error {
 	return sloValidation.Validate(s)
 }
 
-// String returns the qualified object name.
+// String returns the SLO's formatted version and kind. It also returns
+// [Metadata.Name] when set.
 func (s SLO) String() string {
 	return internal.GetObjectName(s)
 }
@@ -72,18 +74,21 @@ func (s SLO) GetValidator() govy.Validator[SLO] {
 // SLOSpec defines the service, indicator, objectives, time window, and
 // error-budget calculation for an [SLO].
 type SLOSpec struct {
-	// TimeWindows contains the SLO evaluation window.
+	// TimeWindows contains exactly one SLO evaluation window.
 	TimeWindows []SLOTimeWindow `json:"timeWindows"`
 	// BudgetingMethod applies the selected error-budget calculation to every
 	// objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
-	// Description summarizes the SLO.
+	// Description is an optional summary of the SLO.
 	Description string `json:"description,omitempty"`
-	// Indicator defines the threshold-metric form of the SLO.
+	// Indicator defines the threshold-metric form of the SLO. It must be nil for
+	// the ratio form.
 	Indicator *SLOIndicator `json:"indicator"`
-	// Service identifies the service whose reliability the SLO measures.
+	// Service is the metadata name of the [Service] whose reliability the SLO
+	// measures.
 	Service string `json:"service"`
-	// Objectives contains the targets used to evaluate the indicator.
+	// Objectives contains reliability targets. For the ratio form, each
+	// objective's [SLOObjective.RatioMetrics] defines the SLI metric queries.
 	Objectives []SLOObjective `json:"objectives"`
 }
 
@@ -151,7 +156,9 @@ type SLORatioMetrics struct {
 }
 
 // SLOTimeWindow defines the period over which an SLO is evaluated. For example,
-// a Unit of Week and a Count of 4 define a four-week window.
+// a Unit of Week and a Count of 4 define a four-week window. A rolling window
+// requires IsRolling to be true and Calendar to be nil. A calendar-aligned
+// window requires IsRolling to be false and Calendar to be non-nil.
 type SLOTimeWindow struct {
 	// Unit combines with Count to set the window length.
 	Unit SLOTimeWindowUnit `json:"unit"`
@@ -160,7 +167,8 @@ type SLOTimeWindow struct {
 	// IsRolling selects a continuously advancing window when true and a
 	// calendar-aligned window when false.
 	IsRolling bool `json:"isRolling"`
-	// Calendar defines the alignment of a calendar window.
+	// Calendar defines the alignment when IsRolling is false. It must be nil
+	// when IsRolling is true.
 	Calendar *SLOCalendar `json:"calendar,omitempty"`
 }
 
@@ -246,6 +254,7 @@ var sloSpecValidation = govy.New(
 		Include(sloTimeSlicesObjectiveValidation),
 	govy.For(func(spec SLOSpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
 	govy.For(func(spec SLOSpec) string { return spec.Service }).
 		WithName("service").
@@ -283,7 +292,9 @@ var sloTimeWindowValidation = govy.New(
 				return govy.NewRuleError("'calendar' must be set when 'isRolling' is false")
 			}
 			return nil
-		})),
+		}).WithDescription(
+			"'calendar' must be set when 'isRolling' is false and cannot be set when 'isRolling' is true",
+		)),
 	govy.For(func(t SLOTimeWindow) SLOTimeWindowUnit { return t.Unit }).
 		WithName("unit").
 		Required().

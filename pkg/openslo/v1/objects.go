@@ -41,13 +41,14 @@ type Metadata struct {
 	Name string `json:"name"`
 	// DisplayName is the object's human-readable name.
 	DisplayName string `json:"displayName,omitempty"`
-	// Labels contains user-defined metadata for describing and grouping the object.
+	// Labels contains optional metadata associated with the object.
 	Labels Labels `json:"labels,omitempty"`
 	// Annotations contains implementation- or system-specific metadata.
 	Annotations Annotations `json:"annotations,omitempty"`
 }
 
-// Labels maps metadata keys to one or more values.
+// Labels maps each metadata key to zero or more values. JSON decoding accepts
+// each map value as a string or an array of strings.
 type Labels map[string]Label
 
 // Annotations maps metadata keys to implementation- or system-specific values.
@@ -137,9 +138,11 @@ func validationRulesMetadata[T any](getter func(T) Metadata) govy.PropertyRules[
 					Rules(rules.StringMaxLength(63)),
 				govy.For(func(m Metadata) Labels { return m.Labels }).
 					WithName("labels").
+					OmitEmpty().
 					Include(labelsValidator()),
 				govy.For(func(m Metadata) Annotations { return m.Annotations }).
 					WithName("annotations").
+					OmitEmpty().
 					Include(annotationsValidator()),
 			),
 		)

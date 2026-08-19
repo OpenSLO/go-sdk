@@ -25,7 +25,11 @@ func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 	}
 }
 
-// DataSource stores reusable connection details for a metrics backend.
+// DataSource represents reusable connection details for a metric source.
+// [SLIMetricSource.MetricSourceRef] selects it by [Metadata.Name]. A referenced
+// metric source can omit [SLIMetricSource.Type] and keep connection details,
+// such as authentication settings, outside the [SLI]. An SLI can instead define
+// an inline metric source with [SLIMetricSource.Type] and [SLIMetricSource.Spec].
 type DataSource struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -53,7 +57,8 @@ func (d DataSource) Validate() error {
 	return dataSourceValidation.Validate(d)
 }
 
-// String returns the data source's formatted version, kind, and name.
+// String returns the data source's formatted version and kind. It also returns
+// [Metadata.Name] when set.
 func (d DataSource) String() string {
 	return internal.GetObjectName(d)
 }
@@ -72,9 +77,12 @@ func (d DataSource) GetValidator() govy.Validator[DataSource] {
 type DataSourceSpec struct {
 	// Description summarizes the data source.
 	Description string `json:"description,omitempty"`
-	// Type names the implementation-defined metric source.
+	// Type identifies the implementation-defined metric source type, such as
+	// Prometheus or Datadog.
 	Type string `json:"type"`
-	// ConnectionDetails stores source-specific connection configuration as JSON.
+	// ConnectionDetails contains implementation-defined connection data encoded
+	// as JSON. The metric-source implementation defines its fields, which can
+	// include endpoints or authentication settings.
 	ConnectionDetails json.RawMessage `json:"connectionDetails"`
 }
 
@@ -87,6 +95,7 @@ var dataSourceValidation = govy.New(
 		Include(govy.New(
 			govy.For(func(spec DataSourceSpec) string { return spec.Description }).
 				WithName("description").
+				OmitEmpty().
 				Rules(rules.StringMaxLength(1050)),
 			govy.For(func(spec DataSourceSpec) string { return spec.Type }).
 				WithName("type").

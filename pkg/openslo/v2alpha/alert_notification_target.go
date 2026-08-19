@@ -23,7 +23,14 @@ func NewAlertNotificationTarget(metadata Metadata, spec AlertNotificationTargetS
 	}
 }
 
-// AlertNotificationTarget names a destination for alert delivery.
+// AlertNotificationTarget represents a destination for alert delivery.
+// The consuming implementation defines the format of
+// [AlertNotificationTargetSpec.Target].
+//
+// This type is the SDK's v2alpha representation. The living, unstable
+// [OpenSLO v2alpha proposal] does not define alert objects.
+//
+// [OpenSLO v2alpha proposal]: https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md
 type AlertNotificationTarget struct {
 	APIVersion openslo.Version             `json:"apiVersion"`
 	Kind       openslo.Kind                `json:"kind"`
@@ -51,7 +58,8 @@ func (a AlertNotificationTarget) Validate() error {
 	return alertNotificationTargetValidation.Validate(a)
 }
 
-// String returns the notification target's formatted version, kind, and name.
+// String returns the notification target's formatted version and kind.
+// It also returns the metadata name when set.
 func (a AlertNotificationTarget) String() string {
 	return internal.GetObjectName(a)
 }
@@ -66,12 +74,15 @@ func (a AlertNotificationTarget) GetValidator() govy.Validator[AlertNotification
 	return alertNotificationTargetValidation
 }
 
-// AlertNotificationTargetSpec identifies the consumer-defined notification
-// destination.
+// AlertNotificationTargetSpec identifies a notification destination.
+// The consuming implementation defines the required
+// [AlertNotificationTargetSpec.Target] format.
 type AlertNotificationTargetSpec struct {
-	// Description summarizes the destination.
+	// Description optionally summarizes the target in at most 1,050 characters.
 	Description string `json:"description,omitempty"`
-	// Target identifies the consumer-defined destination for alert delivery.
+	// Target specifies the notification destination in the format that the
+	// consuming implementation requires. Examples include "email", "slack",
+	// "web-hook", and "Opsgenie".
 	Target string `json:"target"`
 }
 
@@ -96,5 +107,6 @@ var alertNotificationTargetSpecValidation = govy.New(
 		Required(),
 	govy.For(func(spec AlertNotificationTargetSpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
 )

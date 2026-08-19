@@ -57,7 +57,8 @@ func (s SLO) Validate() error {
 	return sloValidation.Validate(s)
 }
 
-// String returns the SLO's formatted version, kind, and name.
+// String returns the SLO's formatted version and kind.
+// It also returns the metadata name when set.
 func (s SLO) String() string {
 	return internal.GetObjectName(s)
 }
@@ -81,7 +82,7 @@ func (s SLO) GetValidator() govy.Validator[SLO] {
 // objectives, and alert policies. A standard SLO applies one SLI to all
 // objectives. A composite SLO can select a different SLI per objective.
 type SLOSpec struct {
-	// Description summarizes the SLO.
+	// Description optionally summarizes the SLO in at most 1,050 characters.
 	Description string `json:"description,omitempty"`
 	// ServiceRef names the service associated with this SLO. The SDK serializes
 	// the field as "serviceRef". The living v2alpha proposal calls it "service".
@@ -93,12 +94,16 @@ type SLOSpec struct {
 	// BudgetingMethod applies the selected error-budget calculation to every
 	// objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
-	// TimeWindow defines the SLO evaluation period and its alignment.
+	// TimeWindow contains exactly one SLO evaluation window.
 	TimeWindow []SLOTimeWindow `json:"timeWindow,omitempty"`
 	// Objectives contains the SLO's budget targets and metric thresholds.
 	// V2alpha permits multiple objectives for a threshold-metric SLO.
+	// OpenSLO v1 requires Objectives. The living v2alpha proposal does not state a
+	// requiredness change. This SDK accepts an omitted Objectives field.
 	Objectives []SLOObjective `json:"objectives"`
-	// AlertPolicies contains inline or referenced policies associated with the SLO.
+	// AlertPolicies contains policies associated with the SLO.
+	// Each item must specify exactly one inline definition or metadata-name
+	// reference.
 	AlertPolicies []SLOAlertPolicy `json:"alertPolicies,omitempty"`
 }
 
@@ -138,9 +143,14 @@ type SLOSLIInline struct {
 }
 
 // SLOObjective defines one error-budget target and, for a threshold SLI, its
-// metric comparison. The SDK validates threshold-specific fields only for an
-// embedded SLI. A referenced SLI does not expose its metric type during
-// validation.
+// metric comparison. The living v2alpha proposal also defines objective labels,
+// which this SDK does not model.
+//
+// For a standard SLO with an inline threshold SLI, validation requires
+// [SLOObjective.Operator] and [SLOObjective.Value]. For a standard SLO with an
+// inline ratio SLI, validation forbids them. The SDK does not apply these
+// metric-type rules to referenced SLIs or to SLIs embedded in composite
+// objectives.
 type SLOObjective struct {
 	// DisplayName is a human-readable name for this objective.
 	// It is not part of the enclosing object's [Metadata].
@@ -164,13 +174,16 @@ type SLOObjective struct {
 	SLI *SLOSLIInline `json:"sli,omitempty"`
 	// SLIRef names this objective's existing [SLI] for a composite SLO.
 	SLIRef *string `json:"sliRef,omitempty"`
-	// CompositeWeight scales this objective's contribution to a multi-objective
-	// composite SLO. OpenSLO uses a weight of 1 when omitted. This SDK leaves the
-	// field unset.
+	// CompositeWeight scales this objective's contribution to a composite SLO.
+	// The living v2alpha proposal permits it only with multiple objectives and
+	// defaults it to 1. This SDK does not enforce the objective-count restriction
+	// and preserves an omitted value as nil.
 	CompositeWeight *float64 `json:"compositeWeight,omitempty"`
 }
 
-// SLOTimeWindow describes one rolling or calendar-aligned SLO evaluation window.
+// SLOTimeWindow describes one rolling or calendar-aligned evaluation window.
+// If [SLOTimeWindow.IsRolling] is true, [SLOTimeWindow.Calendar] must be nil.
+// If IsRolling is false, Calendar must be non-nil.
 type SLOTimeWindow struct {
 	// Duration is the length of the evaluation window.
 	Duration DurationShorthand `json:"duration"`
@@ -190,13 +203,15 @@ type SLOCalendar struct {
 	TimeZone string `json:"timeZone"`
 }
 
-// SLOAlertPolicy associates an alert policy with an [SLO].
+// SLOAlertPolicy associates exactly one inline or referenced alert policy with
+// an [SLO].
 type SLOAlertPolicy struct {
 	*SLOAlertPolicyInline
 	*SLOAlertPolicyRef
 }
 
 // SLOAlertPolicyInline is an alert-policy definition embedded in an SLO.
+// The inline form contains kind, metadata, and spec, but no API version.
 type SLOAlertPolicyInline struct {
 	Kind     openslo.Kind    `json:"kind"`
 	Metadata Metadata        `json:"metadata"`
@@ -205,7 +220,7 @@ type SLOAlertPolicyInline struct {
 
 // SLOAlertPolicyRef identifies a separately defined [AlertPolicy].
 type SLOAlertPolicyRef struct {
-	// AlertPolicyRef names the alert policy to use.
+	// AlertPolicyRef is the metadata name of the alert policy to use.
 	AlertPolicyRef string `json:"alertPolicyRef"`
 }
 
@@ -232,6 +247,7 @@ var sloSpecValidation = govy.New(
 		),
 	govy.For(func(spec SLOSpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
 	govy.For(func(spec SLOSpec) string { return spec.ServiceRef }).
 		WithName("serviceRef").
@@ -311,7 +327,9 @@ var sloTimeWindowValidation = govy.New(
 				return govy.NewRuleError("'calendar' must be set when 'isRolling' is false")
 			}
 			return nil
-		})),
+		}).WithDescription(
+			"'calendar' must be set when 'isRolling' is false and cannot be set when 'isRolling' is true",
+		)),
 	govy.For(func(t SLOTimeWindow) DurationShorthand { return t.Duration }).
 		WithName("duration").
 		Required().

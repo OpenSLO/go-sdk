@@ -23,7 +23,9 @@ func NewService(metadata Metadata, spec ServiceSpec) Service {
 	}
 }
 
-// Service groups related SLOs.
+// Service is the legacy v1alpha Service representation supported by this SDK.
+// SLOs reference it through [SLOSpec.Service], and multiple SLOs can reference
+// the same Service.
 type Service struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -51,7 +53,8 @@ func (s Service) Validate() error {
 	return serviceValidation.Validate(s)
 }
 
-// String returns the qualified object name.
+// String returns the service's formatted version and kind. It also returns
+// [Metadata.Name] when set.
 func (s Service) String() string {
 	return internal.GetObjectName(s)
 }
@@ -68,7 +71,7 @@ func (s Service) GetValidator() govy.Validator[Service] {
 
 // ServiceSpec contains the descriptive properties of a [Service].
 type ServiceSpec struct {
-	// Description summarizes the service.
+	// Description is an optional summary of the service.
 	Description string `json:"description,omitempty"`
 }
 
@@ -81,6 +84,7 @@ var serviceValidation = govy.New(
 		Include(govy.New(
 			govy.For(func(spec ServiceSpec) string { return spec.Description }).
 				WithName("description").
+				OmitEmpty().
 				Rules(rules.StringMaxLength(1050)),
 		)),
 ).WithNameFunc(internal.GetObjectName[Service])

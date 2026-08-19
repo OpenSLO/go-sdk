@@ -25,7 +25,15 @@ func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 	}
 }
 
-// DataSource makes metric-source connection details reusable across SLIs.
+// DataSource represents reusable connection details for a metric source.
+// [SLIMetricSpec.DataSourceRef] selects it by metadata name.
+// A metric query can instead embed [SLIMetricSpec.DataSourceSpec].
+// [SLIMetricSpec.Spec] contains implementation-defined query configuration.
+//
+// This type is the SDK's v2alpha representation. The living, unstable
+// [OpenSLO v2alpha proposal] does not define a standalone DataSource schema.
+//
+// [OpenSLO v2alpha proposal]: https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md
 type DataSource struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -53,7 +61,8 @@ func (d DataSource) Validate() error {
 	return dataSourceValidation.Validate(d)
 }
 
-// String returns the data source's formatted version, kind, and name.
+// String returns the data source's formatted version and kind.
+// It also returns the metadata name when set.
 func (d DataSource) String() string {
 	return internal.GetObjectName(d)
 }
@@ -68,14 +77,16 @@ func (d DataSource) GetValidator() govy.Validator[DataSource] {
 	return dataSourceValidation
 }
 
-// DataSourceSpec defines a data-source type and its provider-specific connection
-// configuration.
+// DataSourceSpec defines a metric-source type and its implementation-defined
+// connection data.
 type DataSourceSpec struct {
-	// Description summarizes the data source.
+	// Description optionally summarizes the data source in at most 1,050 characters.
 	Description string `json:"description,omitempty"`
-	// Type identifies the data-source implementation understood by the consumer.
+	// Type identifies the metric-source type, such as Prometheus or Datadog.
+	// The inherited OpenSLO v1 model does not standardize the accepted Type values.
 	Type string `json:"type"`
-	// ConnectionDetails stores provider-specific connection configuration as JSON.
+	// ConnectionDetails contains implementation-defined connection data encoded
+	// as JSON, such as endpoints or authentication settings.
 	ConnectionDetails json.RawMessage `json:"connectionDetails"`
 }
 
@@ -92,6 +103,7 @@ var dataSourceValidation = govy.New(
 var dataSourceSpecValidation = govy.New(
 	govy.For(func(spec DataSourceSpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
 	govy.For(func(spec DataSourceSpec) string { return spec.Type }).
 		WithName("type").

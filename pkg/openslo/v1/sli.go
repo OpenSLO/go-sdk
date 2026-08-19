@@ -23,7 +23,8 @@ func NewSLI(metadata Metadata, spec SLISpec) SLI {
 	}
 }
 
-// SLI describes how to read metric data used to evaluate an [SLO].
+// SLI defines a derived reliability indicator and the queries used to calculate
+// it for an [SLO].
 type SLI struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -51,7 +52,8 @@ func (s SLI) Validate() error {
 	return sliValidation.Validate(s)
 }
 
-// String returns the SLI's formatted version, kind, and name.
+// String returns the SLI's formatted version and kind. It also returns
+// [Metadata.Name] when set.
 func (s SLI) String() string {
 	return internal.GetObjectName(s)
 }
@@ -66,19 +68,20 @@ func (s SLI) GetValidator() govy.Validator[SLI] {
 	return sliValidation
 }
 
-// SLISpec defines the metric used by an [SLI].
+// SLISpec defines the query or queries used to calculate an [SLI].
 type SLISpec struct {
 	// Description summarizes the SLI.
 	Description string `json:"description,omitempty"`
-	// ThresholdMetric retrieves raw values for an [SLOObjective] to compare with
-	// its Operator and Value.
+	// ThresholdMetric defines a query that returns raw values.
+	// [SLOObjective.Operator] compares each value with [SLOObjective.Value].
 	ThresholdMetric *SLIMetricSpec  `json:"thresholdMetric,omitempty"`
 	RatioMetric     *SLIRatioMetric `json:"ratioMetric,omitempty"`
 }
 
-// SLIRatioMetric defines a success ratio as good divided by total, total minus
-// bad divided by total, or a precomputed raw ratio. For example, 99 good events
-// out of 100 produce a ratio of 0.99. One bad event out of 100 produces the same
+// SLIRatioMetric defines an indicator from good divided by total or (total minus
+// bad) divided by total. It can instead use a precomputed success or failure
+// ratio identified by [SLIRatioMetric.RawType]. For example, 99 good events out
+// of 100 produce a ratio of 0.99. One bad event out of 100 produces the same
 // ratio.
 type SLIRatioMetric struct {
 	// Counter reports whether the queried good, bad, and total metrics are
@@ -93,11 +96,11 @@ type SLIRatioMetric struct {
 	// RawType selects whether Raw is interpreted as a success or failure ratio
 	// when Raw is used.
 	RawType SLIRawMetricType `json:"rawType,omitempty"`
-	// Raw retrieves a precomputed ratio.
+	// Raw defines a query for a precomputed success or failure ratio.
 	Raw *SLIMetricSpec `json:"raw,omitempty"`
 }
 
-// SLIMetricSpec defines how to retrieve one metric used by an [SLI].
+// SLIMetricSpec defines one query used to read metric data for an [SLI].
 type SLIMetricSpec struct {
 	MetricSource SLIMetricSource `json:"metricSource"`
 }
@@ -108,8 +111,9 @@ type SLIMetricSource struct {
 	// MetricSourceRef names an existing [DataSource].
 	MetricSourceRef string `json:"metricSourceRef,omitempty"`
 	// Type identifies the implementation-defined metric-source type.
-	// OpenSLO requires it when MetricSourceRef does not supply one. This SDK does
-	// not validate that condition.
+	// OpenSLO requires Type when [SLIMetricSource.MetricSourceRef] is omitted.
+	// Otherwise, OpenSLO infers Type from the referenced [DataSource]. This SDK
+	// does not validate the requirement.
 	Type string `json:"type,omitempty"`
 	// Spec contains source-specific query or metric-retrieval configuration.
 	Spec map[string]any `json:"spec"`
@@ -142,6 +146,7 @@ var sliValidation = govy.New(
 var sliSpecValidation = govy.New(
 	govy.For(func(spec SLISpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
 	govy.For(govy.GetSelf[SLISpec]()).
 		Rules(rules.MutuallyExclusive(true, map[string]func(s SLISpec) any{

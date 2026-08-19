@@ -23,8 +23,8 @@ func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertConditio
 	}
 }
 
-// AlertCondition defines the condition under which an SLO alert is considered
-// breaching.
+// AlertCondition defines a burn-rate condition for an SLO. An [AlertPolicy]
+// controls whether a breaching condition triggers an alert.
 type AlertCondition struct {
 	APIVersion openslo.Version    `json:"apiVersion"`
 	Kind       openslo.Kind       `json:"kind"`
@@ -52,7 +52,8 @@ func (a AlertCondition) Validate() error {
 	return alertConditionValidation.Validate(a)
 }
 
-// String returns the AlertCondition's formatted version, kind, and name.
+// String returns the alert condition's formatted version and kind. It also
+// returns [Metadata.Name] when set.
 func (a AlertCondition) String() string {
 	return internal.GetObjectName(a)
 }
@@ -70,7 +71,9 @@ func (a AlertCondition) GetValidator() govy.Validator[AlertCondition] {
 // AlertConditionSpec defines an alert's severity and burn-rate condition.
 type AlertConditionSpec struct {
 	// Severity is an implementation-defined classification such as "sev1" or "page".
-	Severity  string             `json:"severity"`
+	Severity string `json:"severity"`
+	// Condition defines the burn-rate comparison used to determine whether this
+	// alert condition is breaching.
 	Condition AlertConditionType `json:"condition"`
 	// Description summarizes the alert condition.
 	Description string `json:"description,omitempty"`
@@ -88,8 +91,10 @@ type AlertConditionType struct {
 	Threshold *float64 `json:"threshold"`
 	// LookbackWindow sets the period for burn-rate calculation.
 	LookbackWindow DurationShorthand `json:"lookbackWindow"`
-	// AlertAfter sets how long the condition must remain valid before an alert is
-	// triggered. OpenSLO treats an omitted value as "0m". This SDK leaves it unset.
+	// AlertAfter sets how long the burn-rate comparison must remain true before
+	// the condition becomes breaching. An [AlertPolicy] controls whether that
+	// state triggers an alert. OpenSLO treats an omitted value as "0m". This SDK
+	// leaves it unset.
 	AlertAfter *DurationShorthand `json:"alertAfter,omitempty"`
 }
 
@@ -114,6 +119,7 @@ var alertConditionValidation = govy.New(
 var alertConditionSpecValidation = govy.New(
 	govy.For(func(spec AlertConditionSpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
 	govy.For(func(spec AlertConditionSpec) string { return spec.Severity }).
 		WithName("severity").

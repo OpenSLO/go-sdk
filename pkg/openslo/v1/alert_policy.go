@@ -23,8 +23,8 @@ func NewAlertPolicy(metadata Metadata, spec AlertPolicySpec) AlertPolicy {
 	}
 }
 
-// AlertPolicy defines when the system emits alerts for an SLO and where it sends
-// them.
+// AlertPolicy defines which alert-condition states trigger an SLO alert. It also
+// defines where the consuming system delivers the resulting notifications.
 // It is distinct from an organization's policy for responding to error-budget
 // consumption.
 type AlertPolicy struct {
@@ -54,7 +54,8 @@ func (a AlertPolicy) Validate() error {
 	return alertPolicyValidation.Validate(a)
 }
 
-// String returns the AlertPolicy's formatted version, kind, and name.
+// String returns the alert policy's formatted version and kind. It also returns
+// [Metadata.Name] when set.
 func (a AlertPolicy) String() string {
 	return internal.GetObjectName(a)
 }
@@ -69,64 +70,75 @@ func (a AlertPolicy) GetValidator() govy.Validator[AlertPolicy] {
 	return alertPolicyValidation
 }
 
-// AlertPolicySpec defines the events that emit notifications and the condition
-// and destinations used by an [AlertPolicy].
+// AlertPolicySpec defines which condition states trigger an SLO alert and where
+// the consuming system delivers the resulting notifications.
+// The trigger fields have a false zero value. JSON encoding omits false values,
+// and this SDK accepts all three fields as false.
 type AlertPolicySpec struct {
 	// Description summarizes the alert policy.
 	Description string `json:"description,omitempty"`
-	// AlertWhenNoData enables alerts when the associated SLO has no burn-rate
-	// value.
+	// AlertWhenNoData reports whether to trigger an alert when the associated
+	// [SLO] has no burn-rate value. Its zero value is false.
 	AlertWhenNoData bool `json:"alertWhenNoData,omitempty"`
-	// AlertWhenBreaching enables alerts when the condition is breaching.
+	// AlertWhenBreaching reports whether to trigger an alert when the condition is
+	// breaching. Its zero value is false.
 	AlertWhenBreaching bool `json:"alertWhenBreaching,omitempty"`
-	// AlertWhenResolved enables alerts when the condition resolves.
+	// AlertWhenResolved reports whether to trigger an alert when the condition
+	// resolves. Its zero value is false.
 	AlertWhenResolved bool `json:"alertWhenResolved,omitempty"`
-	// Conditions contains the alert condition, inline or by reference.
+	// Conditions contains exactly one alert condition, specified inline or by
+	// reference.
 	Conditions []AlertPolicyCondition `json:"conditions,omitempty"`
-	// NotificationTargets lists notification destinations, inline or by reference.
+	// NotificationTargets contains one or more notification destinations. Specify
+	// each destination inline or by reference.
 	NotificationTargets []AlertPolicyNotificationTarget `json:"notificationTargets,omitempty"`
 }
 
-// AlertPolicyCondition supplies an alert condition to an [AlertPolicySpec] by
-// reference or inline definition.
+// AlertPolicyCondition supplies exactly one alert condition representation to an
+// [AlertPolicySpec]. Set [AlertPolicyConditionInline] or
+// [AlertPolicyConditionRef], but not both.
 type AlertPolicyCondition struct {
 	*AlertPolicyConditionRef
 	*AlertPolicyConditionInline
 }
 
-// AlertPolicyConditionInline is an [AlertCondition] embedded in an
-// [AlertPolicy].
+// AlertPolicyConditionInline is the inline form of an [AlertCondition]. It omits
+// [AlertCondition.APIVersion].
 type AlertPolicyConditionInline struct {
 	Kind     openslo.Kind       `json:"kind"`
 	Metadata Metadata           `json:"metadata"`
 	Spec     AlertConditionSpec `json:"spec"`
 }
 
-// AlertPolicyConditionRef refers to an existing [AlertCondition].
+// AlertPolicyConditionRef identifies an existing [AlertCondition] by
+// [Metadata.Name].
 type AlertPolicyConditionRef struct {
-	// ConditionRef names an existing alert condition.
+	// ConditionRef matches the [Metadata.Name] of an existing [AlertCondition].
 	ConditionRef string `json:"conditionRef"`
 }
 
-// AlertPolicyNotificationTarget supplies a notification target to an
-// [AlertPolicySpec] by reference or inline definition.
+// AlertPolicyNotificationTarget supplies exactly one notification-target
+// representation to an [AlertPolicySpec]. Set
+// [AlertPolicyNotificationTargetInline] or [AlertPolicyNotificationTargetRef],
+// but not both.
 type AlertPolicyNotificationTarget struct {
 	*AlertPolicyNotificationTargetRef
 	*AlertPolicyNotificationTargetInline
 }
 
-// AlertPolicyNotificationTargetInline is an [AlertNotificationTarget] embedded
-// in an [AlertPolicy].
+// AlertPolicyNotificationTargetInline is the inline form of an
+// [AlertNotificationTarget]. It omits [AlertNotificationTarget.APIVersion].
 type AlertPolicyNotificationTargetInline struct {
 	Kind     openslo.Kind                `json:"kind"`
 	Metadata Metadata                    `json:"metadata"`
 	Spec     AlertNotificationTargetSpec `json:"spec"`
 }
 
-// AlertPolicyNotificationTargetRef refers to an existing
-// [AlertNotificationTarget].
+// AlertPolicyNotificationTargetRef identifies an existing
+// [AlertNotificationTarget] by [Metadata.Name].
 type AlertPolicyNotificationTargetRef struct {
-	// TargetRef names an existing notification target.
+	// TargetRef matches the [Metadata.Name] of an existing
+	// [AlertNotificationTarget].
 	TargetRef string `json:"targetRef"`
 }
 
@@ -142,7 +154,17 @@ var alertPolicyValidation = govy.New(
 var alertPolicySpecValidation = govy.New(
 	govy.For(func(spec AlertPolicySpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
+	govy.For(func(spec AlertPolicySpec) bool { return spec.AlertWhenNoData }).
+		WithName("alertWhenNoData").
+		OmitEmpty(),
+	govy.For(func(spec AlertPolicySpec) bool { return spec.AlertWhenBreaching }).
+		WithName("alertWhenBreaching").
+		OmitEmpty(),
+	govy.For(func(spec AlertPolicySpec) bool { return spec.AlertWhenResolved }).
+		WithName("alertWhenResolved").
+		OmitEmpty(),
 	govy.ForSlice(func(spec AlertPolicySpec) []AlertPolicyCondition { return spec.Conditions }).
 		WithName("conditions").
 		Rules(rules.SliceLength[[]AlertPolicyCondition](1, 1)).

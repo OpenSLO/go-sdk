@@ -268,37 +268,37 @@ func TestNormalizeGeneratedDocsRecoversPromotedFieldDocs(t *testing.T) {
 			name:     "v1 conditionRef",
 			doc:      docs[0].doc,
 			path:     "$.spec.conditions[*].conditionRef",
-			fieldDoc: "ConditionRef names an existing alert condition.",
+			fieldDoc: "ConditionRef matches the [Metadata.Name](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#Metadata.Name) of an existing [AlertCondition](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#AlertCondition).",
 		},
 		{
 			name:     "v1 targetRef",
 			doc:      docs[0].doc,
 			path:     "$.spec.notificationTargets[*].targetRef",
-			fieldDoc: "TargetRef names an existing notification target.",
+			fieldDoc: "TargetRef matches the [Metadata.Name](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#Metadata.Name) of an existing [AlertNotificationTarget](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#AlertNotificationTarget).",
 		},
 		{
 			name:     "v1 alertPolicyRef",
 			doc:      docs[1].doc,
 			path:     "$.spec.alertPolicies[*].alertPolicyRef",
-			fieldDoc: "AlertPolicyRef names an existing alert policy.",
+			fieldDoc: "AlertPolicyRef matches the [Metadata.Name](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#Metadata.Name) of an existing [AlertPolicy](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#AlertPolicy).",
 		},
 		{
 			name:     "v2alpha conditionRef",
 			doc:      docs[2].doc,
 			path:     "$.spec.conditions[*].conditionRef",
-			fieldDoc: "ConditionRef names the alert condition to use.",
+			fieldDoc: "ConditionRef is the metadata name of the alert condition to use.",
 		},
 		{
 			name:     "v2alpha targetRef",
 			doc:      docs[2].doc,
 			path:     "$.spec.notificationTargets[*].targetRef",
-			fieldDoc: "TargetRef names the notification target to use.",
+			fieldDoc: "TargetRef is the metadata name of the notification target to use.",
 		},
 		{
 			name:     "v2alpha alertPolicyRef",
 			doc:      docs[3].doc,
 			path:     "$.spec.alertPolicies[*].alertPolicyRef",
-			fieldDoc: "AlertPolicyRef names the alert policy to use.",
+			fieldDoc: "AlertPolicyRef is the metadata name of the alert policy to use.",
 		},
 	}
 	for _, test := range tests {
@@ -381,6 +381,67 @@ func TestRecoverFieldDocsRejectsOriginlessRealPaths(t *testing.T) {
 		err,
 		"recover field documentation for FixtureDoc at $.items[*].promoted: path has no Go field origin",
 	)
+}
+
+func TestGeneratedDocsExposeCrossCuttingContracts(t *testing.T) {
+	versions, err := generateVersions()
+	require.NoError(t, err)
+
+	for version, documents := range versions {
+		for kind, document := range documents {
+			t.Run(version+"/"+kind+"/description", func(t *testing.T) {
+				requirePropertyRule(
+					t,
+					requireProperty(t, document, jsonpath.Parse("$.spec.description")),
+					govy.ErrorCode("optional"),
+				)
+			})
+		}
+	}
+
+	for _, version := range []Version{"openslo/v1", "openslo.com/v2alpha"} {
+		for kind, document := range versions[version] {
+			for _, path := range []string{"$.metadata.labels", "$.metadata.annotations"} {
+				t.Run(version+"/"+kind+"/"+path, func(t *testing.T) {
+					requirePropertyRule(
+						t,
+						requireProperty(t, document, jsonpath.Parse(path)),
+						govy.ErrorCode("optional"),
+					)
+				})
+			}
+		}
+
+		policy := versions[version]["AlertPolicy"]
+		for _, path := range []string{
+			"$.spec.alertWhenNoData",
+			"$.spec.alertWhenBreaching",
+			"$.spec.alertWhenResolved",
+		} {
+			t.Run(version+"/AlertPolicy/"+path, func(t *testing.T) {
+				requirePropertyRule(
+					t,
+					requireProperty(t, policy, jsonpath.Parse(path)),
+					govy.ErrorCode("optional"),
+				)
+			})
+		}
+	}
+
+	timeWindowPaths := map[Version]string{
+		"openslo/v1alpha":     "$.spec.timeWindows[*]",
+		"openslo/v1":          "$.spec.timeWindow[*]",
+		"openslo.com/v2alpha": "$.spec.timeWindow[*]",
+	}
+	for version, path := range timeWindowPaths {
+		t.Run(version+"/SLO/calendar invariant", func(t *testing.T) {
+			requirePropertyRuleDescription(
+				t,
+				requireProperty(t, versions[version]["SLO"], jsonpath.Parse(path)),
+				"'calendar' must be set when 'isRolling' is false and cannot be set when 'isRolling' is true",
+			)
+		})
+	}
 }
 
 func TestGenerateVersionsMatchesCanonicalManifest(t *testing.T) {
@@ -501,4 +562,42 @@ func findProperty(doc govydoc.ObjectDoc, path jsonpath.Path) *govydoc.PropertyDo
 		}
 	}
 	return nil
+}
+
+func requirePropertyRule(
+	t *testing.T,
+	property *govydoc.PropertyDoc,
+	errorCode govy.ErrorCode,
+	conditions ...string,
+) {
+	t.Helper()
+	for _, rule := range property.Rules {
+		if rule.ErrorCode == errorCode && slices.Equal(rule.Conditions, conditions) {
+			return
+		}
+	}
+	t.Fatalf(
+		"property %s has no %q rule with conditions %v",
+		property.Path,
+		errorCode,
+		conditions,
+	)
+}
+
+func requirePropertyRuleDescription(
+	t *testing.T,
+	property *govydoc.PropertyDoc,
+	description string,
+) {
+	t.Helper()
+	for _, rule := range property.Rules {
+		if rule.Description == description {
+			return
+		}
+	}
+	t.Fatalf(
+		"property %s has no rule with description %q",
+		property.Path,
+		description,
+	)
 }

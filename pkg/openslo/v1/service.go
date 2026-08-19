@@ -23,7 +23,9 @@ func NewService(metadata Metadata, spec ServiceSpec) Service {
 	}
 }
 
-// Service groups related [SLO] objects.
+// Service identifies a high-level group of [SLO] objects. An [SLO] associates
+// with the Service by setting [SLOSpec.Service] to the Service's [Metadata.Name].
+// Multiple SLOs can refer to the same Service.
 type Service struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -51,7 +53,8 @@ func (s Service) Validate() error {
 	return serviceValidation.Validate(s)
 }
 
-// String returns the Service's formatted version, kind, and name.
+// String returns the service's formatted version and kind. It also returns
+// [Metadata.Name] when set.
 func (s Service) String() string {
 	return internal.GetObjectName(s)
 }
@@ -81,6 +84,7 @@ var serviceValidation = govy.New(
 		Include(govy.New(
 			govy.For(func(spec ServiceSpec) string { return spec.Description }).
 				WithName("description").
+				OmitEmpty().
 				Rules(rules.StringMaxLength(1050)),
 		)),
 ).WithNameFunc(internal.GetObjectName[Service])

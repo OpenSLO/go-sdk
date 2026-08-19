@@ -23,7 +23,15 @@ func NewService(metadata Metadata, spec ServiceSpec) Service {
 	}
 }
 
-// Service groups SLOs under a named service.
+// Service identifies a high-level group for SLOs.
+// Each [SLO] refers to a Service by metadata name through [SLOSpec.ServiceRef].
+// Multiple SLOs can use the same Service name.
+// The SDK does not verify that a referenced Service exists.
+//
+// This type is the SDK's v2alpha representation. The living, unstable
+// [OpenSLO v2alpha proposal] does not define a standalone Service schema.
+//
+// [OpenSLO v2alpha proposal]: https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md
 type Service struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -51,7 +59,8 @@ func (s Service) Validate() error {
 	return serviceValidation.Validate(s)
 }
 
-// String returns the service's formatted version, kind, and name.
+// String returns the service's formatted version and kind.
+// It also returns the metadata name when set.
 func (s Service) String() string {
 	return internal.GetObjectName(s)
 }
@@ -68,7 +77,7 @@ func (s Service) GetValidator() govy.Validator[Service] {
 
 // ServiceSpec defines the descriptive attributes of a [Service].
 type ServiceSpec struct {
-	// Description summarizes the service.
+	// Description optionally summarizes the service in at most 1,050 characters.
 	Description string `json:"description,omitempty"`
 }
 
@@ -81,6 +90,7 @@ var serviceValidation = govy.New(
 		Include(govy.New(
 			govy.For(func(spec ServiceSpec) string { return spec.Description }).
 				WithName("description").
+				OmitEmpty().
 				Rules(rules.StringMaxLength(1050)),
 		)),
 ).WithNameFunc(internal.GetObjectName[Service])

@@ -55,7 +55,8 @@ func (s SLO) Validate() error {
 	return sloValidation.Validate(s)
 }
 
-// String returns the SLO's formatted version, kind, and name.
+// String returns the SLO's formatted version and kind. It also returns
+// [Metadata.Name] when set.
 func (s SLO) String() string {
 	return internal.GetObjectName(s)
 }
@@ -92,9 +93,11 @@ type SLOSpec struct {
 	// BudgetingMethod applies the selected error-budget calculation to every
 	// objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
-	// TimeWindow contains the SLO's evaluation window.
+	// TimeWindow contains exactly one evaluation window. OpenSLO makes this field
+	// optional, but this SDK requires one item.
 	TimeWindow []SLOTimeWindow `json:"timeWindow,omitempty"`
-	// Objectives contains the SLO's target definitions.
+	// Objectives contains the SLO's target definitions. OpenSLO requires this
+	// field, but this SDK accepts decoded input that omits it.
 	Objectives []SLOObjective `json:"objectives"`
 	// AlertPolicies contains inline alert policies or references to existing
 	// [AlertPolicy] objects.
@@ -112,12 +115,14 @@ func (s SLOSpec) HasCompositeObjectives() bool {
 	return false
 }
 
-// SLOBudgetingMethod identifies how an [SLO] calculates objective success and
-// error-budget use.
+// SLOBudgetingMethod identifies how an [SLO] aggregates SLI results for
+// objective and error-budget evaluation. An objective's error-budget fraction
+// is 1 minus [SLOObjective.Target]. Its error-budget percentage is 100 minus
+// [SLOObjective.TargetPercent].
 // Occurrences uses the ratio of good events to total events. Timeslices counts
 // slices that meet [SLOObjective.TimeSliceTarget]. RatioTimeslices averages
-// success ratios across slices. Composite SLOs apply objective weights to each
-// calculation.
+// success ratios across slices. Composite calculation rules depend on the
+// method, as the constant comments describe.
 type SLOBudgetingMethod string
 
 const (
@@ -165,20 +170,26 @@ type SLOObjective struct {
 	// TimeSliceTarget classifies a slice as good when BudgetingMethod is
 	// [SLOBudgetingMethodTimeslices].
 	TimeSliceTarget *float64 `json:"timeSliceTarget,omitempty"`
-	// TimeSliceWindow sets the slice size and query-evaluation interval for
+	// TimeSliceWindow sets the slice size and query interval for
 	// [SLOBudgetingMethodTimeslices] and [SLOBudgetingMethodRatioTimeslices].
+	// This Go model supports [DurationShorthand] only. OpenSLO also permits a
+	// number, which it interprets as minutes.
 	TimeSliceWindow *DurationShorthand `json:"timeSliceWindow,omitempty"`
 	// Indicator defines this objective's SLI inline for a composite SLO.
 	Indicator *SLOIndicatorInline `json:"indicator,omitempty"`
 	// IndicatorRef names this objective's [SLI] for a composite SLO.
 	IndicatorRef *string `json:"indicatorRef,omitempty"`
-	// CompositeWeight scales this objective's contribution to a multi-objective
-	// composite SLO. OpenSLO uses a weight of 1 when omitted. This SDK leaves the
-	// field unset.
+	// CompositeWeight scales this objective's contribution to a composite SLO.
+	// OpenSLO permits it only with multiple objectives and defaults it to 1. This
+	// SDK does not enforce the objective-count restriction and preserves an omitted
+	// value as nil.
 	CompositeWeight *float64 `json:"compositeWeight,omitempty"`
 }
 
-// SLOTimeWindow defines either a rolling or calendar-aligned evaluation window.
+// SLOTimeWindow defines one rolling or calendar-aligned evaluation window. A
+// rolling window requires [SLOTimeWindow.IsRolling] to be true and
+// [SLOTimeWindow.Calendar] to be nil. A calendar-aligned window requires
+// IsRolling to be false and Calendar to be non-nil.
 type SLOTimeWindow struct {
 	// Duration is the length of the evaluation window.
 	Duration DurationShorthand `json:"duration"`
@@ -197,22 +208,24 @@ type SLOCalendar struct {
 	TimeZone string `json:"timeZone"`
 }
 
-// SLOAlertPolicy associates an alert policy with an [SLO].
+// SLOAlertPolicy supplies exactly one alert policy representation to an [SLO].
+// Set [SLOAlertPolicyInline] or [SLOAlertPolicyRef], but not both.
 type SLOAlertPolicy struct {
 	*SLOAlertPolicyInline
 	*SLOAlertPolicyRef
 }
 
-// SLOAlertPolicyInline is an [AlertPolicy] embedded in an [SLO].
+// SLOAlertPolicyInline is the inline form of an [AlertPolicy]. It omits
+// [AlertPolicy.APIVersion].
 type SLOAlertPolicyInline struct {
 	Kind     openslo.Kind    `json:"kind"`
 	Metadata Metadata        `json:"metadata"`
 	Spec     AlertPolicySpec `json:"spec"`
 }
 
-// SLOAlertPolicyRef refers to an existing [AlertPolicy].
+// SLOAlertPolicyRef identifies an existing [AlertPolicy] by [Metadata.Name].
 type SLOAlertPolicyRef struct {
-	// AlertPolicyRef names an existing alert policy.
+	// AlertPolicyRef matches the [Metadata.Name] of an existing [AlertPolicy].
 	AlertPolicyRef string `json:"alertPolicyRef"`
 }
 
@@ -239,6 +252,7 @@ var sloSpecValidation = govy.New(
 		),
 	govy.For(func(spec SLOSpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
 	govy.For(func(spec SLOSpec) string { return spec.Service }).
 		WithName("service").
@@ -319,7 +333,9 @@ var sloTimeWindowValidation = govy.New(
 				return govy.NewRuleError("'calendar' must be set when 'isRolling' is false")
 			}
 			return nil
-		})),
+		}).WithDescription(
+			"'calendar' must be set when 'isRolling' is false and cannot be set when 'isRolling' is true",
+		)),
 	govy.For(func(t SLOTimeWindow) DurationShorthand { return t.Duration }).
 		WithName("duration").
 		Required().

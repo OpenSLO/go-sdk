@@ -41,9 +41,11 @@ type Object interface {
 type Metadata struct {
 	// Name identifies the object when other OpenSLO objects refer to it.
 	Name string `json:"name"`
-	// Labels classifies the object with Kubernetes-style, single-valued labels.
+	// Labels optionally classifies the object with Kubernetes-style,
+	// single-valued labels.
 	Labels Labels `json:"labels,omitempty"`
-	// Annotations attaches non-identifying metadata with qualified keys.
+	// Annotations optionally attaches non-identifying metadata with qualified
+	// keys.
 	Annotations Annotations `json:"annotations,omitempty"`
 }
 
@@ -110,9 +112,11 @@ func validationRulesMetadata[T any](getter func(T) Metadata) govy.PropertyRules[
 					Rules(rules.StringDNSLabel()),
 				govy.For(func(m Metadata) Labels { return m.Labels }).
 					WithName("labels").
+					OmitEmpty().
 					Include(labelsValidator()),
 				govy.For(func(m Metadata) Annotations { return m.Annotations }).
 					WithName("annotations").
+					OmitEmpty().
 					Include(annotationsValidator()),
 			),
 		)
