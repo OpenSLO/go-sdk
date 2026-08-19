@@ -44,7 +44,6 @@
       - displayName: Good
         target: 0.995
         timeSliceTarget: 0.95
-        value: 1
         ratioMetrics:
           incremental: true
           good:

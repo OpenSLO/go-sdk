@@ -13,6 +13,7 @@ var (
 	_ = openslo.ObjectValidator[AlertNotificationTarget](AlertNotificationTarget{})
 )
 
+// NewAlertNotificationTarget returns a notification target from metadata and spec.
 func NewAlertNotificationTarget(metadata Metadata, spec AlertNotificationTargetSpec) AlertNotificationTarget {
 	return AlertNotificationTarget{
 		APIVersion: APIVersion,
@@ -22,6 +23,9 @@ func NewAlertNotificationTarget(metadata Metadata, spec AlertNotificationTargetS
 	}
 }
 
+// AlertNotificationTarget represents a destination for alert delivery.
+// The consuming implementation defines the format of
+// [AlertNotificationTargetSpec.Target].
 type AlertNotificationTarget struct {
 	APIVersion openslo.Version             `json:"apiVersion"`
 	Kind       openslo.Kind                `json:"kind"`
@@ -29,37 +33,52 @@ type AlertNotificationTarget struct {
 	Spec       AlertNotificationTargetSpec `json:"spec"`
 }
 
+// GetVersion returns [APIVersion].
 func (a AlertNotificationTarget) GetVersion() openslo.Version {
 	return APIVersion
 }
 
+// GetKind returns [openslo.KindAlertNotificationTarget].
 func (a AlertNotificationTarget) GetKind() openslo.Kind {
 	return openslo.KindAlertNotificationTarget
 }
 
+// GetName returns the notification target's metadata name.
 func (a AlertNotificationTarget) GetName() string {
 	return a.Metadata.Name
 }
 
+// Validate returns an error for an invalid notification target.
 func (a AlertNotificationTarget) Validate() error {
 	return alertNotificationTargetValidation.Validate(a)
 }
 
+// String returns the notification target's formatted version and kind.
+// It also returns the metadata name when set.
 func (a AlertNotificationTarget) String() string {
 	return internal.GetObjectName(a)
 }
 
+// GetMetadata returns the notification target's metadata.
 func (a AlertNotificationTarget) GetMetadata() Metadata {
 	return a.Metadata
 }
 
+// GetValidator returns the validator configured for [AlertNotificationTarget].
 func (a AlertNotificationTarget) GetValidator() govy.Validator[AlertNotificationTarget] {
 	return alertNotificationTargetValidation
 }
 
+// AlertNotificationTargetSpec identifies a notification destination.
+// The consuming implementation defines the required
+// [AlertNotificationTargetSpec.Target] format.
 type AlertNotificationTargetSpec struct {
+	// Description optionally summarizes the target in at most 1,050 characters.
 	Description string `json:"description,omitempty"`
-	Target      string `json:"target"`
+	// Target specifies the notification destination in the format that the
+	// consuming implementation requires. Examples include "email", "slack",
+	// "web-hook", and "Opsgenie".
+	Target string `json:"target"`
 }
 
 var alertNotificationTargetValidation = govy.New(
@@ -83,5 +102,6 @@ var alertNotificationTargetSpecValidation = govy.New(
 		Required(),
 	govy.For(func(spec AlertNotificationTargetSpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
 )

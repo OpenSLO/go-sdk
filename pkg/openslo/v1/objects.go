@@ -11,6 +11,7 @@ import (
 	"github.com/OpenSLO/go-sdk/pkg/openslo"
 )
 
+// APIVersion is the OpenSLO v1 API version.
 const APIVersion = openslo.VersionV1
 
 var supportedKinds = []openslo.Kind{
@@ -23,28 +24,41 @@ var supportedKinds = []openslo.Kind{
 	openslo.KindAlertNotificationTarget,
 }
 
+// GetSupportedKinds returns a copy of the object kinds supported by this package.
 func GetSupportedKinds() []openslo.Kind {
 	return slices.Clone(supportedKinds)
 }
 
+// Object is an OpenSLO v1 object with accessible [Metadata].
 type Object interface {
 	openslo.Object
 	GetMetadata() Metadata
 }
 
+// Metadata identifies and describes an OpenSLO v1 object.
 type Metadata struct {
-	Name        string      `json:"name"`
-	DisplayName string      `json:"displayName,omitempty"`
-	Labels      Labels      `json:"labels,omitempty"`
+	// Name identifies the object.
+	Name string `json:"name"`
+	// DisplayName is the object's human-readable name.
+	DisplayName string `json:"displayName,omitempty"`
+	// Labels contains optional metadata associated with the object.
+	Labels Labels `json:"labels,omitempty"`
+	// Annotations contains implementation- or system-specific metadata.
 	Annotations Annotations `json:"annotations,omitempty"`
 }
 
+// Labels maps each metadata key to zero or more values. JSON decoding accepts
+// each map value as a string or an array of strings.
 type Labels map[string]Label
 
+// Annotations maps metadata keys to implementation- or system-specific values.
 type Annotations map[string]string
 
+// Label is the set of values assigned to one label key.
+// JSON decoding accepts either a single string or an array of strings.
 type Label []string
 
+// UnmarshalJSON decodes a string or string array into a Label.
 func (a *Label) UnmarshalJSON(data []byte) error {
 	var multi []string
 	if err := json.Unmarshal(data, &multi); err != nil {
@@ -59,12 +73,17 @@ func (a *Label) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Operator identifies a comparison applied to a metric value.
 type Operator string
 
 const (
-	OperatorGT  Operator = "gt"
-	OperatorLT  Operator = "lt"
+	// OperatorGT selects greater than.
+	OperatorGT Operator = "gt"
+	// OperatorLT selects less than.
+	OperatorLT Operator = "lt"
+	// OperatorGTE selects greater than or equal to.
 	OperatorGTE Operator = "gte"
+	// OperatorLTE selects less than or equal to.
 	OperatorLTE Operator = "lte"
 )
 
@@ -80,6 +99,7 @@ var operatorValidation = govy.New(
 		Rules(rules.OneOf(validOperators...)),
 )
 
+// Validate returns an error for an unsupported operator.
 func (o Operator) Validate() error {
 	return operatorValidation.Validate(o)
 }
@@ -118,9 +138,11 @@ func validationRulesMetadata[T any](getter func(T) Metadata) govy.PropertyRules[
 					Rules(rules.StringMaxLength(63)),
 				govy.For(func(m Metadata) Labels { return m.Labels }).
 					WithName("labels").
+					OmitEmpty().
 					Include(labelsValidator()),
 				govy.For(func(m Metadata) Annotations { return m.Annotations }).
 					WithName("annotations").
+					OmitEmpty().
 					Include(annotationsValidator()),
 			),
 		)

@@ -16,6 +16,7 @@ var (
 	_ = openslo.ObjectValidator[SLO](SLO{})
 )
 
+// NewSLO returns an SLO from metadata and spec.
 func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	return SLO{
 		APIVersion: APIVersion,
@@ -25,6 +26,7 @@ func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	}
 }
 
+// SLO defines a target for an SLI over a time window.
 type SLO struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -32,49 +34,78 @@ type SLO struct {
 	Spec       SLOSpec         `json:"spec"`
 }
 
+// GetVersion returns [APIVersion].
 func (s SLO) GetVersion() openslo.Version {
 	return APIVersion
 }
 
+// GetKind returns [openslo.KindSLO].
 func (s SLO) GetKind() openslo.Kind {
 	return openslo.KindSLO
 }
 
+// GetName returns the SLO's metadata name.
 func (s SLO) GetName() string {
 	return s.Metadata.Name
 }
 
+// Validate returns an error for an invalid SLO.
 func (s SLO) Validate() error {
 	return sloValidation.Validate(s)
 }
 
+// String returns the SLO's formatted version and kind.
+// It also returns the metadata name when set.
 func (s SLO) String() string {
 	return internal.GetObjectName(s)
 }
 
+// GetMetadata returns the SLO's metadata.
 func (s SLO) GetMetadata() Metadata {
 	return s.Metadata
 }
 
+// IsComposite reports whether at least one objective selects its own SLI.
 func (s SLO) IsComposite() bool {
 	return s.Spec.HasCompositeObjectives()
 }
 
+// GetValidator returns the validator configured for [SLO].
 func (s SLO) GetValidator() govy.Validator[SLO] {
 	return sloValidation
 }
 
+// SLOSpec defines an SLO's service, SLI, time window, budgeting method,
+// objectives, and alert policies. A standard SLO applies one SLI to all
+// objectives. A composite SLO can select a different SLI per objective.
 type SLOSpec struct {
-	Description     string             `json:"description,omitempty"`
-	ServiceRef      string             `json:"serviceRef"`
-	SLI             *SLOSLIInline      `json:"sli,omitempty"`
-	SLIRef          *string            `json:"sliRef,omitempty"`
+	// Description optionally summarizes the SLO in at most 1,050 characters.
+	Description string `json:"description,omitempty"`
+	// ServiceRef names the service associated with this SLO. The SDK serializes
+	// the field as "serviceRef". The living v2alpha proposal calls it "service".
+	ServiceRef string `json:"serviceRef"`
+	// SLI embeds the service level indicator for a standard SLO.
+	SLI *SLOSLIInline `json:"sli,omitempty"`
+	// SLIRef names an existing [SLI] for a standard SLO.
+	SLIRef *string `json:"sliRef,omitempty"`
+	// BudgetingMethod applies the selected error-budget calculation to every
+	// objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
-	TimeWindow      []SLOTimeWindow    `json:"timeWindow,omitempty"`
-	Objectives      []SLOObjective     `json:"objectives"`
-	AlertPolicies   []SLOAlertPolicy   `json:"alertPolicies,omitempty"`
+	// TimeWindow contains exactly one SLO evaluation window.
+	TimeWindow []SLOTimeWindow `json:"timeWindow,omitempty"`
+	// Objectives contains the SLO's budget targets and metric thresholds.
+	// V2alpha permits multiple objectives for a threshold-metric SLO.
+	// This SDK accepts an omitted Objectives field.
+	Objectives []SLOObjective `json:"objectives"`
+	// AlertPolicies contains policies associated with the SLO.
+	// Each item must specify exactly one inline definition or metadata-name
+	// reference.
+	AlertPolicies []SLOAlertPolicy `json:"alertPolicies,omitempty"`
 }
 
+// HasCompositeObjectives reports whether at least one objective selects an SLI
+// inline or by reference. It does not verify that every composite objective
+// selects one.
 func (s SLOSpec) HasCompositeObjectives() bool {
 	for i := range s.Objectives {
 		if s.Objectives[i].SLI != nil || s.Objectives[i].SLIRef != nil {
@@ -84,6 +115,9 @@ func (s SLOSpec) HasCompositeObjectives() bool {
 	return false
 }
 
+// SLOBudgetingMethod selects how an SLO consumes its error budget.
+// Occurrences uses good events over total events, Timeslices uses good slices
+// over total slices, and RatioTimeslices averages slice success ratios.
 type SLOBudgetingMethod string
 
 const (
@@ -98,47 +132,91 @@ var validSLOBudgetingMethods = []SLOBudgetingMethod{
 	SLOBudgetingMethodRatioTimeslices,
 }
 
+// SLOSLIInline embeds an SLI definition in an SLO or one of its objectives.
 type SLOSLIInline struct {
 	Metadata Metadata `json:"metadata"`
 	Spec     SLISpec  `json:"spec"`
 }
 
+// SLOObjective defines one error-budget target and, for a threshold SLI, its
+// metric comparison. The living v2alpha proposal also defines objective labels,
+// which this SDK does not model.
+//
+// For a standard SLO with an inline threshold SLI, validation requires
+// [SLOObjective.Operator] and [SLOObjective.Value]. For a standard SLO with an
+// inline ratio SLI, validation forbids them. The SDK does not apply these
+// metric-type rules to referenced SLIs or to SLIs embedded in composite
+// objectives.
 type SLOObjective struct {
-	DisplayName     string             `json:"displayName,omitempty"`
-	Operator        Operator           `json:"op,omitempty"`
-	Value           *float64           `json:"value,omitempty"`
-	Target          *float64           `json:"target,omitempty"`
-	TargetPercent   *float64           `json:"targetPercent,omitempty"`
-	TimeSliceTarget *float64           `json:"timeSliceTarget,omitempty"`
+	// DisplayName is a human-readable name for this objective.
+	// It is not part of the enclosing object's [Metadata].
+	DisplayName string `json:"displayName,omitempty"`
+	// Operator compares a threshold metric with Value.
+	Operator Operator `json:"op,omitempty"`
+	// Value is the comparison threshold for a threshold metric.
+	Value *float64 `json:"value,omitempty"`
+	// Target is the desired success proportion. For example, 0.995 means
+	// 99.5 percent.
+	Target *float64 `json:"target,omitempty"`
+	// TargetPercent is the desired success percentage.
+	TargetPercent *float64 `json:"targetPercent,omitempty"`
+	// TimeSliceTarget sets the per-slice success threshold for Timeslices.
+	TimeSliceTarget *float64 `json:"timeSliceTarget,omitempty"`
+	// TimeSliceWindow sets the size of each slice for Timeslices and
+	// RatioTimeslices. OpenSLO also accepts a number interpreted as minutes. This
+	// SDK represents only duration shorthand.
 	TimeSliceWindow *DurationShorthand `json:"timeSliceWindow,omitempty"`
-	SLI             *SLOSLIInline      `json:"sli,omitempty"`
-	SLIRef          *string            `json:"sliRef,omitempty"`
-	CompositeWeight *float64           `json:"compositeWeight,omitempty"`
+	// SLI embeds this objective's service level indicator for a composite SLO.
+	SLI *SLOSLIInline `json:"sli,omitempty"`
+	// SLIRef names this objective's existing [SLI] for a composite SLO.
+	SLIRef *string `json:"sliRef,omitempty"`
+	// CompositeWeight scales this objective's contribution to a composite SLO.
+	// The living v2alpha proposal permits it only with multiple objectives and
+	// defaults it to 1. This SDK does not enforce the objective-count restriction
+	// and preserves an omitted value as nil.
+	CompositeWeight *float64 `json:"compositeWeight,omitempty"`
 }
 
+// SLOTimeWindow describes one rolling or calendar-aligned evaluation window.
+// If [SLOTimeWindow.IsRolling] is true, [SLOTimeWindow.Calendar] must be nil.
+// If IsRolling is false, Calendar must be non-nil.
 type SLOTimeWindow struct {
-	Duration  DurationShorthand `json:"duration"`
-	IsRolling bool              `json:"isRolling"`
-	Calendar  *SLOCalendar      `json:"calendar,omitempty"`
+	// Duration is the length of the evaluation window.
+	Duration DurationShorthand `json:"duration"`
+	// IsRolling selects a rolling window when true and a calendar-aligned window
+	// when false.
+	IsRolling bool `json:"isRolling"`
+	// Calendar defines the alignment of a calendar window.
+	Calendar *SLOCalendar `json:"calendar,omitempty"`
 }
 
+// SLOCalendar defines the starting wall-clock time and time zone for a
+// calendar-aligned [SLOTimeWindow].
 type SLOCalendar struct {
+	// StartTime is the local date and time when calendar alignment starts.
 	StartTime string `json:"startTime"`
-	TimeZone  string `json:"timeZone"`
+	// TimeZone determines how StartTime maps to an instant.
+	TimeZone string `json:"timeZone"`
 }
 
+// SLOAlertPolicy associates exactly one inline or referenced alert policy with
+// an [SLO].
 type SLOAlertPolicy struct {
 	*SLOAlertPolicyInline
 	*SLOAlertPolicyRef
 }
 
+// SLOAlertPolicyInline is an alert-policy definition embedded in an SLO.
+// The inline form contains kind, metadata, and spec, but no API version.
 type SLOAlertPolicyInline struct {
 	Kind     openslo.Kind    `json:"kind"`
 	Metadata Metadata        `json:"metadata"`
 	Spec     AlertPolicySpec `json:"spec"`
 }
 
+// SLOAlertPolicyRef identifies a separately defined [AlertPolicy].
 type SLOAlertPolicyRef struct {
+	// AlertPolicyRef is the metadata name of the alert policy to use.
 	AlertPolicyRef string `json:"alertPolicyRef"`
 }
 
@@ -165,6 +243,7 @@ var sloSpecValidation = govy.New(
 		),
 	govy.For(func(spec SLOSpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
 	govy.For(func(spec SLOSpec) string { return spec.ServiceRef }).
 		WithName("serviceRef").
@@ -211,7 +290,7 @@ func getSLOSLIValidation[T any](
 			Rules(rules.MutuallyExclusive(true, map[string]func(t T) any{
 				"sli":    func(t T) any { return sliGetter(t) },
 				"sliRef": func(t T) any { return sliRefGetter(t) },
-			})),
+			}).WithDescription("exactly one of 'sli' and 'sliRef' must be set")),
 		govy.ForPointer(sliGetter).
 			WithName("sli").
 			Cascade(govy.CascadeModeContinue).
@@ -227,7 +306,10 @@ func getSLOSLIValidation[T any](
 	).
 		// Another validation rule on 'spec' level already checks a scenario
 		// in which neither 'sli' nor 'sliRef' are provided.
-		When(func(t T) bool { return sliGetter(t) != nil || sliRefGetter(t) != nil }).
+		When(
+			func(t T) bool { return sliGetter(t) != nil || sliRefGetter(t) != nil },
+			govy.WhenDescription("'sli' or 'sliRef' is set"),
+		).
 		Cascade(govy.CascadeModeStop)
 }
 
@@ -241,7 +323,9 @@ var sloTimeWindowValidation = govy.New(
 				return govy.NewRuleError("'calendar' must be set when 'isRolling' is false")
 			}
 			return nil
-		})),
+		}).WithDescription(
+			"'calendar' must be set when 'isRolling' is false and cannot be set when 'isRolling' is true",
+		)),
 	govy.For(func(t SLOTimeWindow) DurationShorthand { return t.Duration }).
 		WithName("duration").
 		Required().
@@ -261,11 +345,11 @@ var sloTimeWindowValidation = govy.New(
 var sloAlertPolicyValidation = govy.New(
 	govy.For(govy.GetSelf[SLOAlertPolicy]()).
 		Rules(rules.MutuallyExclusive(true, map[string]func(a SLOAlertPolicy) any{
-			"targetRef": func(a SLOAlertPolicy) any { return a.SLOAlertPolicyRef },
+			"alertPolicyRef": func(a SLOAlertPolicy) any { return a.SLOAlertPolicyRef },
 			// It's impossible to list all fields that constitute the inlined version in the error message,
 			// therefore 'spec' must suffice.
 			"spec": func(a SLOAlertPolicy) any { return a.SLOAlertPolicyInline },
-		})),
+		}).WithDescription("exactly one of 'alertPolicyRef' and 'spec' must be set")),
 	govy.ForPointer(func(a SLOAlertPolicy) *SLOAlertPolicyRef {
 		return a.SLOAlertPolicyRef
 	}).
@@ -299,7 +383,7 @@ var sloObjectiveValidation = govy.New(
 		Rules(rules.MutuallyExclusive(true, map[string]func(o SLOObjective) any{
 			"target":        func(o SLOObjective) any { return o.Target },
 			"targetPercent": func(o SLOObjective) any { return o.TargetPercent },
-		})),
+		}).WithDescription("exactly one of 'target' and 'targetPercent' must be set")),
 	govy.ForPointer(func(s SLOObjective) *float64 { return s.Target }).
 		WithName("target").
 		Rules(rules.GTE(0.0), rules.LT(1.0)),
@@ -353,7 +437,10 @@ var sloTimeSlicesObjectiveValidation = govy.New(
 			validationRulesForTimeSliceWindow(),
 		)),
 ).
-	When(func(s SLOSpec) bool { return s.BudgetingMethod == SLOBudgetingMethodTimeslices })
+	When(
+		func(s SLOSpec) bool { return s.BudgetingMethod == SLOBudgetingMethodTimeslices },
+		govy.WhenDescription("'budgetingMethod' is 'Timeslices'"),
+	)
 
 var sloRatioTimeSlicesObjectiveValidation = govy.New(
 	govy.ForSlice(func(spec SLOSpec) []SLOObjective { return spec.Objectives }).
@@ -362,7 +449,10 @@ var sloRatioTimeSlicesObjectiveValidation = govy.New(
 			validationRulesForTimeSliceWindow(),
 		)),
 ).
-	When(func(s SLOSpec) bool { return s.BudgetingMethod == SLOBudgetingMethodRatioTimeslices })
+	When(
+		func(s SLOSpec) bool { return s.BudgetingMethod == SLOBudgetingMethodRatioTimeslices },
+		govy.WhenDescription("'budgetingMethod' is 'RatioTimeslices'"),
+	)
 
 func validationRulesForTimeSliceWindow() govy.PropertyRules[DurationShorthand, SLOObjective] {
 	return govy.ForPointer(func(s SLOObjective) *DurationShorthand { return s.TimeSliceWindow }).

@@ -16,6 +16,7 @@ var (
 	_ = openslo.ObjectValidator[SLO](SLO{})
 )
 
+// NewSLO returns an SLO from metadata and spec.
 func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	return SLO{
 		APIVersion: APIVersion,
@@ -25,6 +26,8 @@ func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	}
 }
 
+// SLO is the legacy v1alpha SLO representation supported by this SDK. It
+// defines reliability targets for a service level measured by an indicator.
 type SLO struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -32,43 +35,66 @@ type SLO struct {
 	Spec       SLOSpec         `json:"spec"`
 }
 
+// GetVersion returns [APIVersion].
 func (s SLO) GetVersion() openslo.Version {
 	return APIVersion
 }
 
+// GetKind returns [openslo.KindSLO].
 func (s SLO) GetKind() openslo.Kind {
 	return openslo.KindSLO
 }
 
+// GetName returns the SLO's metadata name.
 func (s SLO) GetName() string {
 	return s.Metadata.Name
 }
 
+// Validate returns an error for an invalid SLO.
 func (s SLO) Validate() error {
 	return sloValidation.Validate(s)
 }
 
+// String returns the SLO's formatted version and kind. It also returns
+// [Metadata.Name] when set.
 func (s SLO) String() string {
 	return internal.GetObjectName(s)
 }
 
+// GetMetadata returns the SLO's metadata.
 func (s SLO) GetMetadata() Metadata {
 	return s.Metadata
 }
 
+// GetValidator returns the validator used by [SLO.Validate].
 func (s SLO) GetValidator() govy.Validator[SLO] {
 	return sloValidation
 }
 
+// SLOSpec defines the service, indicator, objectives, time window, and
+// error-budget calculation for an [SLO].
 type SLOSpec struct {
-	TimeWindows     []SLOTimeWindow    `json:"timeWindows"`
+	// TimeWindows contains exactly one SLO evaluation window.
+	TimeWindows []SLOTimeWindow `json:"timeWindows"`
+	// BudgetingMethod applies the selected error-budget calculation to every
+	// objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
-	Description     string             `json:"description,omitempty"`
-	Indicator       *SLOIndicator      `json:"indicator"`
-	Service         string             `json:"service"`
-	Objectives      []SLOObjective     `json:"objectives"`
+	// Description is an optional summary of the SLO.
+	Description string `json:"description,omitempty"`
+	// Indicator defines the threshold-metric form of the SLO. It must be nil for
+	// the ratio form.
+	Indicator *SLOIndicator `json:"indicator"`
+	// Service is the metadata name of the [Service] whose reliability the SLO
+	// measures.
+	Service string `json:"service"`
+	// Objectives contains reliability targets. For the ratio form, each
+	// objective's [SLOObjective.RatioMetrics] defines the SLI metric queries.
+	Objectives []SLOObjective `json:"objectives"`
 }
 
+// SLOBudgetingMethod identifies how an SLO calculates its error budget.
+// Occurrences weights each event equally. Timeslices weights each time slice
+// equally.
 type SLOBudgetingMethod string
 
 const (
@@ -81,38 +107,72 @@ var validSLOBudgetingMethods = []SLOBudgetingMethod{
 	SLOBudgetingMethodTimeslices,
 }
 
+// SLOIndicator defines the threshold-metric form of a v1alpha service level
+// indicator.
 type SLOIndicator struct {
+	// ThresholdMetric retrieves raw metric values. Each objective compares them
+	// with its [Operator] and Value.
 	ThresholdMetric SLOMetricSourceSpec `json:"thresholdMetric"`
 }
 
+// SLOMetricSourceSpec describes a provider-specific metric query.
 type SLOMetricSourceSpec struct {
-	Source    string `json:"source"`
+	// Source identifies the metric data source.
+	Source string `json:"source"`
+	// QueryType identifies the query language or query form.
 	QueryType string `json:"queryType"`
-	Query     string `json:"query"`
+	// Query is the provider-specific expression that retrieves the metric.
+	Query string `json:"query"`
 }
 
+// SLOObjective defines a reliability target and, for the ratio form, its metric queries.
 type SLOObjective struct {
-	DisplayName     string           `json:"displayName"`
-	Value           *float64         `json:"value"`
-	RatioMetrics    *SLORatioMetrics `json:"ratioMetrics"`
-	BudgetTarget    *float64         `json:"target"`
-	TimeSliceTarget *float64         `json:"timeSliceTarget,omitempty"`
-	Operator        Operator         `json:"op,omitempty"`
+	// DisplayName is a human-readable objective name.
+	DisplayName string `json:"displayName"`
+	// Value is the metric threshold used by [Operator].
+	Value *float64 `json:"value,omitempty"`
+	// RatioMetrics supplies a good-events-to-total-events indicator.
+	RatioMetrics *SLORatioMetrics `json:"ratioMetrics"`
+	// BudgetTarget is the desired fraction of good events or time slices.
+	BudgetTarget *float64 `json:"target"`
+	// TimeSliceTarget is the minimum success ratio that makes a time slice good.
+	// It is used by the Timeslices budgeting method.
+	TimeSliceTarget *float64 `json:"timeSliceTarget,omitempty"`
+	// Operator compares values returned by the threshold metric with Value.
+	Operator Operator `json:"op,omitempty"`
 }
 
+// SLORatioMetrics defines an indicator as the ratio of good events to total
+// events. For example, 99 successful requests out of 100 total requests produce
+// a ratio of 0.99.
 type SLORatioMetrics struct {
-	Good        SLOMetricSourceSpec `json:"good"`
-	Total       SLOMetricSourceSpec `json:"total"`
-	Incremental bool                `json:"incremental"`
+	// Good retrieves the numerator: events considered successful.
+	Good SLOMetricSourceSpec `json:"good"`
+	// Total retrieves the denominator: all considered events.
+	Total SLOMetricSourceSpec `json:"total"`
+	// Incremental reports whether the queried metrics are monotonically
+	// increasing counters rather than values that can rise or fall.
+	Incremental bool `json:"incremental"`
 }
 
+// SLOTimeWindow defines the period over which an SLO is evaluated. For example,
+// a Unit of Week and a Count of 4 define a four-week window. A rolling window
+// requires IsRolling to be true and Calendar to be nil. A calendar-aligned
+// window requires IsRolling to be false and Calendar to be non-nil.
 type SLOTimeWindow struct {
-	Unit      SLOTimeWindowUnit `json:"unit"`
-	Count     int               `json:"count"`
-	IsRolling bool              `json:"isRolling"`
-	Calendar  *SLOCalendar      `json:"calendar,omitempty"`
+	// Unit combines with Count to set the window length.
+	Unit SLOTimeWindowUnit `json:"unit"`
+	// Count sets how many Units form the window.
+	Count int `json:"count"`
+	// IsRolling selects a continuously advancing window when true and a
+	// calendar-aligned window when false.
+	IsRolling bool `json:"isRolling"`
+	// Calendar defines the alignment when IsRolling is false. It must be nil
+	// when IsRolling is true.
+	Calendar *SLOCalendar `json:"calendar,omitempty"`
 }
 
+// SLOTimeWindowUnit identifies the unit used to express an [SLOTimeWindow].
 type SLOTimeWindowUnit string
 
 const (
@@ -131,11 +191,16 @@ var validSLOTimeWindowUnits = []SLOTimeWindowUnit{
 	SLOTimeWindowUnitQuarter,
 }
 
+// SLOCalendar anchors a calendar-aligned [SLOTimeWindow].
 type SLOCalendar struct {
+	// StartTime is the local anchor in YYYY-MM-DD HH:MM:SS format, for example
+	// 2026-07-25 14:30:00.
 	StartTime string `json:"startTime"`
-	TimeZone  string `json:"timeZone"`
+	// TimeZone is the IANA time-zone name used to interpret StartTime.
+	TimeZone string `json:"timeZone"`
 }
 
+// Operator selects the comparison between a threshold metric and an objective value.
 type Operator string
 
 const (
@@ -177,7 +242,9 @@ var sloValidation = govy.New(
 					return errors.New("one of 'indicator' or 'objectives[*].ratioMetrics' must be set")
 				}
 				return nil
-			}).WithErrorCode(rules.ErrorCodeMutuallyExclusive),
+			}).
+				WithDescription("exactly one of 'indicator' and 'objectives[*].ratioMetrics' must be set").
+				WithErrorCode(rules.ErrorCodeMutuallyExclusive),
 		).
 		Include(sloSpecValidation),
 ).WithNameFunc(internal.GetObjectName[SLO])
@@ -187,6 +254,7 @@ var sloSpecValidation = govy.New(
 		Include(sloTimeSlicesObjectiveValidation),
 	govy.For(func(spec SLOSpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
 	govy.For(func(spec SLOSpec) string { return spec.Service }).
 		WithName("service").
@@ -199,7 +267,7 @@ var sloSpecValidation = govy.New(
 		Required().
 		Rules(rules.OneOf(validSLOBudgetingMethods...)),
 	govy.ForSlice(func(spec SLOSpec) []SLOTimeWindow { return spec.TimeWindows }).
-		WithName("timeWindow").
+		WithName("timeWindows").
 		Rules(rules.SliceLength[[]SLOTimeWindow](1, 1)).
 		IncludeForEach(sloTimeWindowValidation),
 	govy.ForSlice(func(spec SLOSpec) []SLOObjective { return spec.Objectives }).
@@ -224,7 +292,9 @@ var sloTimeWindowValidation = govy.New(
 				return govy.NewRuleError("'calendar' must be set when 'isRolling' is false")
 			}
 			return nil
-		})),
+		}).WithDescription(
+			"'calendar' must be set when 'isRolling' is false and cannot be set when 'isRolling' is true",
+		)),
 	govy.For(func(t SLOTimeWindow) SLOTimeWindowUnit { return t.Unit }).
 		WithName("unit").
 		Required().
@@ -253,6 +323,10 @@ var sloObjectiveValidation = govy.New(
 		Include(sloRatioMetricsValidation),
 	govy.ForPointer(func(s SLOObjective) *float64 { return s.Value }).
 		WithName("value").
+		When(
+			func(s SLOObjective) bool { return s.RatioMetrics == nil },
+			govy.WhenDescription("'ratioMetrics' is not set"),
+		).
 		Required(),
 	govy.ForPointer(func(s SLOObjective) *float64 { return s.BudgetTarget }).
 		WithName("target").
@@ -262,7 +336,7 @@ var sloObjectiveValidation = govy.New(
 		WithName("op").
 		When(
 			func(s SLOObjective) bool { return s.RatioMetrics == nil },
-			govy.WhenDescription("'thresholdMetric' is set"),
+			govy.WhenDescription("'ratioMetrics' is not set"),
 		).
 		Required().
 		Rules(rules.OneOf(validOperators...)),
@@ -285,7 +359,10 @@ var sloTimeSlicesObjectiveValidation = govy.New(
 				Rules(rules.GTE(0.0), rules.LTE(1.0)),
 		)),
 ).
-	When(func(s SLOSpec) bool { return s.BudgetingMethod == SLOBudgetingMethodTimeslices })
+	When(
+		func(s SLOSpec) bool { return s.BudgetingMethod == SLOBudgetingMethodTimeslices },
+		govy.WhenDescription("'budgetingMethod' is 'Timeslices'"),
+	)
 
 var sloRatioMetricsValidation = govy.New(
 	govy.For(func(s SLORatioMetrics) SLOMetricSourceSpec { return s.Good }).

@@ -11,6 +11,7 @@ const (
 	VersionV2alpha Version = "openslo.com/v2alpha"
 )
 
+// ParseVersion parses and validates an OpenSLO API version.
 func ParseVersion(s string) (Version, error) {
 	version := Version(s)
 	if err := version.Validate(); err != nil {
@@ -19,10 +20,12 @@ func ParseVersion(s string) (Version, error) {
 	return version, nil
 }
 
+// String returns the serialized API version.
 func (v Version) String() string {
 	return string(v)
 }
 
+// Validate returns an error if v is not a supported API version.
 func (v Version) Validate() error {
 	switch v {
 	case VersionV1alpha,

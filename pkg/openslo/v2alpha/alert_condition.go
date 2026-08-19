@@ -13,6 +13,7 @@ var (
 	_ = openslo.ObjectValidator[AlertCondition](AlertCondition{})
 )
 
+// NewAlertCondition returns an AlertCondition from metadata and spec.
 func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertCondition {
 	return AlertCondition{
 		APIVersion: APIVersion,
@@ -22,6 +23,9 @@ func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertConditio
 	}
 }
 
+// AlertCondition defines when an SLO alert condition is breaching.
+// [AlertPolicySpec.AlertWhenBreaching] controls whether that state triggers an
+// alert.
 type AlertCondition struct {
 	APIVersion openslo.Version    `json:"apiVersion"`
 	Kind       openslo.Kind       `json:"kind"`
@@ -29,51 +33,74 @@ type AlertCondition struct {
 	Spec       AlertConditionSpec `json:"spec"`
 }
 
+// GetVersion returns [APIVersion].
 func (a AlertCondition) GetVersion() openslo.Version {
 	return APIVersion
 }
 
+// GetKind returns [openslo.KindAlertCondition].
 func (a AlertCondition) GetKind() openslo.Kind {
 	return openslo.KindAlertCondition
 }
 
+// GetName returns the alert condition's metadata name.
 func (a AlertCondition) GetName() string {
 	return a.Metadata.Name
 }
 
+// Validate returns an error for an invalid alert condition.
 func (a AlertCondition) Validate() error {
 	return alertConditionValidation.Validate(a)
 }
 
+// String returns the alert condition's formatted version and kind.
+// It also returns the metadata name when set.
 func (a AlertCondition) String() string {
 	return internal.GetObjectName(a)
 }
 
+// GetMetadata returns the alert condition's metadata.
 func (a AlertCondition) GetMetadata() Metadata {
 	return a.Metadata
 }
 
+// GetValidator returns the validator configured for [AlertCondition].
 func (a AlertCondition) GetValidator() govy.Validator[AlertCondition] {
 	return alertConditionValidation
 }
 
+// AlertConditionSpec defines an alert's severity and breach condition.
 type AlertConditionSpec struct {
-	Severity    string             `json:"severity"`
-	Condition   AlertConditionType `json:"condition"`
-	Description string             `json:"description,omitempty"`
+	// Severity is a consumer-defined alert classification.
+	Severity  string             `json:"severity"`
+	Condition AlertConditionType `json:"condition"`
+	// Description optionally summarizes the alert condition in at most 1,050 characters.
+	Description string `json:"description,omitempty"`
 }
 
+// AlertConditionType defines a burn-rate comparison over a lookback window.
+// Burn rate is error-budget consumption relative to the rate allowed by the
+// SLO.
 type AlertConditionType struct {
-	Kind           AlertConditionKind `json:"kind"`
-	Operator       Operator           `json:"op"`
-	Threshold      *float64           `json:"threshold"`
-	LookbackWindow DurationShorthand  `json:"lookbackWindow"`
-	AlertAfter     DurationShorthand  `json:"alertAfter"`
+	// Kind selects the condition algorithm. This SDK requires Kind.
+	Kind AlertConditionKind `json:"kind"`
+	// Operator compares the calculated burn rate with Threshold.
+	Operator Operator `json:"op"`
+	// Threshold sets the numeric burn-rate boundary.
+	Threshold *float64 `json:"threshold"`
+	// LookbackWindow sets the period for burn-rate calculation.
+	LookbackWindow DurationShorthand `json:"lookbackWindow"`
+	// AlertAfter sets how long the burn-rate comparison must remain true before
+	// the condition becomes breaching. This SDK requires AlertAfter.
+	AlertAfter DurationShorthand `json:"alertAfter"`
 }
 
+// AlertConditionKind identifies the evaluation algorithm for an
+// [AlertConditionType].
 type AlertConditionKind string
 
 const (
+	// AlertConditionKindBurnRate selects an error-budget burn-rate comparison.
 	AlertConditionKindBurnRate AlertConditionKind = "burnrate"
 )
 
@@ -90,6 +117,7 @@ var alertConditionValidation = govy.New(
 var alertConditionSpecValidation = govy.New(
 	govy.For(func(spec AlertConditionSpec) string { return spec.Description }).
 		WithName("description").
+		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
 	govy.For(func(spec AlertConditionSpec) string { return spec.Severity }).
 		WithName("severity").
@@ -127,4 +155,7 @@ var alertConditionBurnRateValidation = govy.New(
 		Required().
 		Include(durationShortHandValidation),
 ).
-	When(func(a AlertConditionType) bool { return a.Kind == AlertConditionKindBurnRate })
+	When(
+		func(a AlertConditionType) bool { return a.Kind == AlertConditionKindBurnRate },
+		govy.WhenDescription("'kind' is 'burnrate'"),
+	)

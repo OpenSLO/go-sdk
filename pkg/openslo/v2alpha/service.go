@@ -13,6 +13,7 @@ var (
 	_ = openslo.ObjectValidator[Service](Service{})
 )
 
+// NewService returns a service from metadata and spec.
 func NewService(metadata Metadata, spec ServiceSpec) Service {
 	return Service{
 		APIVersion: APIVersion,
@@ -22,6 +23,10 @@ func NewService(metadata Metadata, spec ServiceSpec) Service {
 	}
 }
 
+// Service identifies a high-level group for SLOs.
+// Each [SLO] refers to a Service by metadata name through [SLOSpec.ServiceRef].
+// Multiple SLOs can use the same Service name.
+// The SDK does not verify that a referenced Service exists.
 type Service struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -29,35 +34,45 @@ type Service struct {
 	Spec       ServiceSpec     `json:"spec"`
 }
 
+// GetVersion returns [APIVersion].
 func (s Service) GetVersion() openslo.Version {
 	return APIVersion
 }
 
+// GetKind returns [openslo.KindService].
 func (s Service) GetKind() openslo.Kind {
 	return openslo.KindService
 }
 
+// GetName returns the service's metadata name.
 func (s Service) GetName() string {
 	return s.Metadata.Name
 }
 
+// Validate returns an error for an invalid service.
 func (s Service) Validate() error {
 	return serviceValidation.Validate(s)
 }
 
+// String returns the service's formatted version and kind.
+// It also returns the metadata name when set.
 func (s Service) String() string {
 	return internal.GetObjectName(s)
 }
 
+// GetMetadata returns the service's metadata.
 func (s Service) GetMetadata() Metadata {
 	return s.Metadata
 }
 
+// GetValidator returns the validator configured for [Service].
 func (s Service) GetValidator() govy.Validator[Service] {
 	return serviceValidation
 }
 
+// ServiceSpec defines the descriptive attributes of a [Service].
 type ServiceSpec struct {
+	// Description optionally summarizes the service in at most 1,050 characters.
 	Description string `json:"description,omitempty"`
 }
 
@@ -70,6 +85,7 @@ var serviceValidation = govy.New(
 		Include(govy.New(
 			govy.For(func(spec ServiceSpec) string { return spec.Description }).
 				WithName("description").
+				OmitEmpty().
 				Rules(rules.StringMaxLength(1050)),
 		)),
 ).WithNameFunc(internal.GetObjectName[Service])

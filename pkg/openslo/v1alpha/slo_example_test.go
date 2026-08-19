@@ -32,7 +32,6 @@ func ExampleSLO() {
       - displayName: Good
         target: 0.995
         timeSliceTarget: 0.95
-        value: 1
         ratioMetrics:
           incremental: true
           good:
@@ -70,7 +69,6 @@ func ExampleSLO() {
 					DisplayName:     "Good",
 					BudgetTarget:    new(0.995),
 					TimeSliceTarget: new(0.95),
-					Value:           new(1.0),
 					RatioMetrics: &v1alpha.SLORatioMetrics{
 						Incremental: true,
 						Good: v1alpha.SLOMetricSourceSpec{
@@ -130,7 +128,6 @@ func ExampleSLO() {
 	//           source: datadog
 	//       target: 0.995
 	//       timeSliceTarget: 0.95
-	//       value: 1
 	//     service: web
 	//     timeWindows:
 	//     - calendar:
