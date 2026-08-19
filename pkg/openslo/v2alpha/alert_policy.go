@@ -25,11 +25,6 @@ func NewAlertPolicy(metadata Metadata, spec AlertPolicySpec) AlertPolicy {
 
 // AlertPolicy defines which alert-condition states trigger an SLO alert.
 // It also defines the notification destinations for triggered alerts.
-//
-// This type is the SDK's v2alpha representation. The living, unstable
-// [OpenSLO v2alpha proposal] does not define alert objects.
-//
-// [OpenSLO v2alpha proposal]: https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md
 type AlertPolicy struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`

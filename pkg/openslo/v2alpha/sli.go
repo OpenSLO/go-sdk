@@ -24,9 +24,7 @@ func NewSLI(metadata Metadata, spec SLISpec) SLI {
 }
 
 // SLI defines a derived reliability indicator calculated from one or more
-// metric queries against data sources, as defined by the [OpenSLO v2alpha SLI].
-//
-// [OpenSLO v2alpha SLI]: https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md#sli
+// metric queries against data sources.
 type SLI struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`

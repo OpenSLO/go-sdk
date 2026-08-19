@@ -26,11 +26,6 @@ func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertConditio
 // AlertCondition defines when an SLO alert condition is breaching.
 // [AlertPolicySpec.AlertWhenBreaching] controls whether that state triggers an
 // alert.
-//
-// This type is the SDK's v2alpha representation. The living, unstable
-// [OpenSLO v2alpha proposal] does not define alert objects.
-//
-// [OpenSLO v2alpha proposal]: https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md
 type AlertCondition struct {
 	APIVersion openslo.Version    `json:"apiVersion"`
 	Kind       openslo.Kind       `json:"kind"`
@@ -87,8 +82,7 @@ type AlertConditionSpec struct {
 // Burn rate is error-budget consumption relative to the rate allowed by the
 // SLO.
 type AlertConditionType struct {
-	// Kind selects the condition algorithm. This SDK requires Kind and does not
-	// apply the OpenSLO v1 default of [AlertConditionKindBurnRate].
+	// Kind selects the condition algorithm. This SDK requires Kind.
 	Kind AlertConditionKind `json:"kind"`
 	// Operator compares the calculated burn rate with Threshold.
 	Operator Operator `json:"op"`
@@ -97,8 +91,7 @@ type AlertConditionType struct {
 	// LookbackWindow sets the period for burn-rate calculation.
 	LookbackWindow DurationShorthand `json:"lookbackWindow"`
 	// AlertAfter sets how long the burn-rate comparison must remain true before
-	// the condition becomes breaching. This SDK requires AlertAfter and does not
-	// apply the OpenSLO v1 default of "0m".
+	// the condition becomes breaching. This SDK requires AlertAfter.
 	AlertAfter DurationShorthand `json:"alertAfter"`
 }
 

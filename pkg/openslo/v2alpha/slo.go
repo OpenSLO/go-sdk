@@ -26,10 +26,7 @@ func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	}
 }
 
-// SLO defines a target for an SLI over a time window, as specified by the
-// [OpenSLO v2alpha SLO].
-//
-// [OpenSLO v2alpha SLO]: https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md#slo
+// SLO defines a target for an SLI over a time window.
 type SLO struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -98,8 +95,7 @@ type SLOSpec struct {
 	TimeWindow []SLOTimeWindow `json:"timeWindow,omitempty"`
 	// Objectives contains the SLO's budget targets and metric thresholds.
 	// V2alpha permits multiple objectives for a threshold-metric SLO.
-	// OpenSLO v1 requires Objectives. The living v2alpha proposal does not state a
-	// requiredness change. This SDK accepts an omitted Objectives field.
+	// This SDK accepts an omitted Objectives field.
 	Objectives []SLOObjective `json:"objectives"`
 	// AlertPolicies contains policies associated with the SLO.
 	// Each item must specify exactly one inline definition or metadata-name

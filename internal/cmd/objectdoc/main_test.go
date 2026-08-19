@@ -259,52 +259,71 @@ func TestNormalizeGeneratedDocsRecoversPromotedFieldDocs(t *testing.T) {
 	require.NoError(t, normalizeGeneratedDocs(docs))
 
 	tests := []struct {
-		name     string
-		doc      govydoc.ObjectDoc
-		path     string
-		fieldDoc string
+		name      string
+		doc       govydoc.ObjectDoc
+		path      string
+		owner     reflect.Type
+		fieldName string
 	}{
 		{
-			name:     "v1 conditionRef",
-			doc:      docs[0].doc,
-			path:     "$.spec.conditions[*].conditionRef",
-			fieldDoc: "ConditionRef matches the [Metadata.Name](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#Metadata.Name) of an existing [AlertCondition](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#AlertCondition).",
+			name:      "v1 conditionRef",
+			doc:       docs[0].doc,
+			path:      "$.spec.conditions[*].conditionRef",
+			owner:     reflect.TypeFor[v1.AlertPolicyConditionRef](),
+			fieldName: "ConditionRef",
 		},
 		{
-			name:     "v1 targetRef",
-			doc:      docs[0].doc,
-			path:     "$.spec.notificationTargets[*].targetRef",
-			fieldDoc: "TargetRef matches the [Metadata.Name](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#Metadata.Name) of an existing [AlertNotificationTarget](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#AlertNotificationTarget).",
+			name:      "v1 targetRef",
+			doc:       docs[0].doc,
+			path:      "$.spec.notificationTargets[*].targetRef",
+			owner:     reflect.TypeFor[v1.AlertPolicyNotificationTargetRef](),
+			fieldName: "TargetRef",
 		},
 		{
-			name:     "v1 alertPolicyRef",
-			doc:      docs[1].doc,
-			path:     "$.spec.alertPolicies[*].alertPolicyRef",
-			fieldDoc: "AlertPolicyRef matches the [Metadata.Name](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#Metadata.Name) of an existing [AlertPolicy](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#AlertPolicy).",
+			name:      "v1 alertPolicyRef",
+			doc:       docs[1].doc,
+			path:      "$.spec.alertPolicies[*].alertPolicyRef",
+			owner:     reflect.TypeFor[v1.SLOAlertPolicyRef](),
+			fieldName: "AlertPolicyRef",
 		},
 		{
-			name:     "v2alpha conditionRef",
-			doc:      docs[2].doc,
-			path:     "$.spec.conditions[*].conditionRef",
-			fieldDoc: "ConditionRef is the metadata name of the alert condition to use.",
+			name:      "v2alpha conditionRef",
+			doc:       docs[2].doc,
+			path:      "$.spec.conditions[*].conditionRef",
+			owner:     reflect.TypeFor[v2alpha.AlertPolicyConditionRef](),
+			fieldName: "ConditionRef",
 		},
 		{
-			name:     "v2alpha targetRef",
-			doc:      docs[2].doc,
-			path:     "$.spec.notificationTargets[*].targetRef",
-			fieldDoc: "TargetRef is the metadata name of the notification target to use.",
+			name:      "v2alpha targetRef",
+			doc:       docs[2].doc,
+			path:      "$.spec.notificationTargets[*].targetRef",
+			owner:     reflect.TypeFor[v2alpha.AlertPolicyNotificationTargetRef](),
+			fieldName: "TargetRef",
 		},
 		{
-			name:     "v2alpha alertPolicyRef",
-			doc:      docs[3].doc,
-			path:     "$.spec.alertPolicies[*].alertPolicyRef",
-			fieldDoc: "AlertPolicyRef is the metadata name of the alert policy to use.",
+			name:      "v2alpha alertPolicyRef",
+			doc:       docs[3].doc,
+			path:      "$.spec.alertPolicies[*].alertPolicyRef",
+			owner:     reflect.TypeFor[v2alpha.SLOAlertPolicyRef](),
+			fieldName: "AlertPolicyRef",
 		},
 	}
+	resolver, err := newFieldDocResolver([]string{
+		reflect.TypeFor[v1.AlertPolicyConditionRef]().PkgPath(),
+		reflect.TypeFor[v2alpha.AlertPolicyConditionRef]().PkgPath(),
+	})
+	require.NoError(t, err)
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			property := requireProperty(t, test.doc, jsonpath.Parse(test.path))
-			assert.Equal(t, test.fieldDoc, property.FieldDoc)
+			expected, indexed := resolver.docs[fieldDocKey{
+				packagePath: test.owner.PkgPath(),
+				typeName:    test.owner.Name(),
+				fieldName:   test.fieldName,
+			}]
+			require.True(t, indexed)
+			require.NotEmpty(t, expected)
+			assert.Equal(t, expected, property.FieldDoc)
 			assert.Equal(t, typeDocumentation, property.TypeDoc)
 		})
 	}

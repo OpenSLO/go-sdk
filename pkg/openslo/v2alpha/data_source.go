@@ -29,11 +29,6 @@ func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 // [SLIMetricSpec.DataSourceRef] selects it by metadata name.
 // A metric query can instead embed [SLIMetricSpec.DataSourceSpec].
 // [SLIMetricSpec.Spec] contains implementation-defined query configuration.
-//
-// This type is the SDK's v2alpha representation. The living, unstable
-// [OpenSLO v2alpha proposal] does not define a standalone DataSource schema.
-//
-// [OpenSLO v2alpha proposal]: https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md
 type DataSource struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -83,7 +78,7 @@ type DataSourceSpec struct {
 	// Description optionally summarizes the data source in at most 1,050 characters.
 	Description string `json:"description,omitempty"`
 	// Type identifies the metric-source type, such as Prometheus or Datadog.
-	// The inherited OpenSLO v1 model does not standardize the accepted Type values.
+	// The consuming implementation defines the accepted values.
 	Type string `json:"type"`
 	// ConnectionDetails contains implementation-defined connection data encoded
 	// as JSON, such as endpoints or authentication settings.

@@ -10,7 +10,7 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
-          "typeDoc": "AlertCondition defines when an SLO alert condition is breaching. [AlertPolicySpec.AlertWhenBreaching](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#AlertPolicySpec.AlertWhenBreaching) controls whether that state triggers an alert.\n\nThis type is the SDK's v2alpha representation. The living, unstable [OpenSLO v2alpha proposal](https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md) does not define alert objects.",
+          "typeDoc": "AlertCondition defines when an SLO alert condition is breaching. [AlertPolicySpec.AlertWhenBreaching](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#AlertPolicySpec.AlertWhenBreaching) controls whether that state triggers an alert.",
           "childrenPaths": [
             "$.apiVersion",
             "$.kind",
@@ -75,7 +75,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.metadata.name",
             "$.metadata.labels",
@@ -298,7 +298,7 @@
             }
           ],
           "typeDoc": "AlertConditionKind identifies the evaluation algorithm for an [AlertConditionType](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#AlertConditionType).",
-          "fieldDoc": "Kind selects the condition algorithm. This SDK requires Kind and does not apply the OpenSLO v1 default of [AlertConditionKindBurnRate](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#AlertConditionKindBurnRate)."
+          "fieldDoc": "Kind selects the condition algorithm. This SDK requires Kind."
         },
         {
           "path": "$.spec.condition.op",
@@ -385,7 +385,7 @@
             }
           ],
           "typeDoc": "DurationShorthand represents a duration as an integer with suffix \"m\", \"h\", \"d\", or \"w\". This SDK accepts zero and encodes it as empty text. OpenSLO specifies a positive integer.",
-          "fieldDoc": "AlertAfter sets how long the burn-rate comparison must remain true before the condition becomes breaching. This SDK requires AlertAfter and does not apply the OpenSLO v1 default of \"0m\"."
+          "fieldDoc": "AlertAfter sets how long the burn-rate comparison must remain true before the condition becomes breaching. This SDK requires AlertAfter."
         },
         {
           "path": "$.spec.description",
@@ -417,7 +417,7 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
-          "typeDoc": "AlertNotificationTarget represents a destination for alert delivery. The consuming implementation defines the format of [AlertNotificationTargetSpec.Target](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#AlertNotificationTargetSpec.Target).\n\nThis type is the SDK's v2alpha representation. The living, unstable [OpenSLO v2alpha proposal](https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md) does not define alert objects.",
+          "typeDoc": "AlertNotificationTarget represents a destination for alert delivery. The consuming implementation defines the format of [AlertNotificationTargetSpec.Target](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#AlertNotificationTargetSpec.Target).",
           "childrenPaths": [
             "$.apiVersion",
             "$.kind",
@@ -482,7 +482,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.metadata.name",
             "$.metadata.labels",
@@ -691,7 +691,7 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
-          "typeDoc": "AlertPolicy defines which alert-condition states trigger an SLO alert. It also defines the notification destinations for triggered alerts.\n\nThis type is the SDK's v2alpha representation. The living, unstable [OpenSLO v2alpha proposal](https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md) does not define alert objects.",
+          "typeDoc": "AlertPolicy defines which alert-condition states trigger an SLO alert. It also defines the notification destinations for triggered alerts.",
           "childrenPaths": [
             "$.apiVersion",
             "$.kind",
@@ -756,7 +756,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.metadata.name",
             "$.metadata.labels",
@@ -1083,7 +1083,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.spec.conditions[*].metadata.name",
             "$.spec.conditions[*].metadata.labels",
@@ -1306,7 +1306,7 @@
             }
           ],
           "typeDoc": "AlertConditionKind identifies the evaluation algorithm for an [AlertConditionType](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#AlertConditionType).",
-          "fieldDoc": "Kind selects the condition algorithm. This SDK requires Kind and does not apply the OpenSLO v1 default of [AlertConditionKindBurnRate](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#AlertConditionKindBurnRate)."
+          "fieldDoc": "Kind selects the condition algorithm. This SDK requires Kind."
         },
         {
           "path": "$.spec.conditions[*].spec.condition.op",
@@ -1393,7 +1393,7 @@
             }
           ],
           "typeDoc": "DurationShorthand represents a duration as an integer with suffix \"m\", \"h\", \"d\", or \"w\". This SDK accepts zero and encodes it as empty text. OpenSLO specifies a positive integer.",
-          "fieldDoc": "AlertAfter sets how long the burn-rate comparison must remain true before the condition becomes breaching. This SDK requires AlertAfter and does not apply the OpenSLO v1 default of \"0m\"."
+          "fieldDoc": "AlertAfter sets how long the burn-rate comparison must remain true before the condition becomes breaching. This SDK requires AlertAfter."
         },
         {
           "path": "$.spec.conditions[*].spec.description",
@@ -1515,7 +1515,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.spec.notificationTargets[*].metadata.name",
             "$.spec.notificationTargets[*].metadata.labels",
@@ -1724,7 +1724,7 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
-          "typeDoc": "DataSource represents reusable connection details for a metric source. [SLIMetricSpec.DataSourceRef](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLIMetricSpec.DataSourceRef) selects it by metadata name. A metric query can instead embed [SLIMetricSpec.DataSourceSpec](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLIMetricSpec.DataSourceSpec). [SLIMetricSpec.Spec](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLIMetricSpec.Spec) contains implementation-defined query configuration.\n\nThis type is the SDK's v2alpha representation. The living, unstable [OpenSLO v2alpha proposal](https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md) does not define a standalone DataSource schema.",
+          "typeDoc": "DataSource represents reusable connection details for a metric source. [SLIMetricSpec.DataSourceRef](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLIMetricSpec.DataSourceRef) selects it by metadata name. A metric query can instead embed [SLIMetricSpec.DataSourceSpec](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLIMetricSpec.DataSourceSpec). [SLIMetricSpec.Spec](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLIMetricSpec.Spec) contains implementation-defined query configuration.",
           "childrenPaths": [
             "$.apiVersion",
             "$.kind",
@@ -1789,7 +1789,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.metadata.name",
             "$.metadata.labels",
@@ -1985,7 +1985,7 @@
               "errorCode": "required"
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.connectionDetails",
@@ -2014,7 +2014,7 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
-          "typeDoc": "SLI defines a derived reliability indicator calculated from one or more metric queries against data sources, as defined by the [OpenSLO v2alpha SLI](https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md#sli).",
+          "typeDoc": "SLI defines a derived reliability indicator calculated from one or more metric queries against data sources.",
           "childrenPaths": [
             "$.apiVersion",
             "$.kind",
@@ -2079,7 +2079,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.metadata.name",
             "$.metadata.labels",
@@ -2366,7 +2366,7 @@
               "errorCode": "required"
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.thresholdMetric.dataSourceSpec.connectionDetails",
@@ -2559,7 +2559,7 @@
               "errorCode": "required"
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.ratioMetric.good.dataSourceSpec.connectionDetails",
@@ -2705,7 +2705,7 @@
               "errorCode": "required"
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.ratioMetric.bad.dataSourceSpec.connectionDetails",
@@ -2851,7 +2851,7 @@
               "errorCode": "required"
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.ratioMetric.total.dataSourceSpec.connectionDetails",
@@ -3027,7 +3027,7 @@
               "errorCode": "required"
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.ratioMetric.raw.dataSourceSpec.connectionDetails",
@@ -3082,7 +3082,7 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
-          "typeDoc": "SLO defines a target for an SLI over a time window, as specified by the [OpenSLO v2alpha SLO](https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md#slo).",
+          "typeDoc": "SLO defines a target for an SLI over a time window.",
           "childrenPaths": [
             "$.apiVersion",
             "$.kind",
@@ -3147,7 +3147,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.metadata.name",
             "$.metadata.labels",
@@ -3403,7 +3403,7 @@
               ]
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.spec.sli.metadata.name",
             "$.spec.sli.metadata.labels",
@@ -3756,7 +3756,7 @@
               ]
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.sli.spec.thresholdMetric.dataSourceSpec.connectionDetails",
@@ -3989,7 +3989,7 @@
               ]
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.sli.spec.ratioMetric.good.dataSourceSpec.connectionDetails",
@@ -4165,7 +4165,7 @@
               ]
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.sli.spec.ratioMetric.bad.dataSourceSpec.connectionDetails",
@@ -4341,7 +4341,7 @@
               ]
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.sli.spec.ratioMetric.total.dataSourceSpec.connectionDetails",
@@ -4549,7 +4549,7 @@
               ]
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.sli.spec.ratioMetric.raw.dataSourceSpec.connectionDetails",
@@ -4775,7 +4775,7 @@
             "kind": "[]struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
-          "fieldDoc": "Objectives contains the SLO's budget targets and metric thresholds. V2alpha permits multiple objectives for a threshold-metric SLO. OpenSLO v1 requires Objectives. The living v2alpha proposal does not state a requiredness change. This SDK accepts an omitted Objectives field."
+          "fieldDoc": "Objectives contains the SLO's budget targets and metric thresholds. V2alpha permits multiple objectives for a threshold-metric SLO. This SDK accepts an omitted Objectives field."
         },
         {
           "path": "$.spec.objectives[*]",
@@ -5025,7 +5025,7 @@
               ]
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.spec.objectives[*].sli.metadata.name",
             "$.spec.objectives[*].sli.metadata.labels",
@@ -5400,7 +5400,7 @@
               ]
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.objectives[*].sli.spec.thresholdMetric.dataSourceSpec.connectionDetails",
@@ -5647,7 +5647,7 @@
               ]
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.objectives[*].sli.spec.ratioMetric.good.dataSourceSpec.connectionDetails",
@@ -5833,7 +5833,7 @@
               ]
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.objectives[*].sli.spec.ratioMetric.bad.dataSourceSpec.connectionDetails",
@@ -6019,7 +6019,7 @@
               ]
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.objectives[*].sli.spec.ratioMetric.total.dataSourceSpec.connectionDetails",
@@ -6239,7 +6239,7 @@
               ]
             }
           ],
-          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The inherited OpenSLO v1 model does not standardize the accepted Type values."
+          "fieldDoc": "Type identifies the metric-source type, such as Prometheus or Datadog. The consuming implementation defines the accepted values."
         },
         {
           "path": "$.spec.objectives[*].sli.spec.ratioMetric.raw.dataSourceSpec.connectionDetails",
@@ -6418,7 +6418,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.spec.alertPolicies[*].metadata.name",
             "$.spec.alertPolicies[*].metadata.labels",
@@ -6751,7 +6751,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.spec.alertPolicies[*].spec.conditions[*].metadata.name",
             "$.spec.alertPolicies[*].spec.conditions[*].metadata.labels",
@@ -6974,7 +6974,7 @@
             }
           ],
           "typeDoc": "AlertConditionKind identifies the evaluation algorithm for an [AlertConditionType](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#AlertConditionType).",
-          "fieldDoc": "Kind selects the condition algorithm. This SDK requires Kind and does not apply the OpenSLO v1 default of [AlertConditionKindBurnRate](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#AlertConditionKindBurnRate)."
+          "fieldDoc": "Kind selects the condition algorithm. This SDK requires Kind."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.conditions[*].spec.condition.op",
@@ -7061,7 +7061,7 @@
             }
           ],
           "typeDoc": "DurationShorthand represents a duration as an integer with suffix \"m\", \"h\", \"d\", or \"w\". This SDK accepts zero and encodes it as empty text. OpenSLO specifies a positive integer.",
-          "fieldDoc": "AlertAfter sets how long the burn-rate comparison must remain true before the condition becomes breaching. This SDK requires AlertAfter and does not apply the OpenSLO v1 default of \"0m\"."
+          "fieldDoc": "AlertAfter sets how long the burn-rate comparison must remain true before the condition becomes breaching. This SDK requires AlertAfter."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.conditions[*].spec.description",
@@ -7183,7 +7183,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.name",
             "$.spec.alertPolicies[*].spec.notificationTargets[*].metadata.labels",
@@ -7419,7 +7419,7 @@
             "kind": "struct",
             "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
           },
-          "typeDoc": "Service identifies a high-level group for SLOs. Each [SLO](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLO) refers to a Service by metadata name through [SLOSpec.ServiceRef](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOSpec.ServiceRef). Multiple SLOs can use the same Service name. The SDK does not verify that a referenced Service exists.\n\nThis type is the SDK's v2alpha representation. The living, unstable [OpenSLO v2alpha proposal](https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md) does not define a standalone Service schema.",
+          "typeDoc": "Service identifies a high-level group for SLOs. Each [SLO](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLO) refers to a Service by metadata name through [SLOSpec.ServiceRef](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOSpec.ServiceRef). Multiple SLOs can use the same Service name. The SDK does not verify that a referenced Service exists.",
           "childrenPaths": [
             "$.apiVersion",
             "$.kind",
@@ -7484,7 +7484,7 @@
               "errorCode": "required"
             }
           ],
-          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. Unlike v1 object metadata, it does not contain a display name.",
+          "typeDoc": "Metadata is the Kubernetes-style identifying metadata used by v2alpha objects. It contains a name and optional labels and annotations.",
           "childrenPaths": [
             "$.metadata.name",
             "$.metadata.labels",

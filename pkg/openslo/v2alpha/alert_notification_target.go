@@ -26,11 +26,6 @@ func NewAlertNotificationTarget(metadata Metadata, spec AlertNotificationTargetS
 // AlertNotificationTarget represents a destination for alert delivery.
 // The consuming implementation defines the format of
 // [AlertNotificationTargetSpec.Target].
-//
-// This type is the SDK's v2alpha representation. The living, unstable
-// [OpenSLO v2alpha proposal] does not define alert objects.
-//
-// [OpenSLO v2alpha proposal]: https://github.com/OpenSLO/OpenSLO/blob/e74b589cc98b98a5413611176d659a72318e7519/enhancements/v2alpha.md
 type AlertNotificationTarget struct {
 	APIVersion openslo.Version             `json:"apiVersion"`
 	Kind       openslo.Kind                `json:"kind"`
