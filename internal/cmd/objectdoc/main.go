@@ -37,6 +37,7 @@ var allDocsGeneratorFuncs = []func() (govydoc.ObjectDoc, error){
 	},
 	func() (govydoc.ObjectDoc, error) { return govydoc.Generate(v2alpha.AlertPolicy{}.GetValidator()) },
 	func() (govydoc.ObjectDoc, error) { return govydoc.Generate(v2alpha.DataSource{}.GetValidator()) },
+	func() (govydoc.ObjectDoc, error) { return govydoc.Generate(v2alpha.BudgetAdjustment{}.GetValidator()) },
 }
 
 var (

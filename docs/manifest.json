@@ -1514,6 +1514,346 @@
         }
       ]
     },
+    "BudgetAdjustment": {
+      "name": "v2alpha.BudgetAdjustment",
+      "properties": [
+        {
+          "path": "$",
+          "typeInfo": {
+            "name": "BudgetAdjustment",
+            "kind": "struct",
+            "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
+          },
+          "childrenPaths": [
+            "$.apiVersion",
+            "$.kind",
+            "$.metadata",
+            "$.spec"
+          ]
+        },
+        {
+          "path": "$.apiVersion",
+          "typeInfo": {
+            "name": "Version",
+            "kind": "string",
+            "package": "github.com/OpenSLO/go-sdk/pkg/openslo"
+          },
+          "values": [
+            "openslo.com/v2alpha"
+          ],
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            },
+            {
+              "description": "must be equal to 'openslo.com/v2alpha'",
+              "errorCode": "equal_to"
+            }
+          ],
+          "typeDoc": "Version represents a version of the OpenSLO specification."
+        },
+        {
+          "path": "$.kind",
+          "typeInfo": {
+            "name": "Kind",
+            "kind": "string",
+            "package": "github.com/OpenSLO/go-sdk/pkg/openslo"
+          },
+          "values": [
+            "BudgetAdjustment"
+          ],
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            },
+            {
+              "description": "must be equal to 'BudgetAdjustment'",
+              "errorCode": "equal_to"
+            }
+          ],
+          "typeDoc": "Kind represents all the object kinds defined by OpenSLO specification. Keep in mind not all specification versions support every [Kind](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo#Kind)."
+        },
+        {
+          "path": "$.metadata",
+          "typeInfo": {
+            "name": "Metadata",
+            "kind": "struct",
+            "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
+          },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            }
+          ],
+          "childrenPaths": [
+            "$.metadata.name",
+            "$.metadata.labels",
+            "$.metadata.annotations"
+          ]
+        },
+        {
+          "path": "$.metadata.name",
+          "typeInfo": {
+            "name": "string",
+            "kind": "string"
+          },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            },
+            {
+              "description": "length must be between 1 and 63",
+              "errorCode": "string_dns_label:string_length"
+            },
+            {
+              "description": "string must match regular expression: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'",
+              "details": "an RFC-1123 compliant label name must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character",
+              "errorCode": "string_dns_label:string_match_regexp",
+              "examples": [
+                "my-name",
+                "123-abc"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "$.metadata.labels",
+          "typeInfo": {
+            "name": "Labels",
+            "kind": "map[string]string",
+            "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
+          },
+          "childrenPaths": [
+            "$.metadata.labels.*~",
+            "$.metadata.labels.*"
+          ]
+        },
+        {
+          "path": "$.metadata.labels.*~",
+          "typeInfo": {
+            "name": "string",
+            "kind": "string"
+          },
+          "rules": [
+            {
+              "description": "length must be between 1 and 317",
+              "errorCode": "string_kubernetes_qualified_name:string_length"
+            },
+            {
+              "description": "string must be a Kubernetes Qualified Name",
+              "details": "Kubernetes Qualified Name must consist of alphanumeric characters, '-', '_' or '.', and must start and end with an alphanumeric character with an optional DNS subdomain prefix and '/'",
+              "errorCode": "string_kubernetes_qualified_name",
+              "examples": [
+                "my.domain/MyName",
+                "MyName",
+                "my.name",
+                "123-abc"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "$.metadata.labels.*",
+          "typeInfo": {
+            "name": "string",
+            "kind": "string"
+          },
+          "rules": [
+            {
+              "description": "string must match regular expression: '^([a-z0-9]([-._a-z0-9]{0,61}[a-z0-9])?)?$'",
+              "errorCode": "string_match_regexp",
+              "examples": [
+                "my-label",
+                "my.domain_123-label"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "$.metadata.annotations",
+          "typeInfo": {
+            "name": "Annotations",
+            "kind": "map[string]string",
+            "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
+          },
+          "childrenPaths": [
+            "$.metadata.annotations.*~",
+            "$.metadata.annotations.*"
+          ]
+        },
+        {
+          "path": "$.metadata.annotations.*~",
+          "typeInfo": {
+            "name": "string",
+            "kind": "string"
+          },
+          "rules": [
+            {
+              "description": "length must be between 1 and 317",
+              "errorCode": "string_kubernetes_qualified_name:string_length"
+            },
+            {
+              "description": "string must be a Kubernetes Qualified Name",
+              "details": "Kubernetes Qualified Name must consist of alphanumeric characters, '-', '_' or '.', and must start and end with an alphanumeric character with an optional DNS subdomain prefix and '/'",
+              "errorCode": "string_kubernetes_qualified_name",
+              "examples": [
+                "my.domain/MyName",
+                "MyName",
+                "my.name",
+                "123-abc"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "$.metadata.annotations.*",
+          "typeInfo": {
+            "name": "string",
+            "kind": "string"
+          }
+        },
+        {
+          "path": "$.spec",
+          "typeInfo": {
+            "name": "BudgetAdjustmentSpec",
+            "kind": "struct",
+            "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
+          },
+          "childrenPaths": [
+            "$.spec.description",
+            "$.spec.service",
+            "$.spec.indicatorRef",
+            "$.spec.startTime",
+            "$.spec.endTime",
+            "$.spec.duration"
+          ]
+        },
+        {
+          "path": "$.spec.description",
+          "typeInfo": {
+            "name": "string",
+            "kind": "string"
+          },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            },
+            {
+              "description": "length must be less than or equal to 1050",
+              "errorCode": "string_max_length"
+            }
+          ]
+        },
+        {
+          "path": "$.spec.service",
+          "typeInfo": {
+            "name": "string",
+            "kind": "string"
+          },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            },
+            {
+              "description": "length must be between 1 and 63",
+              "errorCode": "string_dns_label:string_length"
+            },
+            {
+              "description": "string must match regular expression: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'",
+              "details": "an RFC-1123 compliant label name must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character",
+              "errorCode": "string_dns_label:string_match_regexp",
+              "examples": [
+                "my-name",
+                "123-abc"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "$.spec.indicatorRef",
+          "typeInfo": {
+            "name": "string",
+            "kind": "string"
+          },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            },
+            {
+              "description": "length must be between 1 and 63",
+              "errorCode": "string_dns_label:string_length"
+            },
+            {
+              "description": "string must match regular expression: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'",
+              "details": "an RFC-1123 compliant label name must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character",
+              "errorCode": "string_dns_label:string_match_regexp",
+              "examples": [
+                "my-name",
+                "123-abc"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "$.spec.startTime",
+          "typeInfo": {
+            "name": "string",
+            "kind": "string"
+          },
+          "rules": [
+            {
+              "description": "property is required",
+              "errorCode": "required"
+            },
+            {
+              "description": "string must be a valid date and time in '2006-01-02T15:04:05Z07:00' format",
+              "details": "date and time format follows Go's time layout, see https://pkg.go.dev/time#Layout for more details",
+              "errorCode": "string_date_time"
+            }
+          ]
+        },
+        {
+          "path": "$.spec.endTime",
+          "typeInfo": {
+            "name": "string",
+            "kind": "string"
+          },
+          "rules": [
+            {
+              "description": "property is optional",
+              "errorCode": "optional"
+            },
+            {
+              "description": "string must be a valid date and time in '2006-01-02T15:04:05Z07:00' format",
+              "details": "date and time format follows Go's time layout, see https://pkg.go.dev/time#Layout for more details",
+              "errorCode": "string_date_time"
+            }
+          ]
+        },
+        {
+          "path": "$.spec.duration",
+          "typeInfo": {
+            "name": "DurationShorthand",
+            "kind": "struct",
+            "package": "github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha"
+          },
+          "rules": [
+            {
+              "description": "property is optional",
+              "errorCode": "optional"
+            }
+          ],
+          "typeDoc": "DurationShorthand is a shorthand representation of time duration. It consists of a value and unit, e.g. '1m' (1 minute), '10d' (10 days)."
+        }
+      ]
+    },
     "DataSource": {
       "name": "v2alpha.DataSource",
       "properties": [
