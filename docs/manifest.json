@@ -945,12 +945,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenNoData controls whether a missing burn-rate value triggers an alert."
         },
         {
@@ -959,12 +953,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenBreaching controls whether a breaching condition triggers an alert."
         },
         {
@@ -973,12 +961,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenResolved controls whether a resolved condition triggers an alert."
         },
         {
@@ -6613,12 +6595,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenNoData controls whether a missing burn-rate value triggers an alert."
         },
         {
@@ -6627,12 +6603,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenBreaching controls whether a breaching condition triggers an alert."
         },
         {
@@ -6641,12 +6611,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenResolved controls whether a resolved condition triggers an alert."
         },
         {
@@ -8616,12 +8580,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenNoData reports whether to trigger an alert when the associated [SLO](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLO) has no burn-rate value. Its zero value is false."
         },
         {
@@ -8630,12 +8588,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenBreaching reports whether to trigger an alert when the condition is breaching. Its zero value is false."
         },
         {
@@ -8644,12 +8596,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenResolved reports whether to trigger an alert when the condition resolves. Its zero value is false."
         },
         {
@@ -13845,12 +13791,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenNoData reports whether to trigger an alert when the associated [SLO](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLO) has no burn-rate value. Its zero value is false."
         },
         {
@@ -13859,12 +13799,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenBreaching reports whether to trigger an alert when the condition is breaching. Its zero value is false."
         },
         {
@@ -13873,12 +13807,6 @@
             "name": "bool",
             "kind": "bool"
           },
-          "rules": [
-            {
-              "description": "property is optional",
-              "errorCode": "optional"
-            }
-          ],
           "fieldDoc": "AlertWhenResolved reports whether to trigger an alert when the condition resolves. Its zero value is false."
         },
         {

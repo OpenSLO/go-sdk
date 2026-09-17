@@ -26,8 +26,8 @@ func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	}
 }
 
-// SLO is the legacy v1alpha SLO representation supported by this SDK. It
-// defines reliability targets for a service level measured by an indicator.
+// SLO is the legacy v1alpha SLO representation supported by this SDK.
+// It defines reliability targets for a service level measured by an indicator.
 type SLO struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -55,8 +55,8 @@ func (s SLO) Validate() error {
 	return sloValidation.Validate(s)
 }
 
-// String returns the SLO's formatted version and kind. It also returns
-// [Metadata.Name] when set.
+// String returns the SLO's formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (s SLO) String() string {
 	return internal.GetObjectName(s)
 }
@@ -71,30 +71,27 @@ func (s SLO) GetValidator() govy.Validator[SLO] {
 	return sloValidation
 }
 
-// SLOSpec defines the service, indicator, objectives, time window, and
-// error-budget calculation for an [SLO].
+// SLOSpec defines the service, indicator, objectives, time window, and error-budget calculation for an [SLO].
 type SLOSpec struct {
 	// TimeWindows contains exactly one SLO evaluation window.
 	TimeWindows []SLOTimeWindow `json:"timeWindows"`
-	// BudgetingMethod applies the selected error-budget calculation to every
-	// objective.
+	// BudgetingMethod applies the selected error-budget calculation to every objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
 	// Description is an optional summary of the SLO.
 	Description string `json:"description,omitempty"`
-	// Indicator defines the threshold-metric form of the SLO. It must be nil for
-	// the ratio form.
+	// Indicator defines the threshold-metric form of the SLO.
+	// It must be nil for the ratio form.
 	Indicator *SLOIndicator `json:"indicator"`
-	// Service is the metadata name of the [Service] whose reliability the SLO
-	// measures.
+	// Service is the metadata name of the [Service] whose reliability the SLO measures.
 	Service string `json:"service"`
-	// Objectives contains reliability targets. For the ratio form, each
-	// objective's [SLOObjective.RatioMetrics] defines the SLI metric queries.
+	// Objectives contains reliability targets.
+	// For the ratio form, each objective's [SLOObjective.RatioMetrics] defines the SLI metric queries.
 	Objectives []SLOObjective `json:"objectives"`
 }
 
 // SLOBudgetingMethod identifies how an SLO calculates its error budget.
-// Occurrences weights each event equally. Timeslices weights each time slice
-// equally.
+// Occurrences weights each event equally.
+// Timeslices weights each time slice equally.
 type SLOBudgetingMethod string
 
 const (
@@ -107,11 +104,10 @@ var validSLOBudgetingMethods = []SLOBudgetingMethod{
 	SLOBudgetingMethodTimeslices,
 }
 
-// SLOIndicator defines the threshold-metric form of a v1alpha service level
-// indicator.
+// SLOIndicator defines the threshold-metric form of a v1alpha service level indicator.
 type SLOIndicator struct {
-	// ThresholdMetric retrieves raw metric values. Each objective compares them
-	// with its [Operator] and Value.
+	// ThresholdMetric retrieves raw metric values.
+	// Each objective compares them with its [Operator] and Value.
 	ThresholdMetric SLOMetricSourceSpec `json:"thresholdMetric"`
 }
 
@@ -142,33 +138,31 @@ type SLOObjective struct {
 	Operator Operator `json:"op,omitempty"`
 }
 
-// SLORatioMetrics defines an indicator as the ratio of good events to total
-// events. For example, 99 successful requests out of 100 total requests produce
-// a ratio of 0.99.
+// SLORatioMetrics defines an indicator as the ratio of good events to total events.
+// For example, 99 successful requests out of 100 total requests produce a ratio of 0.99.
 type SLORatioMetrics struct {
 	// Good retrieves the numerator: events considered successful.
 	Good SLOMetricSourceSpec `json:"good"`
 	// Total retrieves the denominator: all considered events.
 	Total SLOMetricSourceSpec `json:"total"`
-	// Incremental reports whether the queried metrics are monotonically
-	// increasing counters rather than values that can rise or fall.
+	// Incremental reports whether the queried metrics are monotonically increasing counters
+	// rather than values that can rise or fall.
 	Incremental bool `json:"incremental"`
 }
 
-// SLOTimeWindow defines the period over which an SLO is evaluated. For example,
-// a Unit of Week and a Count of 4 define a four-week window. A rolling window
-// requires IsRolling to be true and Calendar to be nil. A calendar-aligned
-// window requires IsRolling to be false and Calendar to be non-nil.
+// SLOTimeWindow defines the period over which an SLO is evaluated.
+// For example, a Unit of Week and a Count of 4 define a four-week window.
+// A rolling window requires IsRolling to be true and Calendar to be nil.
+// A calendar-aligned window requires IsRolling to be false and Calendar to be non-nil.
 type SLOTimeWindow struct {
 	// Unit combines with Count to set the window length.
 	Unit SLOTimeWindowUnit `json:"unit"`
 	// Count sets how many Units form the window.
 	Count int `json:"count"`
-	// IsRolling selects a continuously advancing window when true and a
-	// calendar-aligned window when false.
+	// IsRolling selects a continuously advancing window when true and a calendar-aligned window when false.
 	IsRolling bool `json:"isRolling"`
-	// Calendar defines the alignment when IsRolling is false. It must be nil
-	// when IsRolling is true.
+	// Calendar defines the alignment when IsRolling is false.
+	// It must be nil when IsRolling is true.
 	Calendar *SLOCalendar `json:"calendar,omitempty"`
 }
 
@@ -193,8 +187,7 @@ var validSLOTimeWindowUnits = []SLOTimeWindowUnit{
 
 // SLOCalendar anchors a calendar-aligned [SLOTimeWindow].
 type SLOCalendar struct {
-	// StartTime is the local anchor in YYYY-MM-DD HH:MM:SS format, for example
-	// 2026-07-25 14:30:00.
+	// StartTime is the local anchor in YYYY-MM-DD HH:MM:SS format, for example 2026-07-25 14:30:00.
 	StartTime string `json:"startTime"`
 	// TimeZone is the IANA time-zone name used to interpret StartTime.
 	TimeZone string `json:"timeZone"`

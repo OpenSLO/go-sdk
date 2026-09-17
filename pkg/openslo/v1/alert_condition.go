@@ -23,8 +23,8 @@ func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertConditio
 	}
 }
 
-// AlertCondition defines a burn-rate condition for an SLO. An [AlertPolicy]
-// controls whether a breaching condition triggers an alert.
+// AlertCondition defines a burn-rate condition for an SLO.
+// An [AlertPolicy] controls whether a breaching condition triggers an alert.
 type AlertCondition struct {
 	APIVersion openslo.Version    `json:"apiVersion"`
 	Kind       openslo.Kind       `json:"kind"`
@@ -52,8 +52,8 @@ func (a AlertCondition) Validate() error {
 	return alertConditionValidation.Validate(a)
 }
 
-// String returns the alert condition's formatted version and kind. It also
-// returns [Metadata.Name] when set.
+// String returns the alert condition's formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (a AlertCondition) String() string {
 	return internal.GetObjectName(a)
 }
@@ -72,18 +72,18 @@ func (a AlertCondition) GetValidator() govy.Validator[AlertCondition] {
 type AlertConditionSpec struct {
 	// Severity is an implementation-defined classification such as "sev1" or "page".
 	Severity string `json:"severity"`
-	// Condition defines the burn-rate comparison used to determine whether this
-	// alert condition is breaching.
+	// Condition defines the burn-rate comparison used to determine whether this alert condition is breaching.
 	Condition AlertConditionType `json:"condition"`
 	// Description summarizes the alert condition.
 	Description string `json:"description,omitempty"`
 }
 
-// AlertConditionType defines a comparison against an SLO's burn rate. Burn rate
-// is error-budget consumption relative to the rate allowed by the SLO.
+// AlertConditionType defines a comparison against an SLO's burn rate.
+// Burn rate is error-budget consumption relative to the rate allowed by the SLO.
 type AlertConditionType struct {
-	// Kind selects the condition calculation. OpenSLO defaults Kind to
-	// [AlertConditionKindBurnRate]. This SDK does not apply that default.
+	// Kind selects the condition calculation.
+	// OpenSLO defaults Kind to [AlertConditionKindBurnRate].
+	// This SDK does not apply that default.
 	Kind AlertConditionKind `json:"kind"`
 	// Operator compares the calculated burn rate with Threshold.
 	Operator Operator `json:"op"`
@@ -91,10 +91,10 @@ type AlertConditionType struct {
 	Threshold *float64 `json:"threshold"`
 	// LookbackWindow sets the period for burn-rate calculation.
 	LookbackWindow DurationShorthand `json:"lookbackWindow"`
-	// AlertAfter sets how long the burn-rate comparison must remain true before
-	// the condition becomes breaching. An [AlertPolicy] controls whether that
-	// state triggers an alert. OpenSLO treats an omitted value as "0m". This SDK
-	// leaves it unset.
+	// AlertAfter sets how long the burn-rate comparison must remain true before the condition becomes breaching.
+	// An [AlertPolicy] controls whether that state triggers an alert.
+	// OpenSLO treats an omitted value as "0m".
+	// This SDK leaves it unset.
 	AlertAfter *DurationShorthand `json:"alertAfter,omitempty"`
 }
 

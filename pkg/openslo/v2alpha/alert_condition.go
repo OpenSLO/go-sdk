@@ -24,8 +24,7 @@ func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertConditio
 }
 
 // AlertCondition defines when an SLO alert condition is breaching.
-// [AlertPolicySpec.AlertWhenBreaching] controls whether that state triggers an
-// alert.
+// [AlertPolicySpec.AlertWhenBreaching] controls whether that state triggers an alert.
 type AlertCondition struct {
 	APIVersion openslo.Version    `json:"apiVersion"`
 	Kind       openslo.Kind       `json:"kind"`
@@ -79,10 +78,10 @@ type AlertConditionSpec struct {
 }
 
 // AlertConditionType defines a burn-rate comparison over a lookback window.
-// Burn rate is error-budget consumption relative to the rate allowed by the
-// SLO.
+// Burn rate is error-budget consumption relative to the rate allowed by the SLO.
 type AlertConditionType struct {
-	// Kind selects the condition algorithm. This SDK requires Kind.
+	// Kind selects the condition algorithm.
+	// This SDK requires Kind.
 	Kind AlertConditionKind `json:"kind"`
 	// Operator compares the calculated burn rate with Threshold.
 	Operator Operator `json:"op"`
@@ -90,13 +89,12 @@ type AlertConditionType struct {
 	Threshold *float64 `json:"threshold"`
 	// LookbackWindow sets the period for burn-rate calculation.
 	LookbackWindow DurationShorthand `json:"lookbackWindow"`
-	// AlertAfter sets how long the burn-rate comparison must remain true before
-	// the condition becomes breaching. This SDK requires AlertAfter.
+	// AlertAfter sets how long the burn-rate comparison must remain true before the condition becomes breaching.
+	// This SDK requires AlertAfter.
 	AlertAfter DurationShorthand `json:"alertAfter"`
 }
 
-// AlertConditionKind identifies the evaluation algorithm for an
-// [AlertConditionType].
+// AlertConditionKind identifies the evaluation algorithm for an [AlertConditionType].
 type AlertConditionKind string
 
 const (

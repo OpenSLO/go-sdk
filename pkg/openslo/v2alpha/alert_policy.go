@@ -68,23 +68,20 @@ func (a AlertPolicy) GetValidator() govy.Validator[AlertPolicy] {
 	return alertPolicyValidation
 }
 
-// AlertPolicySpec defines the trigger states, condition, and notification
-// destinations for an [AlertPolicy].
+// AlertPolicySpec defines the trigger states, condition, and notification destinations for an [AlertPolicy].
 // The trigger flags are independent and have a false zero value.
-// JSON encoding omits false values. This SDK applies no omission default and
-// accepts all three flags as false.
+// JSON encoding omits false values.
+// This SDK applies no omission default and accepts all three flags as false.
 type AlertPolicySpec struct {
 	// Description optionally summarizes the alert policy in at most 1,050 characters.
 	Description string `json:"description,omitempty"`
-	// AlertWhenNoData controls whether a missing burn-rate value triggers an
-	// alert.
+	// AlertWhenNoData controls whether a missing burn-rate value triggers an alert.
 	AlertWhenNoData bool `json:"alertWhenNoData,omitempty"`
 	// AlertWhenBreaching controls whether a breaching condition triggers an alert.
 	AlertWhenBreaching bool `json:"alertWhenBreaching,omitempty"`
 	// AlertWhenResolved controls whether a resolved condition triggers an alert.
 	AlertWhenResolved bool `json:"alertWhenResolved,omitempty"`
-	// Conditions contains exactly one alert condition, specified inline or by
-	// reference.
+	// Conditions contains exactly one alert condition, specified inline or by reference.
 	Conditions []AlertPolicyCondition `json:"conditions,omitempty"`
 	// NotificationTargets contains one or more delivery destinations.
 	// Specify each destination inline or by reference.
@@ -98,8 +95,7 @@ type AlertPolicyCondition struct {
 	*AlertPolicyConditionInline
 }
 
-// AlertPolicyConditionInline is an alert-condition definition embedded in an
-// [AlertPolicy].
+// AlertPolicyConditionInline is an alert-condition definition embedded in an [AlertPolicy].
 // The inline form contains kind, metadata, and spec, but no API version.
 type AlertPolicyConditionInline struct {
 	Kind     openslo.Kind       `json:"kind"`
@@ -113,15 +109,14 @@ type AlertPolicyConditionRef struct {
 	ConditionRef string `json:"conditionRef"`
 }
 
-// AlertPolicyNotificationTarget supplies exactly one notification destination
-// to an [AlertPolicy]. Set either the reference or the inline definition.
+// AlertPolicyNotificationTarget supplies exactly one notification destination to an [AlertPolicy].
+// Set either the reference or the inline definition.
 type AlertPolicyNotificationTarget struct {
 	*AlertPolicyNotificationTargetRef
 	*AlertPolicyNotificationTargetInline
 }
 
-// AlertPolicyNotificationTargetInline is an alert-notification-target
-// definition embedded in an [AlertPolicy].
+// AlertPolicyNotificationTargetInline is an alert-notification-target definition embedded in an [AlertPolicy].
 // The inline form contains kind, metadata, and spec, but no API version.
 type AlertPolicyNotificationTargetInline struct {
 	Kind     openslo.Kind                `json:"kind"`
@@ -129,8 +124,7 @@ type AlertPolicyNotificationTargetInline struct {
 	Spec     AlertNotificationTargetSpec `json:"spec"`
 }
 
-// AlertPolicyNotificationTargetRef identifies a separately defined
-// [AlertNotificationTarget].
+// AlertPolicyNotificationTargetRef identifies a separately defined [AlertNotificationTarget].
 type AlertPolicyNotificationTargetRef struct {
 	// TargetRef is the metadata name of the notification target to use.
 	TargetRef string `json:"targetRef"`
@@ -150,15 +144,6 @@ var alertPolicySpecValidation = govy.New(
 		WithName("description").
 		OmitEmpty().
 		Rules(rules.StringMaxLength(1050)),
-	govy.For(func(spec AlertPolicySpec) bool { return spec.AlertWhenNoData }).
-		WithName("alertWhenNoData").
-		OmitEmpty(),
-	govy.For(func(spec AlertPolicySpec) bool { return spec.AlertWhenBreaching }).
-		WithName("alertWhenBreaching").
-		OmitEmpty(),
-	govy.For(func(spec AlertPolicySpec) bool { return spec.AlertWhenResolved }).
-		WithName("alertWhenResolved").
-		OmitEmpty(),
 	govy.ForSlice(func(spec AlertPolicySpec) []AlertPolicyCondition { return spec.Conditions }).
 		WithName("conditions").
 		Rules(rules.SliceLength[[]AlertPolicyCondition](1, 1)).

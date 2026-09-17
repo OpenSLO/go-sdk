@@ -75,21 +75,21 @@ func (s SLO) GetValidator() govy.Validator[SLO] {
 	return sloValidation
 }
 
-// SLOSpec defines an SLO's service, SLI, time window, budgeting method,
-// objectives, and alert policies. A standard SLO applies one SLI to all
-// objectives. A composite SLO can select a different SLI per objective.
+// SLOSpec defines an SLO's service, SLI, time window, budgeting method, objectives, and alert policies.
+// A standard SLO applies one SLI to all objectives.
+// A composite SLO can select a different SLI per objective.
 type SLOSpec struct {
 	// Description optionally summarizes the SLO in at most 1,050 characters.
 	Description string `json:"description,omitempty"`
-	// ServiceRef names the service associated with this SLO. The SDK serializes
-	// the field as "serviceRef". The living v2alpha proposal calls it "service".
+	// ServiceRef names the service associated with this SLO.
+	// The SDK serializes the field as "serviceRef".
+	// The living v2alpha proposal calls it "service".
 	ServiceRef string `json:"serviceRef"`
 	// SLI embeds the service level indicator for a standard SLO.
 	SLI *SLOSLIInline `json:"sli,omitempty"`
 	// SLIRef names an existing [SLI] for a standard SLO.
 	SLIRef *string `json:"sliRef,omitempty"`
-	// BudgetingMethod applies the selected error-budget calculation to every
-	// objective.
+	// BudgetingMethod applies the selected error-budget calculation to every objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
 	// TimeWindow contains exactly one SLO evaluation window.
 	TimeWindow []SLOTimeWindow `json:"timeWindow,omitempty"`
@@ -98,14 +98,12 @@ type SLOSpec struct {
 	// This SDK accepts an omitted Objectives field.
 	Objectives []SLOObjective `json:"objectives"`
 	// AlertPolicies contains policies associated with the SLO.
-	// Each item must specify exactly one inline definition or metadata-name
-	// reference.
+	// Each item must specify exactly one inline definition or metadata-name reference.
 	AlertPolicies []SLOAlertPolicy `json:"alertPolicies,omitempty"`
 }
 
-// HasCompositeObjectives reports whether at least one objective selects an SLI
-// inline or by reference. It does not verify that every composite objective
-// selects one.
+// HasCompositeObjectives reports whether at least one objective selects an SLI inline or by reference.
+// It does not verify that every composite objective selects one.
 func (s SLOSpec) HasCompositeObjectives() bool {
 	for i := range s.Objectives {
 		if s.Objectives[i].SLI != nil || s.Objectives[i].SLIRef != nil {
@@ -116,8 +114,9 @@ func (s SLOSpec) HasCompositeObjectives() bool {
 }
 
 // SLOBudgetingMethod selects how an SLO consumes its error budget.
-// Occurrences uses good events over total events, Timeslices uses good slices
-// over total slices, and RatioTimeslices averages slice success ratios.
+// Occurrences uses good events over total events,
+// Timeslices uses good slices over total slices,
+// and RatioTimeslices averages slice success ratios.
 type SLOBudgetingMethod string
 
 const (
@@ -138,15 +137,13 @@ type SLOSLIInline struct {
 	Spec     SLISpec  `json:"spec"`
 }
 
-// SLOObjective defines one error-budget target and, for a threshold SLI, its
-// metric comparison. The living v2alpha proposal also defines objective labels,
-// which this SDK does not model.
+// SLOObjective defines one error-budget target and, for a threshold SLI, its metric comparison.
+// The living v2alpha proposal also defines objective labels, which this SDK does not model.
 //
-// For a standard SLO with an inline threshold SLI, validation requires
-// [SLOObjective.Operator] and [SLOObjective.Value]. For a standard SLO with an
-// inline ratio SLI, validation forbids them. The SDK does not apply these
-// metric-type rules to referenced SLIs or to SLIs embedded in composite
-// objectives.
+// For a standard SLO with an inline threshold SLI,
+// validation requires [SLOObjective.Operator] and [SLOObjective.Value].
+// For a standard SLO with an inline ratio SLI, validation forbids them.
+// The SDK does not apply these metric-type rules to referenced SLIs or to SLIs embedded in composite objectives.
 type SLOObjective struct {
 	// DisplayName is a human-readable name for this objective.
 	// It is not part of the enclosing object's [Metadata].
@@ -155,25 +152,24 @@ type SLOObjective struct {
 	Operator Operator `json:"op,omitempty"`
 	// Value is the comparison threshold for a threshold metric.
 	Value *float64 `json:"value,omitempty"`
-	// Target is the desired success proportion. For example, 0.995 means
-	// 99.5 percent.
+	// Target is the desired success proportion.
+	// For example, 0.995 means 99.5 percent.
 	Target *float64 `json:"target,omitempty"`
 	// TargetPercent is the desired success percentage.
 	TargetPercent *float64 `json:"targetPercent,omitempty"`
 	// TimeSliceTarget sets the per-slice success threshold for Timeslices.
 	TimeSliceTarget *float64 `json:"timeSliceTarget,omitempty"`
-	// TimeSliceWindow sets the size of each slice for Timeslices and
-	// RatioTimeslices. OpenSLO also accepts a number interpreted as minutes. This
-	// SDK represents only duration shorthand.
+	// TimeSliceWindow sets the size of each slice for Timeslices and RatioTimeslices.
+	// OpenSLO also accepts a number interpreted as minutes.
+	// This SDK represents only duration shorthand.
 	TimeSliceWindow *DurationShorthand `json:"timeSliceWindow,omitempty"`
 	// SLI embeds this objective's service level indicator for a composite SLO.
 	SLI *SLOSLIInline `json:"sli,omitempty"`
 	// SLIRef names this objective's existing [SLI] for a composite SLO.
 	SLIRef *string `json:"sliRef,omitempty"`
 	// CompositeWeight scales this objective's contribution to a composite SLO.
-	// The living v2alpha proposal permits it only with multiple objectives and
-	// defaults it to 1. This SDK does not enforce the objective-count restriction
-	// and preserves an omitted value as nil.
+	// The living v2alpha proposal permits it only with multiple objectives and defaults it to 1.
+	// This SDK does not enforce the objective-count restriction and preserves an omitted value as nil.
 	CompositeWeight *float64 `json:"compositeWeight,omitempty"`
 }
 
@@ -183,15 +179,13 @@ type SLOObjective struct {
 type SLOTimeWindow struct {
 	// Duration is the length of the evaluation window.
 	Duration DurationShorthand `json:"duration"`
-	// IsRolling selects a rolling window when true and a calendar-aligned window
-	// when false.
+	// IsRolling selects a rolling window when true and a calendar-aligned window when false.
 	IsRolling bool `json:"isRolling"`
 	// Calendar defines the alignment of a calendar window.
 	Calendar *SLOCalendar `json:"calendar,omitempty"`
 }
 
-// SLOCalendar defines the starting wall-clock time and time zone for a
-// calendar-aligned [SLOTimeWindow].
+// SLOCalendar defines the starting wall-clock time and time zone for a calendar-aligned [SLOTimeWindow].
 type SLOCalendar struct {
 	// StartTime is the local date and time when calendar alignment starts.
 	StartTime string `json:"startTime"`
@@ -199,8 +193,7 @@ type SLOCalendar struct {
 	TimeZone string `json:"timeZone"`
 }
 
-// SLOAlertPolicy associates exactly one inline or referenced alert policy with
-// an [SLO].
+// SLOAlertPolicy associates exactly one inline or referenced alert policy with an [SLO].
 type SLOAlertPolicy struct {
 	*SLOAlertPolicyInline
 	*SLOAlertPolicyRef

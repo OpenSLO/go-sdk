@@ -23,8 +23,7 @@ func NewSLI(metadata Metadata, spec SLISpec) SLI {
 	}
 }
 
-// SLI defines a derived reliability indicator calculated from one or more
-// metric queries against data sources.
+// SLI defines a derived reliability indicator calculated from one or more metric queries against data sources.
 type SLI struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -72,23 +71,22 @@ func (s SLI) GetValidator() govy.Validator[SLI] {
 type SLISpec struct {
 	// Description optionally summarizes the indicator in at most 1,050 characters.
 	Description string `json:"description,omitempty"`
-	// ThresholdMetric defines a query that returns values for comparison with
-	// [SLOObjective.Value] by [SLOObjective.Operator].
+	// ThresholdMetric defines a query that returns values for comparison
+	// with [SLOObjective.Value] by [SLOObjective.Operator].
 	ThresholdMetric *SLIMetricSpec `json:"thresholdMetric,omitempty"`
-	// RatioMetric defines component queries or a precomputed ratio for an SLO
-	// objective.
+	// RatioMetric defines component queries or a precomputed ratio for an SLO objective.
 	RatioMetric *SLIRatioMetric `json:"ratioMetric,omitempty"`
 }
 
-// SLIRatioMetric defines an indicator as [SLIRatioMetric.Good] divided by
-// [SLIRatioMetric.Total], ([SLIRatioMetric.Total] minus [SLIRatioMetric.Bad])
-// divided by [SLIRatioMetric.Total], or [SLIRatioMetric.Raw].
+// SLIRatioMetric defines an indicator as [SLIRatioMetric.Good] divided by [SLIRatioMetric.Total],
+// ([SLIRatioMetric.Total] minus [SLIRatioMetric.Bad]) divided by [SLIRatioMetric.Total],
+// or [SLIRatioMetric.Raw].
 // [SLIRatioMetric.RawType] identifies Raw as a success or failure ratio.
 // For example, 990 good events out of 1,000 total events produce 0.99.
 // 10 bad events with the same total produce the same success ratio.
 type SLIRatioMetric struct {
-	// Counter reports whether the good, bad, and total metrics are monotonically
-	// increasing counters. It has no effect when Raw is used.
+	// Counter reports whether the good, bad, and total metrics are monotonically increasing counters.
+	// It has no effect when Raw is used.
 	Counter bool `json:"counter"`
 	// Good is the success-count numerator used with Total.
 	Good *SLIMetricSpec `json:"good,omitempty"`
@@ -96,15 +94,13 @@ type SLIRatioMetric struct {
 	Bad *SLIMetricSpec `json:"bad,omitempty"`
 	// Total is the denominator paired with Good or Bad.
 	Total *SLIMetricSpec `json:"total,omitempty"`
-	// RawType identifies whether Raw contains a success or failure ratio when
-	// Raw is used.
+	// RawType identifies whether Raw contains a success or failure ratio when Raw is used.
 	RawType SLIRawMetricType `json:"rawType,omitempty"`
 	// Raw supplies an already computed ratio.
 	Raw *SLIMetricSpec `json:"raw,omitempty"`
 }
 
-// SLIRawMetricType identifies whether a raw ratio contains successes
-// (good/total) or failures (bad/total).
+// SLIRawMetricType identifies whether a raw ratio contains successes (good/total) or failures (bad/total).
 type SLIRawMetricType string
 
 const (
@@ -117,15 +113,13 @@ var validSLIRawMetricTypes = []SLIRawMetricType{
 	SLIRawMetricTypeFailure,
 }
 
-// SLIMetricSpec supplies an implementation-defined query in the v2alpha
-// flattened layout.
+// SLIMetricSpec supplies an implementation-defined query in the v2alpha flattened layout.
 type SLIMetricSpec struct {
 	// DataSourceRef names an existing [DataSource].
 	DataSourceRef string `json:"dataSourceRef,omitempty"`
 	// DataSourceSpec embeds the complete data-source connection configuration.
 	DataSourceSpec *DataSourceSpec `json:"dataSourceSpec,omitempty"`
-	// Spec contains implementation-defined query configuration at the same level
-	// as the data-source selection.
+	// Spec contains implementation-defined query configuration at the same level as the data-source selection.
 	Spec map[string]any `json:"spec,omitempty"`
 }
 

@@ -28,24 +28,21 @@ func GetSupportedKinds() []openslo.Kind {
 	return slices.Clone(supportedKinds)
 }
 
-// Object is implemented by every OpenSLO v2alpha object and exposes its
-// version-specific [Metadata].
+// Object is implemented by every OpenSLO v2alpha object and exposes its version-specific [Metadata].
 type Object interface {
 	openslo.Object
 	// GetMetadata returns the object's version-specific metadata.
 	GetMetadata() Metadata
 }
 
-// Metadata is the Kubernetes-style identifying metadata used by v2alpha
-// objects. It contains a name and optional labels and annotations.
+// Metadata is the Kubernetes-style identifying metadata used by v2alpha objects.
+// It contains a name and optional labels and annotations.
 type Metadata struct {
 	// Name identifies the object when other OpenSLO objects refer to it.
 	Name string `json:"name"`
-	// Labels optionally classifies the object with Kubernetes-style,
-	// single-valued labels.
+	// Labels optionally classifies the object with Kubernetes-style, single-valued labels.
 	Labels Labels `json:"labels,omitempty"`
-	// Annotations optionally attaches non-identifying metadata with qualified
-	// keys.
+	// Annotations optionally attaches non-identifying metadata with qualified keys.
 	Annotations Annotations `json:"annotations,omitempty"`
 }
 

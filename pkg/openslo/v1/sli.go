@@ -23,8 +23,7 @@ func NewSLI(metadata Metadata, spec SLISpec) SLI {
 	}
 }
 
-// SLI defines a derived reliability indicator and the queries used to calculate
-// it for an [SLO].
+// SLI defines a derived reliability indicator and the queries used to calculate it for an [SLO].
 type SLI struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -52,8 +51,8 @@ func (s SLI) Validate() error {
 	return sliValidation.Validate(s)
 }
 
-// String returns the SLI's formatted version and kind. It also returns
-// [Metadata.Name] when set.
+// String returns the SLI's formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (s SLI) String() string {
 	return internal.GetObjectName(s)
 }
@@ -78,14 +77,13 @@ type SLISpec struct {
 	RatioMetric     *SLIRatioMetric `json:"ratioMetric,omitempty"`
 }
 
-// SLIRatioMetric defines an indicator from good divided by total or (total minus
-// bad) divided by total. It can instead use a precomputed success or failure
-// ratio identified by [SLIRatioMetric.RawType]. For example, 99 good events out
-// of 100 produce a ratio of 0.99. One bad event out of 100 produces the same
-// ratio.
+// SLIRatioMetric defines an indicator from good divided by total or (total minus bad) divided by total.
+// It can instead use a precomputed success or failure ratio identified by [SLIRatioMetric.RawType].
+// For example, 99 good events out of 100 produce a ratio of 0.99.
+// One bad event out of 100 produces the same ratio.
 type SLIRatioMetric struct {
-	// Counter reports whether the queried good, bad, and total metrics are
-	// monotonically increasing. It has no effect when Raw is used.
+	// Counter reports whether the queried good, bad, and total metrics are monotonically increasing.
+	// It has no effect when Raw is used.
 	Counter bool `json:"counter"`
 	// Good supplies the numerator for a good-over-total ratio.
 	Good *SLIMetricSpec `json:"good,omitempty"`
@@ -93,8 +91,7 @@ type SLIRatioMetric struct {
 	Bad *SLIMetricSpec `json:"bad,omitempty"`
 	// Total supplies the denominator for a Good- or Bad-based ratio.
 	Total *SLIMetricSpec `json:"total,omitempty"`
-	// RawType selects whether Raw is interpreted as a success or failure ratio
-	// when Raw is used.
+	// RawType selects whether Raw is interpreted as a success or failure ratio when Raw is used.
 	RawType SLIRawMetricType `json:"rawType,omitempty"`
 	// Raw defines a query for a precomputed success or failure ratio.
 	Raw *SLIMetricSpec `json:"raw,omitempty"`
@@ -105,15 +102,14 @@ type SLIMetricSpec struct {
 	MetricSource SLIMetricSource `json:"metricSource"`
 }
 
-// SLIMetricSource identifies a metrics backend and supplies the configuration
-// needed to retrieve a metric.
+// SLIMetricSource identifies a metrics backend and supplies the configuration needed to retrieve a metric.
 type SLIMetricSource struct {
 	// MetricSourceRef names an existing [DataSource].
 	MetricSourceRef string `json:"metricSourceRef,omitempty"`
 	// Type identifies the implementation-defined metric-source type.
 	// OpenSLO requires Type when [SLIMetricSource.MetricSourceRef] is omitted.
-	// Otherwise, OpenSLO infers Type from the referenced [DataSource]. This SDK
-	// does not validate the requirement.
+	// Otherwise, OpenSLO infers Type from the referenced [DataSource].
+	// This SDK does not validate the requirement.
 	Type string `json:"type,omitempty"`
 	// Spec contains source-specific query or metric-retrieval configuration.
 	Spec map[string]any `json:"spec"`

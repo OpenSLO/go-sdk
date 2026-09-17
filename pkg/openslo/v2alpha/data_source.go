@@ -72,16 +72,15 @@ func (d DataSource) GetValidator() govy.Validator[DataSource] {
 	return dataSourceValidation
 }
 
-// DataSourceSpec defines a metric-source type and its implementation-defined
-// connection data.
+// DataSourceSpec defines a metric-source type and its implementation-defined connection data.
 type DataSourceSpec struct {
 	// Description optionally summarizes the data source in at most 1,050 characters.
 	Description string `json:"description,omitempty"`
 	// Type identifies the metric-source type, such as Prometheus or Datadog.
 	// The consuming implementation defines the accepted values.
 	Type string `json:"type"`
-	// ConnectionDetails contains implementation-defined connection data encoded
-	// as JSON, such as endpoints or authentication settings.
+	// ConnectionDetails contains implementation-defined connection data encoded as JSON,
+	// such as endpoints or authentication settings.
 	ConnectionDetails json.RawMessage `json:"connectionDetails"`
 }
 

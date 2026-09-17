@@ -47,8 +47,8 @@ type Metadata struct {
 	Annotations Annotations `json:"annotations,omitempty"`
 }
 
-// Labels maps each metadata key to zero or more values. JSON decoding accepts
-// each map value as a string or an array of strings.
+// Labels maps each metadata key to zero or more values.
+// JSON decoding accepts each map value as a string or an array of strings.
 type Labels map[string]Label
 
 // Annotations maps metadata keys to implementation- or system-specific values.

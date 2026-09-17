@@ -23,8 +23,8 @@ func NewService(metadata Metadata, spec ServiceSpec) Service {
 	}
 }
 
-// Service identifies a high-level group of [SLO] objects. An [SLO] associates
-// with the Service by setting [SLOSpec.Service] to the Service's [Metadata.Name].
+// Service identifies a high-level group of [SLO] objects.
+// An [SLO] associates with the Service by setting [SLOSpec.Service] to the Service's [Metadata.Name].
 // Multiple SLOs can refer to the same Service.
 type Service struct {
 	APIVersion openslo.Version `json:"apiVersion"`
@@ -53,8 +53,8 @@ func (s Service) Validate() error {
 	return serviceValidation.Validate(s)
 }
 
-// String returns the service's formatted version and kind. It also returns
-// [Metadata.Name] when set.
+// String returns the service's formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (s Service) String() string {
 	return internal.GetObjectName(s)
 }

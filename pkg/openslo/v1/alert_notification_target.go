@@ -51,8 +51,8 @@ func (a AlertNotificationTarget) Validate() error {
 	return alertNotificationTargetValidation.Validate(a)
 }
 
-// String returns the target's formatted version and kind. It also returns
-// [Metadata.Name] when set.
+// String returns the target's formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (a AlertNotificationTarget) String() string {
 	return internal.GetObjectName(a)
 }
@@ -67,13 +67,12 @@ func (a AlertNotificationTarget) GetValidator() govy.Validator[AlertNotification
 	return alertNotificationTargetValidation
 }
 
-// AlertNotificationTargetSpec defines an implementation-specific notification
-// destination.
+// AlertNotificationTargetSpec defines an implementation-specific notification destination.
 type AlertNotificationTargetSpec struct {
 	// Description optionally describes the notification target.
 	Description string `json:"description,omitempty"`
-	// Target specifies the notification destination in the format required by the
-	// consuming implementation. Examples include email, Slack, a webhook, and Opsgenie.
+	// Target specifies the notification destination in the format required by the consuming implementation.
+	// Examples include email, Slack, a webhook, and Opsgenie.
 	Target string `json:"target"`
 }
 

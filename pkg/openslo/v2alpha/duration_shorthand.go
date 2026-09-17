@@ -8,16 +8,14 @@ import (
 	"github.com/nobl9/govy/pkg/rules"
 )
 
-// ParseDurationShorthand parses s into a [DurationShorthand] without calling
-// [DurationShorthand.Validate].
+// ParseDurationShorthand parses s into a [DurationShorthand] without calling [DurationShorthand.Validate].
 func ParseDurationShorthand(s string) (DurationShorthand, error) {
 	d := new(DurationShorthand)
 	err := d.UnmarshalText([]byte(s))
 	return *d, err
 }
 
-// NewDurationShorthand returns a shorthand with the supplied value and unit
-// without validating them.
+// NewDurationShorthand returns a shorthand with the supplied value and unit without validating them.
 func NewDurationShorthand(value int, unit DurationShorthandUnit) DurationShorthand {
 	return DurationShorthand{
 		unit:  unit,
@@ -25,9 +23,9 @@ func NewDurationShorthand(value int, unit DurationShorthandUnit) DurationShortha
 	}
 }
 
-// DurationShorthand represents a duration as an integer with suffix "m", "h",
-// "d", or "w". This SDK accepts zero and encodes it as empty text. OpenSLO
-// specifies a positive integer.
+// DurationShorthand represents a duration as an integer with suffix "m", "h", "d", or "w".
+// This SDK accepts zero and encodes it as empty text.
+// OpenSLO specifies a positive integer.
 type DurationShorthand struct {
 	unit  DurationShorthandUnit
 	value int
@@ -86,8 +84,7 @@ func (d DurationShorthand) Duration() time.Duration {
 	}
 }
 
-// DurationShorthandUnit identifies a minute, hour, day, or week unit for
-// [DurationShorthand].
+// DurationShorthandUnit identifies a minute, hour, day, or week unit for [DurationShorthand].
 type DurationShorthandUnit string
 
 const (
