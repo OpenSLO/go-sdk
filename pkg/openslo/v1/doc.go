@@ -1,2 +1,2 @@
-// Package v1 contains the OpenSLO specification version v1alpha definitions.
+// Package v1 declares Go representations and validators for OpenSLO v1 objects.
 package v1

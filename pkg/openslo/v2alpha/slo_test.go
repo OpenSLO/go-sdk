@@ -446,6 +446,17 @@ func TestSLO_Validate_Spec_AlertPolicies(t *testing.T) {
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
 			PropertyPath: "spec.alertPolicies[0]",
+			Message:      "[alertPolicyRef, spec] properties are mutually exclusive, provide only one of them",
+			Code:         rules.ErrorCodeMutuallyExclusive,
+		})
+	})
+	t.Run("neither ref nor inline is set", func(t *testing.T) {
+		slo := validRatioSLO()
+		slo.Spec.AlertPolicies[0] = SLOAlertPolicy{}
+		err := slo.Validate()
+		govytest.AssertError(t, err, govytest.ExpectedRuleError{
+			PropertyPath: "spec.alertPolicies[0]",
+			Message:      "one of [alertPolicyRef, spec] properties must be set, none was provided",
 			Code:         rules.ErrorCodeMutuallyExclusive,
 		})
 	})

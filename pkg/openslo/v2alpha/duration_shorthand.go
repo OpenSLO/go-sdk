@@ -8,14 +8,14 @@ import (
 	"github.com/nobl9/govy/pkg/rules"
 )
 
-// ParseDurationShorthand parses a string representation of [DurationShorthand].
+// ParseDurationShorthand parses s into a [DurationShorthand] without calling [DurationShorthand.Validate].
 func ParseDurationShorthand(s string) (DurationShorthand, error) {
 	d := new(DurationShorthand)
 	err := d.UnmarshalText([]byte(s))
 	return *d, err
 }
 
-// NewDurationShorthand creates a new [DurationShorthand] instance.
+// NewDurationShorthand returns a shorthand with the supplied value and unit without validating them.
 func NewDurationShorthand(value int, unit DurationShorthandUnit) DurationShorthand {
 	return DurationShorthand{
 		unit:  unit,
@@ -23,27 +23,19 @@ func NewDurationShorthand(value int, unit DurationShorthandUnit) DurationShortha
 	}
 }
 
-// DurationShorthand is a shorthand representation of time duration.
-// It consists of a value and unit, e.g. '1m' (1 minute), '10d' (10 days).
+// DurationShorthand represents a duration as an integer and a [DurationShorthandUnit], such as "1m" or "10d".
+// A zero value encodes as empty text.
 type DurationShorthand struct {
 	unit  DurationShorthandUnit
 	value int
 }
 
-// GetUnit returns the underlying [DurationShorthandUnit].
-// Example:
-//
-//	duration, _ := ParseDurationShorthand("1w")
-//	duration.GetUnit() -> "w"
+// GetUnit returns the shorthand's [DurationShorthandUnit].
 func (d *DurationShorthand) GetUnit() DurationShorthandUnit {
 	return d.unit
 }
 
-// GetValue returns the underlying duration value.
-// Example:
-//
-//	duration, _ := ParseDurationShorthand("12w")
-//	duration.GetValue() -> "12"
+// GetValue returns the shorthand's integer value.
 func (d *DurationShorthand) GetValue() int {
 	return d.value
 }
@@ -67,7 +59,7 @@ func (d DurationShorthand) MarshalText() ([]byte, error) {
 	return []byte(d.String()), nil
 }
 
-// String implements [fmt.Stringer].
+// String returns the encoded shorthand as required by [fmt.Stringer].
 func (d DurationShorthand) String() string {
 	if d.value == 0 {
 		return ""
@@ -75,7 +67,7 @@ func (d DurationShorthand) String() string {
 	return fmt.Sprintf("%d%s", d.value, d.unit)
 }
 
-// Duration returns the [time.Duration] representation of [DurationShorthand].
+// Duration returns the equivalent [time.Duration] and panics for an unsupported unit.
 func (d DurationShorthand) Duration() time.Duration {
 	switch d.unit {
 	case DurationShorthandUnitMinute:
@@ -91,7 +83,7 @@ func (d DurationShorthand) Duration() time.Duration {
 	}
 }
 
-// DurationShorthandUnit is a unit of [DurationShorthand].
+// DurationShorthandUnit identifies the unit suffix of a [DurationShorthand].
 type DurationShorthandUnit string
 
 const (
@@ -108,7 +100,7 @@ var validDurationUnits = []DurationShorthandUnit{
 	DurationShorthandUnitWeek,
 }
 
-// Validate checks if [DurationShorthand] is correct.
+// Validate returns an error for an invalid duration shorthand.
 func (d DurationShorthand) Validate() error {
 	return durationShortHandValidation.Validate(d)
 }

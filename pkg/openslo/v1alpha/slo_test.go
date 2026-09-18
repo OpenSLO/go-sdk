@@ -144,12 +144,12 @@ func TestSLO_Validate_Spec(t *testing.T) {
 }
 
 func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
-	t.Run("missing timeWindow", func(t *testing.T) {
+	t.Run("missing timeWindows", func(t *testing.T) {
 		slo := validSLO()
 		slo.Spec.TimeWindows = []SLOTimeWindow{}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyPath: "spec.timeWindow",
+			PropertyPath: "spec.timeWindows",
 			Code:         rules.ErrorCodeSliceLength,
 		})
 	})
@@ -161,7 +161,7 @@ func TestSLO_Validate_Spec_TimeWindows(t *testing.T) {
 		}
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{
-			PropertyPath: "spec.timeWindow",
+			PropertyPath: "spec.timeWindows",
 			Code:         rules.ErrorCodeSliceLength,
 		})
 	})
@@ -200,8 +200,14 @@ func TestSLO_Validate_Spec_Objectives(t *testing.T) {
 			Code:         rules.ErrorCodeRequired,
 		})
 	})
-	t.Run("value is missing", func(t *testing.T) {
+	t.Run("ratioMetrics - value missing", func(t *testing.T) {
 		slo := validSLO()
+		slo.Spec.Objectives[0].Value = nil
+		err := slo.Validate()
+		govytest.AssertNoError(t, err)
+	})
+	t.Run("threshold - value missing", func(t *testing.T) {
+		slo := validThresholdSLO()
 		slo.Spec.Objectives[0].Value = nil
 		err := slo.Validate()
 		govytest.AssertError(t, err, govytest.ExpectedRuleError{

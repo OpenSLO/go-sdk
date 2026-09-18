@@ -18,6 +18,7 @@ const (
 	KindAlertNotificationTarget Kind = "AlertNotificationTarget"
 )
 
+// ParseKind parses and validates an OpenSLO object kind.
 func ParseKind(s string) (Kind, error) {
 	kind := Kind(s)
 	if err := kind.Validate(); err != nil {
@@ -26,10 +27,12 @@ func ParseKind(s string) (Kind, error) {
 	return kind, nil
 }
 
+// String returns the serialized object kind.
 func (k Kind) String() string {
 	return string(k)
 }
 
+// Validate returns an error if k is not a supported object kind.
 func (k Kind) Validate() error {
 	switch k {
 	case KindSLO,

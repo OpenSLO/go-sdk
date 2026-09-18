@@ -23,8 +23,9 @@ func NewDurationShorthand(value int, unit DurationShorthandUnit) DurationShortha
 	}
 }
 
-// DurationShorthand is a shorthand representation of time duration.
-// It consists of a value and unit, e.g. '1m' (1 minute), '10d' (10 days).
+// DurationShorthand represents a duration as an integer and a case-sensitive [DurationShorthandUnit],
+// such as "1m" or "10d".
+// A zero value encodes as empty text.
 type DurationShorthand struct {
 	unit  DurationShorthandUnit
 	value int
@@ -34,7 +35,7 @@ type DurationShorthand struct {
 // Example:
 //
 //	duration, _ := ParseDurationShorthand("1w")
-//	duration.GetUnit() -> "w"
+//	duration.GetUnit() // "w"
 func (d *DurationShorthand) GetUnit() DurationShorthandUnit {
 	return d.unit
 }
@@ -43,7 +44,7 @@ func (d *DurationShorthand) GetUnit() DurationShorthandUnit {
 // Example:
 //
 //	duration, _ := ParseDurationShorthand("12w")
-//	duration.GetValue() -> "12"
+//	duration.GetValue() // 12
 func (d *DurationShorthand) GetValue() int {
 	return d.value
 }
@@ -97,7 +98,7 @@ func (d DurationShorthand) Duration() time.Duration {
 	}
 }
 
-// DurationShorthandUnit is a unit of [DurationShorthand].
+// DurationShorthandUnit identifies the case-sensitive unit suffix of a [DurationShorthand].
 type DurationShorthandUnit string
 
 const (
@@ -120,7 +121,7 @@ var validDurationUnits = []DurationShorthandUnit{
 	DurationShorthandUnitYear,
 }
 
-// Validate checks if [DurationShorthand] is correct.
+// Validate returns an error for an invalid duration shorthand.
 func (d DurationShorthand) Validate() error {
 	return durationShortHandValidation.Validate(d)
 }
