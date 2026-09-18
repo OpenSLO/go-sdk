@@ -36,13 +36,12 @@ type Object interface {
 }
 
 // Metadata is the Kubernetes-style identifying metadata used by v2alpha objects.
-// It contains a name and optional labels and annotations.
 type Metadata struct {
 	// Name identifies the object when other OpenSLO objects refer to it.
 	Name string `json:"name"`
-	// Labels optionally classifies the object with Kubernetes-style, single-valued labels.
+	// Labels classifies the object with Kubernetes-style, single-valued labels.
 	Labels Labels `json:"labels,omitempty"`
-	// Annotations optionally attaches non-identifying metadata with qualified keys.
+	// Annotations attaches non-identifying metadata to the object.
 	Annotations Annotations `json:"annotations,omitempty"`
 }
 

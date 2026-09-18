@@ -71,7 +71,7 @@ func (a AlertPolicy) GetValidator() govy.Validator[AlertPolicy] {
 // AlertPolicySpec defines the trigger states, condition, and notification destinations for an [AlertPolicy].
 // The trigger flags are independent and have a false zero value.
 // JSON encoding omits false values.
-// This SDK applies no omission default and accepts all three flags as false.
+// This SDK applies no omission default.
 type AlertPolicySpec struct {
 	// Description summarizes the alert policy.
 	Description string `json:"description,omitempty"`
@@ -81,15 +81,14 @@ type AlertPolicySpec struct {
 	AlertWhenBreaching bool `json:"alertWhenBreaching,omitempty"`
 	// AlertWhenResolved controls whether a resolved condition triggers an alert.
 	AlertWhenResolved bool `json:"alertWhenResolved,omitempty"`
-	// Conditions contains exactly one alert condition, specified inline or by reference.
+	// Conditions contains alert conditions specified inline or by reference.
 	Conditions []AlertPolicyCondition `json:"conditions,omitempty"`
-	// NotificationTargets contains one or more delivery destinations.
+	// NotificationTargets contains delivery destinations.
 	// Specify each destination inline or by reference.
 	NotificationTargets []AlertPolicyNotificationTarget `json:"notificationTargets,omitempty"`
 }
 
-// AlertPolicyCondition supplies exactly one condition to an [AlertPolicy].
-// Set either the reference or the inline definition.
+// AlertPolicyCondition supplies an inline or referenced alert condition to an [AlertPolicy].
 type AlertPolicyCondition struct {
 	*AlertPolicyConditionRef
 	*AlertPolicyConditionInline
@@ -109,8 +108,7 @@ type AlertPolicyConditionRef struct {
 	ConditionRef string `json:"conditionRef"`
 }
 
-// AlertPolicyNotificationTarget supplies exactly one notification destination to an [AlertPolicy].
-// Set either the reference or the inline definition.
+// AlertPolicyNotificationTarget supplies an inline or referenced notification target to an [AlertPolicy].
 type AlertPolicyNotificationTarget struct {
 	*AlertPolicyNotificationTargetRef
 	*AlertPolicyNotificationTargetInline

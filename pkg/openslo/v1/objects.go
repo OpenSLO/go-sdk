@@ -41,13 +41,13 @@ type Metadata struct {
 	Name string `json:"name"`
 	// DisplayName is the object's human-readable name.
 	DisplayName string `json:"displayName,omitempty"`
-	// Labels contains optional metadata associated with the object.
+	// Labels contains metadata associated with the object.
 	Labels Labels `json:"labels,omitempty"`
 	// Annotations contains implementation- or system-specific metadata.
 	Annotations Annotations `json:"annotations,omitempty"`
 }
 
-// Labels maps each metadata key to zero or more values.
+// Labels maps each metadata key to a set of values.
 // JSON decoding accepts each map value as a string or an array of strings.
 type Labels map[string]Label
 

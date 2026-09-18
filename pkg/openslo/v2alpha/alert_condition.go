@@ -81,7 +81,6 @@ type AlertConditionSpec struct {
 // Burn rate is error-budget consumption relative to the rate allowed by the SLO.
 type AlertConditionType struct {
 	// Kind selects the condition algorithm.
-	// This SDK requires Kind.
 	Kind AlertConditionKind `json:"kind"`
 	// Operator compares the calculated burn rate with Threshold.
 	Operator Operator `json:"op"`
@@ -90,7 +89,6 @@ type AlertConditionType struct {
 	// LookbackWindow sets the period for burn-rate calculation.
 	LookbackWindow DurationShorthand `json:"lookbackWindow"`
 	// AlertAfter sets how long the burn-rate comparison must remain true before the condition becomes breaching.
-	// This SDK requires AlertAfter.
 	AlertAfter DurationShorthand `json:"alertAfter"`
 }
 

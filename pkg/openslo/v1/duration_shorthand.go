@@ -25,8 +25,7 @@ func NewDurationShorthand(value int, unit DurationShorthandUnit) DurationShortha
 
 // DurationShorthand represents a duration as an integer and a case-sensitive [DurationShorthandUnit],
 // such as "1m" or "10d".
-// This SDK accepts zero and encodes it as empty text.
-// OpenSLO specifies a positive integer.
+// A zero value encodes as empty text.
 type DurationShorthand struct {
 	unit  DurationShorthandUnit
 	value int

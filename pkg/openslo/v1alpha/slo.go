@@ -73,14 +73,13 @@ func (s SLO) GetValidator() govy.Validator[SLO] {
 
 // SLOSpec defines the service, indicator, objectives, time window, and error-budget calculation for an [SLO].
 type SLOSpec struct {
-	// TimeWindows contains exactly one SLO evaluation window.
+	// TimeWindows defines the period over which the SLO is evaluated.
 	TimeWindows []SLOTimeWindow `json:"timeWindows"`
 	// BudgetingMethod applies the selected error-budget calculation to every objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
-	// Description is an optional summary of the SLO.
+	// Description summarizes the SLO.
 	Description string `json:"description,omitempty"`
 	// Indicator defines the threshold-metric form of the SLO.
-	// It must be nil for the ratio form.
 	Indicator *SLOIndicator `json:"indicator"`
 	// Service is the metadata name of the [Service] whose reliability the SLO measures.
 	Service string `json:"service"`
@@ -152,8 +151,6 @@ type SLORatioMetrics struct {
 
 // SLOTimeWindow defines the period over which an SLO is evaluated.
 // For example, a Unit of Week and a Count of 4 define a four-week window.
-// A rolling window requires IsRolling to be true and Calendar to be nil.
-// A calendar-aligned window requires IsRolling to be false and Calendar to be non-nil.
 type SLOTimeWindow struct {
 	// Unit combines with Count to set the window length.
 	Unit SLOTimeWindowUnit `json:"unit"`
@@ -161,8 +158,7 @@ type SLOTimeWindow struct {
 	Count int `json:"count"`
 	// IsRolling selects a continuously advancing window when true and a calendar-aligned window when false.
 	IsRolling bool `json:"isRolling"`
-	// Calendar defines the alignment when IsRolling is false.
-	// It must be nil when IsRolling is true.
+	// Calendar defines the alignment of a calendar window.
 	Calendar *SLOCalendar `json:"calendar,omitempty"`
 }
 
@@ -187,9 +183,9 @@ var validSLOTimeWindowUnits = []SLOTimeWindowUnit{
 
 // SLOCalendar anchors a calendar-aligned [SLOTimeWindow].
 type SLOCalendar struct {
-	// StartTime is the local anchor in YYYY-MM-DD HH:MM:SS format, for example 2026-07-25 14:30:00.
+	// StartTime anchors the first calendar window.
 	StartTime string `json:"startTime"`
-	// TimeZone is the IANA time-zone name used to interpret StartTime.
+	// TimeZone controls the interpretation of StartTime and later boundaries.
 	TimeZone string `json:"timeZone"`
 }
 

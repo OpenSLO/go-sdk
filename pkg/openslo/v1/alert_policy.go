@@ -72,7 +72,7 @@ func (a AlertPolicy) GetValidator() govy.Validator[AlertPolicy] {
 // AlertPolicySpec defines which condition states trigger an SLO alert
 // and where the consuming system delivers the resulting notifications.
 // The trigger fields have a false zero value.
-// JSON encoding omits false values, and this SDK accepts all three fields as false.
+// JSON encoding omits false values.
 type AlertPolicySpec struct {
 	// Description summarizes the alert policy.
 	Description string `json:"description,omitempty"`
@@ -82,15 +82,14 @@ type AlertPolicySpec struct {
 	AlertWhenBreaching bool `json:"alertWhenBreaching,omitempty"`
 	// AlertWhenResolved reports whether to trigger an alert when the condition resolves.
 	AlertWhenResolved bool `json:"alertWhenResolved,omitempty"`
-	// Conditions contains exactly one alert condition, specified inline or by reference.
+	// Conditions contains alert conditions specified inline or by reference.
 	Conditions []AlertPolicyCondition `json:"conditions,omitempty"`
-	// NotificationTargets contains one or more notification destinations.
+	// NotificationTargets contains notification destinations.
 	// Specify each destination inline or by reference.
 	NotificationTargets []AlertPolicyNotificationTarget `json:"notificationTargets,omitempty"`
 }
 
-// AlertPolicyCondition supplies exactly one alert condition representation to an [AlertPolicySpec].
-// Set [AlertPolicyConditionInline] or [AlertPolicyConditionRef], but not both.
+// AlertPolicyCondition supplies an inline or referenced alert condition to an [AlertPolicySpec].
 type AlertPolicyCondition struct {
 	*AlertPolicyConditionRef
 	*AlertPolicyConditionInline
@@ -110,8 +109,7 @@ type AlertPolicyConditionRef struct {
 	ConditionRef string `json:"conditionRef"`
 }
 
-// AlertPolicyNotificationTarget supplies exactly one notification-target representation to an [AlertPolicySpec].
-// Set [AlertPolicyNotificationTargetInline] or [AlertPolicyNotificationTargetRef], but not both.
+// AlertPolicyNotificationTarget supplies an inline or referenced notification target to an [AlertPolicySpec].
 type AlertPolicyNotificationTarget struct {
 	*AlertPolicyNotificationTargetRef
 	*AlertPolicyNotificationTargetInline

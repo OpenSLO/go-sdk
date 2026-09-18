@@ -91,14 +91,11 @@ type SLOSpec struct {
 	SLIRef *string `json:"sliRef,omitempty"`
 	// BudgetingMethod applies the selected error-budget calculation to every objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
-	// TimeWindow contains exactly one SLO evaluation window.
+	// TimeWindow defines the period over which the SLO is evaluated.
 	TimeWindow []SLOTimeWindow `json:"timeWindow,omitempty"`
 	// Objectives contains the SLO's budget targets and metric thresholds.
-	// V2alpha permits multiple objectives for a threshold-metric SLO.
-	// This SDK accepts an omitted Objectives field.
 	Objectives []SLOObjective `json:"objectives"`
-	// AlertPolicies contains policies associated with the SLO.
-	// Each item must specify exactly one inline definition or metadata-name reference.
+	// AlertPolicies contains inline alert policies or references to existing [AlertPolicy] objects.
 	AlertPolicies []SLOAlertPolicy `json:"alertPolicies,omitempty"`
 }
 
@@ -139,11 +136,6 @@ type SLOSLIInline struct {
 
 // SLOObjective defines one error-budget target and, for a threshold SLI, its metric comparison.
 // The living v2alpha proposal also defines objective labels, which this SDK does not model.
-//
-// For a standard SLO with an inline threshold SLI,
-// validation requires [SLOObjective.Operator] and [SLOObjective.Value].
-// For a standard SLO with an inline ratio SLI, validation forbids them.
-// The SDK does not apply these metric-type rules to referenced SLIs or to SLIs embedded in composite objectives.
 type SLOObjective struct {
 	// DisplayName is a human-readable name for this objective.
 	// It is not part of the enclosing object's [Metadata].
@@ -168,14 +160,11 @@ type SLOObjective struct {
 	// SLIRef names this objective's existing [SLI] for a composite SLO.
 	SLIRef *string `json:"sliRef,omitempty"`
 	// CompositeWeight scales this objective's contribution to a composite SLO.
-	// The living v2alpha proposal permits it only with multiple objectives and defaults it to 1.
-	// This SDK does not enforce the objective-count restriction and preserves an omitted value as nil.
+	// The living v2alpha proposal defaults it to 1, but this SDK preserves an omitted value as nil.
 	CompositeWeight *float64 `json:"compositeWeight,omitempty"`
 }
 
 // SLOTimeWindow describes one rolling or calendar-aligned evaluation window.
-// If [SLOTimeWindow.IsRolling] is true, [SLOTimeWindow.Calendar] must be nil.
-// If IsRolling is false, Calendar must be non-nil.
 type SLOTimeWindow struct {
 	// Duration is the length of the evaluation window.
 	Duration DurationShorthand `json:"duration"`
@@ -193,7 +182,7 @@ type SLOCalendar struct {
 	TimeZone string `json:"timeZone"`
 }
 
-// SLOAlertPolicy associates exactly one inline or referenced alert policy with an [SLO].
+// SLOAlertPolicy associates an inline or referenced alert policy with an [SLO].
 type SLOAlertPolicy struct {
 	*SLOAlertPolicyInline
 	*SLOAlertPolicyRef
@@ -398,8 +387,7 @@ var sloCompositeObjectiveValidation = govy.New(
 		Rules(rules.GT(0.0)),
 )
 
-// Since operator and value are only required when using threshold metric SLI
-// we have no way of checking it if the SLI is only referenced and not inlined.
+// Referenced SLIs do not expose their metric type here.
 var sloThresholdObjectiveValidationWhenInlinedSLI = govy.New(
 	govy.ForPointer(func(s SLOObjective) *float64 { return s.Value }).
 		WithName("value").

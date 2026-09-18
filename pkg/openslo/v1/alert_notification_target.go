@@ -69,7 +69,7 @@ func (a AlertNotificationTarget) GetValidator() govy.Validator[AlertNotification
 
 // AlertNotificationTargetSpec defines an implementation-specific notification destination.
 type AlertNotificationTargetSpec struct {
-	// Description optionally describes the notification target.
+	// Description summarizes the notification target.
 	Description string `json:"description,omitempty"`
 	// Target specifies the notification destination in the format required by the consuming implementation.
 	// Examples include email, Slack, a webhook, and Opsgenie.

@@ -5,8 +5,6 @@
 // The metadata has one value per label and no display name.
 // SLO indicator fields use the names "sli" and "sliRef".
 // Metric source fields are "dataSourceRef", "dataSourceSpec", and "spec".
-// Durations support minutes, hours, days, and weeks.
-// Threshold-metric SLOs can have multiple objectives.
 //
 // The proposal also describes labels on individual SLO objectives,
 // but [SLOObjective] does not expose an objective-label field.

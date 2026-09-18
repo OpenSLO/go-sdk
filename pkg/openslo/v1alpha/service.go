@@ -70,7 +70,7 @@ func (s Service) GetValidator() govy.Validator[Service] {
 
 // ServiceSpec contains the descriptive properties of a [Service].
 type ServiceSpec struct {
-	// Description is an optional summary of the service.
+	// Description summarizes the service.
 	Description string `json:"description,omitempty"`
 }
 

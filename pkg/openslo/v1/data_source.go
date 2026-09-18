@@ -27,8 +27,8 @@ func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 
 // DataSource represents reusable connection details for a metric source.
 // [SLIMetricSource.MetricSourceRef] selects it by [Metadata.Name].
-// A referenced metric source can omit [SLIMetricSource.Type] and keep connection details,
-// such as authentication settings, outside the [SLI].
+// A referenced metric source keeps connection details outside the [SLI].
+// These can include authentication settings.
 // An SLI can instead define an inline metric source with [SLIMetricSource.Type] and [SLIMetricSource.Spec].
 type DataSource struct {
 	APIVersion openslo.Version `json:"apiVersion"`

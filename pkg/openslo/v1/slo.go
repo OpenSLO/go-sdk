@@ -91,11 +91,9 @@ type SLOSpec struct {
 	IndicatorRef *string `json:"indicatorRef,omitempty"`
 	// BudgetingMethod applies the selected error-budget calculation to every objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
-	// TimeWindow contains exactly one evaluation window.
-	// OpenSLO makes this field optional, but this SDK requires one item.
+	// TimeWindow defines the period over which the SLO is evaluated.
 	TimeWindow []SLOTimeWindow `json:"timeWindow,omitempty"`
 	// Objectives contains the SLO's target definitions.
-	// OpenSLO requires this field, but this SDK accepts decoded input that omits it.
 	Objectives []SLOObjective `json:"objectives"`
 	// AlertPolicies contains inline alert policies or references to existing [AlertPolicy] objects.
 	AlertPolicies []SLOAlertPolicy `json:"alertPolicies,omitempty"`
@@ -174,14 +172,11 @@ type SLOObjective struct {
 	// IndicatorRef names this objective's [SLI] for a composite SLO.
 	IndicatorRef *string `json:"indicatorRef,omitempty"`
 	// CompositeWeight scales this objective's contribution to a composite SLO.
-	// OpenSLO permits it only with multiple objectives and defaults it to 1.
-	// This SDK does not enforce the objective-count restriction and preserves an omitted value as nil.
+	// OpenSLO defaults it to 1, but this SDK preserves an omitted value as nil.
 	CompositeWeight *float64 `json:"compositeWeight,omitempty"`
 }
 
 // SLOTimeWindow defines one rolling or calendar-aligned evaluation window.
-// A rolling window requires [SLOTimeWindow.IsRolling] to be true and [SLOTimeWindow.Calendar] to be nil.
-// A calendar-aligned window requires IsRolling to be false and Calendar to be non-nil.
 type SLOTimeWindow struct {
 	// Duration is the length of the evaluation window.
 	Duration DurationShorthand `json:"duration"`
@@ -199,8 +194,7 @@ type SLOCalendar struct {
 	TimeZone string `json:"timeZone"`
 }
 
-// SLOAlertPolicy supplies exactly one alert policy representation to an [SLO].
-// Set [SLOAlertPolicyInline] or [SLOAlertPolicyRef], but not both.
+// SLOAlertPolicy supplies an inline or referenced alert policy to an [SLO].
 type SLOAlertPolicy struct {
 	*SLOAlertPolicyInline
 	*SLOAlertPolicyRef
@@ -393,8 +387,7 @@ var sloObjectiveValidation = govy.New(
 		Rules(rules.GTE(0.0), rules.LT(100.0)),
 )
 
-// Since operator and value are only required when using threshold metric SLI
-// we have no way of checking it if the SLI is only referenced and not inlined.
+// Referenced SLIs do not expose their metric type here.
 var sloThresholdObjectiveValidationWhenInlinedSLI = govy.New(
 	govy.ForPointer(func(s SLOObjective) *float64 { return s.Value }).
 		WithName("value").

@@ -107,9 +107,7 @@ type SLIMetricSource struct {
 	// MetricSourceRef names an existing [DataSource].
 	MetricSourceRef string `json:"metricSourceRef,omitempty"`
 	// Type identifies the implementation-defined metric-source type.
-	// OpenSLO requires Type when [SLIMetricSource.MetricSourceRef] is omitted.
-	// Otherwise, OpenSLO infers Type from the referenced [DataSource].
-	// This SDK does not validate the requirement.
+	// When [SLIMetricSource.MetricSourceRef] is set, OpenSLO infers Type from the referenced [DataSource].
 	Type string `json:"type,omitempty"`
 	// Spec contains source-specific query or metric-retrieval configuration.
 	Spec map[string]any `json:"spec"`

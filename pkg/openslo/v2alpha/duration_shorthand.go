@@ -23,9 +23,8 @@ func NewDurationShorthand(value int, unit DurationShorthandUnit) DurationShortha
 	}
 }
 
-// DurationShorthand represents a duration as an integer with suffix "m", "h", "d", or "w".
-// This SDK accepts zero and encodes it as empty text.
-// OpenSLO specifies a positive integer.
+// DurationShorthand represents a duration as an integer and a [DurationShorthandUnit], such as "1m" or "10d".
+// A zero value encodes as empty text.
 type DurationShorthand struct {
 	unit  DurationShorthandUnit
 	value int
@@ -84,7 +83,7 @@ func (d DurationShorthand) Duration() time.Duration {
 	}
 }
 
-// DurationShorthandUnit identifies a minute, hour, day, or week unit for [DurationShorthand].
+// DurationShorthandUnit identifies the unit suffix of a [DurationShorthand].
 type DurationShorthandUnit string
 
 const (
