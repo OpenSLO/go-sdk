@@ -69,10 +69,10 @@ func (s SLI) GetValidator() govy.Validator[SLI] {
 
 // SLISpec defines the query or queries used to calculate an [SLI].
 type SLISpec struct {
-	// Description optionally summarizes the indicator in at most 1,050 characters.
+	// Description summarizes the indicator.
 	Description string `json:"description,omitempty"`
-	// ThresholdMetric defines a query that returns values for comparison
-	// with [SLOObjective.Value] by [SLOObjective.Operator].
+	// ThresholdMetric defines a query that returns raw values.
+	// [SLOObjective.Operator] compares each value with [SLOObjective.Value].
 	ThresholdMetric *SLIMetricSpec `json:"thresholdMetric,omitempty"`
 	// RatioMetric defines component queries or a precomputed ratio for an SLO objective.
 	RatioMetric *SLIRatioMetric `json:"ratioMetric,omitempty"`

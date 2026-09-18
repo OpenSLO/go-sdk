@@ -79,7 +79,7 @@ func (s SLO) GetValidator() govy.Validator[SLO] {
 // A standard SLO applies one SLI to all objectives.
 // A composite SLO can select a different SLI per objective.
 type SLOSpec struct {
-	// Description optionally summarizes the SLO in at most 1,050 characters.
+	// Description summarizes the SLO.
 	Description string `json:"description,omitempty"`
 	// ServiceRef names the service associated with this SLO.
 	// The SDK serializes the field as "serviceRef".

@@ -403,7 +403,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the alert condition in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the alert condition."
         }
       ]
     },
@@ -663,7 +663,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the target in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the target."
         },
         {
           "path": "$.spec.target",
@@ -937,7 +937,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the alert policy in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the alert policy."
         },
         {
           "path": "$.spec.alertWhenNoData",
@@ -1393,7 +1393,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the alert condition in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the alert condition."
         },
         {
           "path": "$.spec.notificationTargets",
@@ -1678,7 +1678,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the target in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the target."
         },
         {
           "path": "$.spec.notificationTargets[*].spec.target",
@@ -1953,7 +1953,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.type",
@@ -2243,7 +2243,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the indicator in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the indicator."
         },
         {
           "path": "$.spec.thresholdMetric",
@@ -2263,7 +2263,7 @@
             }
           ],
           "typeDoc": "SLIMetricSpec supplies an implementation-defined query in the v2alpha flattened layout.",
-          "fieldDoc": "ThresholdMetric defines a query that returns values for comparison with [SLOObjective.Value](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Value) by [SLOObjective.Operator](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Operator).",
+          "fieldDoc": "ThresholdMetric defines a query that returns raw values. [SLOObjective.Operator](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Operator) compares each value with [SLOObjective.Value](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Value).",
           "childrenPaths": [
             "$.spec.thresholdMetric.dataSourceRef",
             "$.spec.thresholdMetric.dataSourceSpec",
@@ -2334,7 +2334,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.thresholdMetric.dataSourceSpec.type",
@@ -2527,7 +2527,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.ratioMetric.good.dataSourceSpec.type",
@@ -2673,7 +2673,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.ratioMetric.bad.dataSourceSpec.type",
@@ -2819,7 +2819,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.ratioMetric.total.dataSourceSpec.type",
@@ -2995,7 +2995,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.ratioMetric.raw.dataSourceSpec.type",
@@ -3330,7 +3330,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the SLO in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the SLO."
         },
         {
           "path": "$.spec.serviceRef",
@@ -3606,7 +3606,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the indicator in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the indicator."
         },
         {
           "path": "$.spec.sli.spec.thresholdMetric",
@@ -3632,7 +3632,7 @@
             }
           ],
           "typeDoc": "SLIMetricSpec supplies an implementation-defined query in the v2alpha flattened layout.",
-          "fieldDoc": "ThresholdMetric defines a query that returns values for comparison with [SLOObjective.Value](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Value) by [SLOObjective.Operator](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Operator).",
+          "fieldDoc": "ThresholdMetric defines a query that returns raw values. [SLOObjective.Operator](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Operator) compares each value with [SLOObjective.Value](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Value).",
           "childrenPaths": [
             "$.spec.sli.spec.thresholdMetric.dataSourceRef",
             "$.spec.sli.spec.thresholdMetric.dataSourceSpec",
@@ -3721,7 +3721,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.sli.spec.thresholdMetric.dataSourceSpec.type",
@@ -3954,7 +3954,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.sli.spec.ratioMetric.good.dataSourceSpec.type",
@@ -4130,7 +4130,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.sli.spec.ratioMetric.bad.dataSourceSpec.type",
@@ -4306,7 +4306,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.sli.spec.ratioMetric.total.dataSourceSpec.type",
@@ -4514,7 +4514,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.sli.spec.ratioMetric.raw.dataSourceSpec.type",
@@ -5241,7 +5241,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the indicator in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the indicator."
         },
         {
           "path": "$.spec.objectives[*].sli.spec.thresholdMetric",
@@ -5269,7 +5269,7 @@
             }
           ],
           "typeDoc": "SLIMetricSpec supplies an implementation-defined query in the v2alpha flattened layout.",
-          "fieldDoc": "ThresholdMetric defines a query that returns values for comparison with [SLOObjective.Value](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Value) by [SLOObjective.Operator](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Operator).",
+          "fieldDoc": "ThresholdMetric defines a query that returns raw values. [SLOObjective.Operator](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Operator) compares each value with [SLOObjective.Value](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v2alpha#SLOObjective.Value).",
           "childrenPaths": [
             "$.spec.objectives[*].sli.spec.thresholdMetric.dataSourceRef",
             "$.spec.objectives[*].sli.spec.thresholdMetric.dataSourceSpec",
@@ -5364,7 +5364,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.objectives[*].sli.spec.thresholdMetric.dataSourceSpec.type",
@@ -5611,7 +5611,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.objectives[*].sli.spec.ratioMetric.good.dataSourceSpec.type",
@@ -5797,7 +5797,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.objectives[*].sli.spec.ratioMetric.bad.dataSourceSpec.type",
@@ -5983,7 +5983,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.objectives[*].sli.spec.ratioMetric.total.dataSourceSpec.type",
@@ -6203,7 +6203,7 @@
               ]
             }
           ],
-          "fieldDoc": "Description optionally summarizes the data source in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the data source."
         },
         {
           "path": "$.spec.objectives[*].sli.spec.ratioMetric.raw.dataSourceSpec.type",
@@ -6587,7 +6587,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the alert policy in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the alert policy."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.alertWhenNoData",
@@ -7043,7 +7043,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the alert condition in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the alert condition."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.notificationTargets",
@@ -7328,7 +7328,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the target in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the target."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.notificationTargets[*].spec.target",
@@ -7622,7 +7622,7 @@
               "errorCode": "string_max_length"
             }
           ],
-          "fieldDoc": "Description optionally summarizes the service in at most 1,050 characters."
+          "fieldDoc": "Description summarizes the service."
         }
       ]
     }
@@ -8580,7 +8580,7 @@
             "name": "bool",
             "kind": "bool"
           },
-          "fieldDoc": "AlertWhenNoData reports whether to trigger an alert when the associated [SLO](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLO) has no burn-rate value. Its zero value is false."
+          "fieldDoc": "AlertWhenNoData reports whether to trigger an alert when the associated [SLO](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLO) has no burn-rate value."
         },
         {
           "path": "$.spec.alertWhenBreaching",
@@ -8588,7 +8588,7 @@
             "name": "bool",
             "kind": "bool"
           },
-          "fieldDoc": "AlertWhenBreaching reports whether to trigger an alert when the condition is breaching. Its zero value is false."
+          "fieldDoc": "AlertWhenBreaching reports whether to trigger an alert when the condition is breaching."
         },
         {
           "path": "$.spec.alertWhenResolved",
@@ -8596,7 +8596,7 @@
             "name": "bool",
             "kind": "bool"
           },
-          "fieldDoc": "AlertWhenResolved reports whether to trigger an alert when the condition resolves. Its zero value is false."
+          "fieldDoc": "AlertWhenResolved reports whether to trigger an alert when the condition resolves."
         },
         {
           "path": "$.spec.conditions",
@@ -12351,7 +12351,7 @@
             }
           ],
           "typeDoc": "DurationShorthand represents a duration as an integer and a case-sensitive [DurationShorthandUnit](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#DurationShorthandUnit), such as \"1m\" or \"10d\". This SDK accepts zero and encodes it as empty text. OpenSLO specifies a positive integer.",
-          "fieldDoc": "TimeSliceWindow sets the slice size and query interval for [SLOBudgetingMethodTimeslices](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLOBudgetingMethodTimeslices) and [SLOBudgetingMethodRatioTimeslices](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLOBudgetingMethodRatioTimeslices). This Go model supports [DurationShorthand](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#DurationShorthand) only. OpenSLO also permits a number, which it interprets as minutes."
+          "fieldDoc": "TimeSliceWindow sets the slice size and query interval. It applies to [SLOBudgetingMethodTimeslices](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLOBudgetingMethodTimeslices) and [SLOBudgetingMethodRatioTimeslices](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLOBudgetingMethodRatioTimeslices). This Go model supports [DurationShorthand](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#DurationShorthand) only. OpenSLO also permits a number, which it interprets as minutes."
         },
         {
           "path": "$.spec.objectives[*].indicator",
@@ -13791,7 +13791,7 @@
             "name": "bool",
             "kind": "bool"
           },
-          "fieldDoc": "AlertWhenNoData reports whether to trigger an alert when the associated [SLO](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLO) has no burn-rate value. Its zero value is false."
+          "fieldDoc": "AlertWhenNoData reports whether to trigger an alert when the associated [SLO](https://pkg.go.dev/github.com/OpenSLO/go-sdk/pkg/openslo/v1#SLO) has no burn-rate value."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.alertWhenBreaching",
@@ -13799,7 +13799,7 @@
             "name": "bool",
             "kind": "bool"
           },
-          "fieldDoc": "AlertWhenBreaching reports whether to trigger an alert when the condition is breaching. Its zero value is false."
+          "fieldDoc": "AlertWhenBreaching reports whether to trigger an alert when the condition is breaching."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.alertWhenResolved",
@@ -13807,7 +13807,7 @@
             "name": "bool",
             "kind": "bool"
           },
-          "fieldDoc": "AlertWhenResolved reports whether to trigger an alert when the condition resolves. Its zero value is false."
+          "fieldDoc": "AlertWhenResolved reports whether to trigger an alert when the condition resolves."
         },
         {
           "path": "$.spec.alertPolicies[*].spec.conditions",

@@ -73,7 +73,7 @@ type AlertConditionSpec struct {
 	// Severity is a consumer-defined alert classification.
 	Severity  string             `json:"severity"`
 	Condition AlertConditionType `json:"condition"`
-	// Description optionally summarizes the alert condition in at most 1,050 characters.
+	// Description summarizes the alert condition.
 	Description string `json:"description,omitempty"`
 }
 

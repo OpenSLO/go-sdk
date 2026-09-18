@@ -103,20 +103,13 @@ func (d DurationShorthand) Duration() time.Duration {
 type DurationShorthandUnit string
 
 const (
-	// DurationShorthandUnitMinute represents minutes.
-	DurationShorthandUnitMinute DurationShorthandUnit = "m"
-	// DurationShorthandUnitHour represents hours.
-	DurationShorthandUnitHour DurationShorthandUnit = "h"
-	// DurationShorthandUnitDay represents days.
-	DurationShorthandUnitDay DurationShorthandUnit = "d"
-	// DurationShorthandUnitWeek represents weeks.
-	DurationShorthandUnitWeek DurationShorthandUnit = "w"
-	// DurationShorthandUnitMonth represents months.
-	DurationShorthandUnitMonth DurationShorthandUnit = "M"
-	// DurationShorthandUnitQuarter represents quarters.
+	DurationShorthandUnitMinute  DurationShorthandUnit = "m"
+	DurationShorthandUnitHour    DurationShorthandUnit = "h"
+	DurationShorthandUnitDay     DurationShorthandUnit = "d"
+	DurationShorthandUnitWeek    DurationShorthandUnit = "w"
+	DurationShorthandUnitMonth   DurationShorthandUnit = "M"
 	DurationShorthandUnitQuarter DurationShorthandUnit = "Q"
-	// DurationShorthandUnitYear represents years.
-	DurationShorthandUnitYear DurationShorthandUnit = "Y"
+	DurationShorthandUnitYear    DurationShorthandUnit = "Y"
 )
 
 var validDurationUnits = []DurationShorthandUnit{

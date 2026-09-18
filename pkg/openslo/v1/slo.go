@@ -164,8 +164,8 @@ type SLOObjective struct {
 	TargetPercent *float64 `json:"targetPercent,omitempty"`
 	// TimeSliceTarget classifies a slice as good when BudgetingMethod is [SLOBudgetingMethodTimeslices].
 	TimeSliceTarget *float64 `json:"timeSliceTarget,omitempty"`
-	// TimeSliceWindow sets the slice size and query interval
-	// for [SLOBudgetingMethodTimeslices] and [SLOBudgetingMethodRatioTimeslices].
+	// TimeSliceWindow sets the slice size and query interval.
+	// It applies to [SLOBudgetingMethodTimeslices] and [SLOBudgetingMethodRatioTimeslices].
 	// This Go model supports [DurationShorthand] only.
 	// OpenSLO also permits a number, which it interprets as minutes.
 	TimeSliceWindow *DurationShorthand `json:"timeSliceWindow,omitempty"`

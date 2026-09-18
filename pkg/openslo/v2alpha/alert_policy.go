@@ -73,7 +73,7 @@ func (a AlertPolicy) GetValidator() govy.Validator[AlertPolicy] {
 // JSON encoding omits false values.
 // This SDK applies no omission default and accepts all three flags as false.
 type AlertPolicySpec struct {
-	// Description optionally summarizes the alert policy in at most 1,050 characters.
+	// Description summarizes the alert policy.
 	Description string `json:"description,omitempty"`
 	// AlertWhenNoData controls whether a missing burn-rate value triggers an alert.
 	AlertWhenNoData bool `json:"alertWhenNoData,omitempty"`

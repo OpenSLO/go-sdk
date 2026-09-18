@@ -72,7 +72,7 @@ func (s Service) GetValidator() govy.Validator[Service] {
 
 // ServiceSpec defines the descriptive attributes of a [Service].
 type ServiceSpec struct {
-	// Description optionally summarizes the service in at most 1,050 characters.
+	// Description summarizes the service.
 	Description string `json:"description,omitempty"`
 }
 

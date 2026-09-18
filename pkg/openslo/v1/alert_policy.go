@@ -77,13 +77,10 @@ type AlertPolicySpec struct {
 	// Description summarizes the alert policy.
 	Description string `json:"description,omitempty"`
 	// AlertWhenNoData reports whether to trigger an alert when the associated [SLO] has no burn-rate value.
-	// Its zero value is false.
 	AlertWhenNoData bool `json:"alertWhenNoData,omitempty"`
 	// AlertWhenBreaching reports whether to trigger an alert when the condition is breaching.
-	// Its zero value is false.
 	AlertWhenBreaching bool `json:"alertWhenBreaching,omitempty"`
 	// AlertWhenResolved reports whether to trigger an alert when the condition resolves.
-	// Its zero value is false.
 	AlertWhenResolved bool `json:"alertWhenResolved,omitempty"`
 	// Conditions contains exactly one alert condition, specified inline or by reference.
 	Conditions []AlertPolicyCondition `json:"conditions,omitempty"`
