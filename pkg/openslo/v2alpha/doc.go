@@ -3,10 +3,10 @@
 //
 // Objects use the "openslo.com/v2alpha" API version and Kubernetes-style [Metadata].
 // The metadata has one value per label and no display name.
-// SLO indicator fields use the names "sli" and "sliRef".
+// [SLO] indicator fields use the names "sli" and "sliRef".
 // Metric source fields are "dataSourceRef", "dataSourceSpec", and "spec".
 //
-// The proposal also describes labels on individual SLO objectives,
+// The proposal also describes labels on individual [SLO] objectives,
 // but [SLOObjective] does not expose an objective-label field.
 // Exported fields, JSON tags, and validators define the SDK representation.
 package v2alpha

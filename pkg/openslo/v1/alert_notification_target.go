@@ -13,7 +13,7 @@ var (
 	_ = openslo.ObjectValidator[AlertNotificationTarget](AlertNotificationTarget{})
 )
 
-// NewAlertNotificationTarget returns a notification target from metadata and spec.
+// NewAlertNotificationTarget returns an [AlertNotificationTarget] from metadata and spec.
 func NewAlertNotificationTarget(metadata Metadata, spec AlertNotificationTargetSpec) AlertNotificationTarget {
 	return AlertNotificationTarget{
 		APIVersion: APIVersion,
@@ -23,7 +23,7 @@ func NewAlertNotificationTarget(metadata Metadata, spec AlertNotificationTargetS
 	}
 }
 
-// AlertNotificationTarget identifies a destination for SLO alert notifications.
+// AlertNotificationTarget identifies a destination for [SLO] alert notifications.
 type AlertNotificationTarget struct {
 	APIVersion openslo.Version             `json:"apiVersion"`
 	Kind       openslo.Kind                `json:"kind"`
@@ -46,7 +46,7 @@ func (a AlertNotificationTarget) GetName() string {
 	return a.Metadata.Name
 }
 
-// Validate returns an error for an invalid notification target.
+// Validate returns an error for an invalid [AlertNotificationTarget].
 func (a AlertNotificationTarget) Validate() error {
 	return alertNotificationTargetValidation.Validate(a)
 }
@@ -69,7 +69,7 @@ func (a AlertNotificationTarget) GetValidator() govy.Validator[AlertNotification
 
 // AlertNotificationTargetSpec defines an implementation-specific notification destination.
 type AlertNotificationTargetSpec struct {
-	// Description summarizes the notification target.
+	// Description summarizes the [AlertNotificationTarget].
 	Description string `json:"description,omitempty"`
 	// Target specifies the notification destination in the format required by the consuming implementation.
 	// Examples include email, Slack, a webhook, and Opsgenie.

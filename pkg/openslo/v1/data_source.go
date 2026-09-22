@@ -15,7 +15,7 @@ var (
 	_ = openslo.ObjectValidator[DataSource](DataSource{})
 )
 
-// NewDataSource returns a data source from metadata and spec.
+// NewDataSource returns a [DataSource] from metadata and spec.
 func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 	return DataSource{
 		APIVersion: APIVersion,
@@ -29,7 +29,7 @@ func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 // [SLIMetricSource.MetricSourceRef] selects it by [Metadata.Name].
 // A referenced metric source keeps connection details outside the [SLI].
 // These can include authentication settings.
-// An SLI can instead define an inline metric source with [SLIMetricSource.Type] and [SLIMetricSource.Spec].
+// An [SLI] can instead define an inline metric source with [SLIMetricSource.Type] and [SLIMetricSource.Spec].
 type DataSource struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -47,35 +47,35 @@ func (d DataSource) GetKind() openslo.Kind {
 	return openslo.KindDataSource
 }
 
-// GetName returns the name in the data source's [Metadata].
+// GetName returns the name in the [DataSource]'s [Metadata].
 func (d DataSource) GetName() string {
 	return d.Metadata.Name
 }
 
-// Validate returns an error for an invalid data source.
+// Validate returns an error for an invalid [DataSource].
 func (d DataSource) Validate() error {
 	return dataSourceValidation.Validate(d)
 }
 
-// String returns the data source's formatted version and kind.
+// String returns the [DataSource]'s formatted version and kind.
 // It also returns [Metadata.Name] when set.
 func (d DataSource) String() string {
 	return internal.GetObjectName(d)
 }
 
-// GetMetadata returns the data source's [Metadata].
+// GetMetadata returns the [DataSource]'s [Metadata].
 func (d DataSource) GetMetadata() Metadata {
 	return d.Metadata
 }
 
-// GetValidator returns the validator for DataSource objects.
+// GetValidator returns the validator for [DataSource] objects.
 func (d DataSource) GetValidator() govy.Validator[DataSource] {
 	return dataSourceValidation
 }
 
 // DataSourceSpec defines reusable, source-specific connection configuration.
 type DataSourceSpec struct {
-	// Description summarizes the data source.
+	// Description summarizes the [DataSource].
 	Description string `json:"description,omitempty"`
 	// Type identifies the implementation-defined metric source type, such as Prometheus or Datadog.
 	Type string `json:"type"`

@@ -16,7 +16,7 @@ var (
 	_ = openslo.ObjectValidator[SLO](SLO{})
 )
 
-// NewSLO returns an SLO from metadata and spec.
+// NewSLO returns an [SLO] from metadata and spec.
 func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	return SLO{
 		APIVersion: APIVersion,
@@ -26,7 +26,7 @@ func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	}
 }
 
-// SLO defines a target for an SLI over a time window.
+// SLO defines a target for an [SLI] over a time window.
 type SLO struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -44,28 +44,28 @@ func (s SLO) GetKind() openslo.Kind {
 	return openslo.KindSLO
 }
 
-// GetName returns the SLO's metadata name.
+// GetName returns the [SLO]'s [Metadata.Name].
 func (s SLO) GetName() string {
 	return s.Metadata.Name
 }
 
-// Validate returns an error for an invalid SLO.
+// Validate returns an error for an invalid [SLO].
 func (s SLO) Validate() error {
 	return sloValidation.Validate(s)
 }
 
-// String returns the SLO's formatted version and kind.
-// It also returns the metadata name when set.
+// String returns the [SLO]'s formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (s SLO) String() string {
 	return internal.GetObjectName(s)
 }
 
-// GetMetadata returns the SLO's metadata.
+// GetMetadata returns the [SLO]'s [Metadata].
 func (s SLO) GetMetadata() Metadata {
 	return s.Metadata
 }
 
-// IsComposite reports whether at least one objective selects its own SLI.
+// IsComposite reports whether at least one objective selects its own [SLI].
 func (s SLO) IsComposite() bool {
 	return s.Spec.HasCompositeObjectives()
 }
@@ -75,31 +75,31 @@ func (s SLO) GetValidator() govy.Validator[SLO] {
 	return sloValidation
 }
 
-// SLOSpec defines an SLO's service, SLI, time window, budgeting method, objectives, and alert policies.
-// A standard SLO applies one SLI to all objectives.
-// A composite SLO can select a different SLI per objective.
+// SLOSpec defines an [SLO]'s [Service], [SLI], time window, budgeting method, objectives, and [AlertPolicy] objects.
+// A standard [SLO] applies one [SLI] to all objectives.
+// A composite [SLO] can select a different [SLI] per objective.
 type SLOSpec struct {
-	// Description summarizes the SLO.
+	// Description summarizes the [SLO].
 	Description string `json:"description,omitempty"`
-	// ServiceRef names the service associated with this SLO.
+	// ServiceRef names the [Service] associated with this [SLO].
 	// The SDK serializes the field as "serviceRef".
 	// The living v2alpha proposal calls it "service".
 	ServiceRef string `json:"serviceRef"`
-	// SLI embeds the service level indicator for a standard SLO.
+	// SLI embeds the [SLI] for a standard [SLO].
 	SLI *SLOSLIInline `json:"sli,omitempty"`
-	// SLIRef names an existing [SLI] for a standard SLO.
+	// SLIRef names an existing [SLI] for a standard [SLO].
 	SLIRef *string `json:"sliRef,omitempty"`
 	// BudgetingMethod applies the selected error-budget calculation to every objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
-	// TimeWindow defines the period over which the SLO is evaluated.
+	// TimeWindow defines the period over which the [SLO] is evaluated.
 	TimeWindow []SLOTimeWindow `json:"timeWindow,omitempty"`
-	// Objectives contains the SLO's budget targets and metric thresholds.
+	// Objectives contains the [SLO]'s budget targets and metric thresholds.
 	Objectives []SLOObjective `json:"objectives"`
-	// AlertPolicies contains inline alert policies or references to existing [AlertPolicy] objects.
+	// AlertPolicies contains inline [AlertPolicy] objects or references to existing [AlertPolicy] objects.
 	AlertPolicies []SLOAlertPolicy `json:"alertPolicies,omitempty"`
 }
 
-// HasCompositeObjectives reports whether at least one objective selects an SLI inline or by reference.
+// HasCompositeObjectives reports whether at least one objective selects an [SLI] inline or by reference.
 // It does not verify that every composite objective selects one.
 func (s SLOSpec) HasCompositeObjectives() bool {
 	for i := range s.Objectives {
@@ -110,10 +110,10 @@ func (s SLOSpec) HasCompositeObjectives() bool {
 	return false
 }
 
-// SLOBudgetingMethod selects how an SLO consumes its error budget.
-// Occurrences uses good events over total events,
-// Timeslices uses good slices over total slices,
-// and RatioTimeslices averages slice success ratios.
+// SLOBudgetingMethod selects how an [SLO] consumes its error budget.
+// [SLOBudgetingMethodOccurrences] uses good events over total events,
+// [SLOBudgetingMethodTimeslices] uses good slices over total slices,
+// and [SLOBudgetingMethodRatioTimeslices] averages slice success ratios.
 type SLOBudgetingMethod string
 
 const (
@@ -128,19 +128,19 @@ var validSLOBudgetingMethods = []SLOBudgetingMethod{
 	SLOBudgetingMethodRatioTimeslices,
 }
 
-// SLOSLIInline embeds an SLI definition in an SLO or one of its objectives.
+// SLOSLIInline embeds an [SLI] definition in an [SLO] or one of its objectives.
 type SLOSLIInline struct {
 	Metadata Metadata `json:"metadata"`
 	Spec     SLISpec  `json:"spec"`
 }
 
-// SLOObjective defines one error-budget target and, for a threshold SLI, its metric comparison.
+// SLOObjective defines one error-budget target and, for a threshold [SLI], its metric comparison.
 // The living v2alpha proposal also defines objective labels, which this SDK does not model.
 type SLOObjective struct {
 	// DisplayName is a human-readable name for this objective.
 	// It is not part of the enclosing object's [Metadata].
 	DisplayName string `json:"displayName,omitempty"`
-	// Operator compares a threshold metric with Value.
+	// Operator compares a threshold metric with [SLOObjective.Value].
 	Operator Operator `json:"op,omitempty"`
 	// Value is the comparison threshold for a threshold metric.
 	Value *float64 `json:"value,omitempty"`
@@ -149,17 +149,18 @@ type SLOObjective struct {
 	Target *float64 `json:"target,omitempty"`
 	// TargetPercent is the desired success percentage.
 	TargetPercent *float64 `json:"targetPercent,omitempty"`
-	// TimeSliceTarget sets the per-slice success threshold for Timeslices.
+	// TimeSliceTarget sets the per-slice success threshold for [SLOBudgetingMethodTimeslices].
 	TimeSliceTarget *float64 `json:"timeSliceTarget,omitempty"`
-	// TimeSliceWindow sets the size of each slice for Timeslices and RatioTimeslices.
+	// TimeSliceWindow sets the size of each slice for [SLOBudgetingMethodTimeslices]
+	// and [SLOBudgetingMethodRatioTimeslices].
 	// OpenSLO also accepts a number interpreted as minutes.
-	// This SDK represents only duration shorthand.
+	// This SDK represents only [DurationShorthand].
 	TimeSliceWindow *DurationShorthand `json:"timeSliceWindow,omitempty"`
-	// SLI embeds this objective's service level indicator for a composite SLO.
+	// SLI embeds this objective's [SLI] for a composite [SLO].
 	SLI *SLOSLIInline `json:"sli,omitempty"`
-	// SLIRef names this objective's existing [SLI] for a composite SLO.
+	// SLIRef names this objective's existing [SLI] for a composite [SLO].
 	SLIRef *string `json:"sliRef,omitempty"`
-	// CompositeWeight scales this objective's contribution to a composite SLO.
+	// CompositeWeight scales this objective's contribution to a composite [SLO].
 	// The living v2alpha proposal defaults it to 1, but this SDK preserves an omitted value as nil.
 	CompositeWeight *float64 `json:"compositeWeight,omitempty"`
 }
@@ -178,17 +179,17 @@ type SLOTimeWindow struct {
 type SLOCalendar struct {
 	// StartTime is the local date and time when calendar alignment starts.
 	StartTime string `json:"startTime"`
-	// TimeZone determines how StartTime maps to an instant.
+	// TimeZone determines how [SLOCalendar.StartTime] maps to an instant.
 	TimeZone string `json:"timeZone"`
 }
 
-// SLOAlertPolicy associates an inline or referenced alert policy with an [SLO].
+// SLOAlertPolicy associates an inline or referenced [AlertPolicy] with an [SLO].
 type SLOAlertPolicy struct {
 	*SLOAlertPolicyInline
 	*SLOAlertPolicyRef
 }
 
-// SLOAlertPolicyInline is an alert-policy definition embedded in an SLO.
+// SLOAlertPolicyInline is an [AlertPolicy] definition embedded in an [SLO].
 // The inline form contains kind, metadata, and spec, but no API version.
 type SLOAlertPolicyInline struct {
 	Kind     openslo.Kind    `json:"kind"`
@@ -198,7 +199,7 @@ type SLOAlertPolicyInline struct {
 
 // SLOAlertPolicyRef identifies a separately defined [AlertPolicy].
 type SLOAlertPolicyRef struct {
-	// AlertPolicyRef is the metadata name of the alert policy to use.
+	// AlertPolicyRef is the [Metadata.Name] of the [AlertPolicy] to use.
 	AlertPolicyRef string `json:"alertPolicyRef"`
 }
 
@@ -387,7 +388,7 @@ var sloCompositeObjectiveValidation = govy.New(
 		Rules(rules.GT(0.0)),
 )
 
-// Referenced SLIs do not expose their metric type here.
+// Referenced [SLI] objects do not expose their metric type here.
 var sloThresholdObjectiveValidationWhenInlinedSLI = govy.New(
 	govy.ForPointer(func(s SLOObjective) *float64 { return s.Value }).
 		WithName("value").

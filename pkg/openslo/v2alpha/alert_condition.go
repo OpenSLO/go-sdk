@@ -13,7 +13,7 @@ var (
 	_ = openslo.ObjectValidator[AlertCondition](AlertCondition{})
 )
 
-// NewAlertCondition returns an AlertCondition from metadata and spec.
+// NewAlertCondition returns an [AlertCondition] from metadata and spec.
 func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertCondition {
 	return AlertCondition{
 		APIVersion: APIVersion,
@@ -23,7 +23,7 @@ func NewAlertCondition(metadata Metadata, spec AlertConditionSpec) AlertConditio
 	}
 }
 
-// AlertCondition defines when an SLO alert condition is breaching.
+// AlertCondition defines the breach criteria for an [SLO] alert.
 // [AlertPolicySpec.AlertWhenBreaching] controls whether that state triggers an alert.
 type AlertCondition struct {
 	APIVersion openslo.Version    `json:"apiVersion"`
@@ -42,23 +42,23 @@ func (a AlertCondition) GetKind() openslo.Kind {
 	return openslo.KindAlertCondition
 }
 
-// GetName returns the alert condition's metadata name.
+// GetName returns the [AlertCondition]'s [Metadata.Name].
 func (a AlertCondition) GetName() string {
 	return a.Metadata.Name
 }
 
-// Validate returns an error for an invalid alert condition.
+// Validate returns an error for an invalid [AlertCondition].
 func (a AlertCondition) Validate() error {
 	return alertConditionValidation.Validate(a)
 }
 
-// String returns the alert condition's formatted version and kind.
-// It also returns the metadata name when set.
+// String returns the [AlertCondition]'s formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (a AlertCondition) String() string {
 	return internal.GetObjectName(a)
 }
 
-// GetMetadata returns the alert condition's metadata.
+// GetMetadata returns the [AlertCondition]'s [Metadata].
 func (a AlertCondition) GetMetadata() Metadata {
 	return a.Metadata
 }
@@ -73,16 +73,16 @@ type AlertConditionSpec struct {
 	// Severity is a consumer-defined alert classification.
 	Severity  string             `json:"severity"`
 	Condition AlertConditionType `json:"condition"`
-	// Description summarizes the alert condition.
+	// Description summarizes the [AlertCondition].
 	Description string `json:"description,omitempty"`
 }
 
 // AlertConditionType defines a burn-rate comparison over a lookback window.
-// Burn rate is error-budget consumption relative to the rate allowed by the SLO.
+// Burn rate is error-budget consumption relative to the rate allowed by the [SLO].
 type AlertConditionType struct {
 	// Kind selects the condition algorithm.
 	Kind AlertConditionKind `json:"kind"`
-	// Operator compares the calculated burn rate with Threshold.
+	// Operator compares the calculated burn rate with [AlertConditionType.Threshold].
 	Operator Operator `json:"op"`
 	// Threshold sets the numeric burn-rate boundary.
 	Threshold *float64 `json:"threshold"`

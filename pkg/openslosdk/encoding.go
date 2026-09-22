@@ -270,7 +270,7 @@ func getYamlIdent(data []byte) ident {
 // document separator located at the beginning of the file.
 const yamlDocSep = "\n---"
 
-// splitYAMLDocument is a bufio.SplitFunc for splitting YAML streams into individual documents.
+// splitYAMLDocument is a [bufio.SplitFunc] for splitting YAML streams into individual documents.
 func splitYAMLDocument(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	if atEOF && len(data) == 0 {
 		return 0, nil, nil

@@ -16,7 +16,7 @@ var (
 	_ = openslo.ObjectValidator[SLO](SLO{})
 )
 
-// NewSLO returns an SLO from metadata and spec.
+// NewSLO returns an [SLO] from metadata and spec.
 func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	return SLO{
 		APIVersion: APIVersion,
@@ -44,63 +44,63 @@ func (s SLO) GetKind() openslo.Kind {
 	return openslo.KindSLO
 }
 
-// GetName returns the name in the SLO's [Metadata].
+// GetName returns the name in the [SLO]'s [Metadata].
 func (s SLO) GetName() string {
 	return s.Metadata.Name
 }
 
-// Validate returns an error for an invalid SLO.
+// Validate returns an error for an invalid [SLO].
 func (s SLO) Validate() error {
 	return sloValidation.Validate(s)
 }
 
-// String returns the SLO's formatted version and kind.
+// String returns the [SLO]'s formatted version and kind.
 // It also returns [Metadata.Name] when set.
 func (s SLO) String() string {
 	return internal.GetObjectName(s)
 }
 
-// IsComposite reports whether the SLO has objective-level indicators.
+// IsComposite reports whether the [SLO] has objective-level indicators.
 func (s SLO) IsComposite() bool {
 	return s.Spec.HasCompositeObjectives()
 }
 
-// GetMetadata returns the SLO's [Metadata].
+// GetMetadata returns the [SLO]'s [Metadata].
 func (s SLO) GetMetadata() Metadata {
 	return s.Metadata
 }
 
-// GetValidator returns the validator for SLO objects.
+// GetValidator returns the validator for [SLO] objects.
 func (s SLO) GetValidator() govy.Validator[SLO] {
 	return sloValidation
 }
 
-// SLOSpec defines the service association, indicator placement, budgeting method,
-// evaluation window, objectives, and alert policies of an [SLO].
+// SLOSpec defines the [Service] association, indicator placement, budgeting method,
+// evaluation window, objectives, and [AlertPolicy] objects of an [SLO].
 type SLOSpec struct {
-	// Description summarizes the SLO.
+	// Description summarizes the [SLO].
 	Description string `json:"description,omitempty"`
-	// Service names the associated service.
+	// Service names the associated [Service].
 	// Consumers define how to resolve the name to a [Service].
 	Service string `json:"service"`
-	// Indicator defines a standard SLO's SLI inline.
-	// Composite SLOs place indicators on individual Objectives.
+	// Indicator defines a standard [SLO]'s [SLI] inline.
+	// Composite [SLO] objects place indicators on individual [SLOSpec.Objectives].
 	Indicator *SLOIndicatorInline `json:"indicator,omitempty"`
-	// IndicatorRef names an existing [SLI] for a standard SLO.
-	// Composite SLOs place indicator references on individual Objectives.
+	// IndicatorRef names an existing [SLI] for a standard [SLO].
+	// Composite [SLO] objects place indicator references on individual [SLOSpec.Objectives].
 	IndicatorRef *string `json:"indicatorRef,omitempty"`
 	// BudgetingMethod applies the selected error-budget calculation to every objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
-	// TimeWindow defines the period over which the SLO is evaluated.
+	// TimeWindow defines the period over which the [SLO] is evaluated.
 	TimeWindow []SLOTimeWindow `json:"timeWindow,omitempty"`
-	// Objectives contains the SLO's target definitions.
+	// Objectives contains the [SLO]'s target definitions.
 	Objectives []SLOObjective `json:"objectives"`
-	// AlertPolicies contains inline alert policies or references to existing [AlertPolicy] objects.
+	// AlertPolicies contains inline [AlertPolicy] objects or references to existing [AlertPolicy] objects.
 	AlertPolicies []SLOAlertPolicy `json:"alertPolicies,omitempty"`
 }
 
 // HasCompositeObjectives reports whether any objective has an indicator.
-// It does not verify that every objective in a composite SLO has one.
+// It does not verify that every objective in a composite [SLO] has one.
 func (s SLOSpec) HasCompositeObjectives() bool {
 	for i := range s.Objectives {
 		if s.Objectives[i].Indicator != nil || s.Objectives[i].IndicatorRef != nil {
@@ -110,19 +110,19 @@ func (s SLOSpec) HasCompositeObjectives() bool {
 	return false
 }
 
-// SLOBudgetingMethod identifies how an [SLO] aggregates SLI results for objective and error-budget evaluation.
+// SLOBudgetingMethod identifies how an [SLO] aggregates [SLI] results for objective and error-budget evaluation.
 // An objective's error-budget fraction is 1 minus [SLOObjective.Target].
 // Its error-budget percentage is 100 minus [SLOObjective.TargetPercent].
-// Occurrences uses the ratio of good events to total events.
-// Timeslices counts slices that meet [SLOObjective.TimeSliceTarget].
-// RatioTimeslices averages success ratios across slices.
+// [SLOBudgetingMethodOccurrences] uses the ratio of good events to total events.
+// [SLOBudgetingMethodTimeslices] counts slices that meet [SLOObjective.TimeSliceTarget].
+// [SLOBudgetingMethodRatioTimeslices] averages success ratios across slices.
 // Composite calculation rules depend on the method, as the constant comments describe.
 type SLOBudgetingMethod string
 
 const (
 	// SLOBudgetingMethodOccurrences uses the ratio of good events to total events,
 	// so traffic volume determines each period's influence.
-	// For a composite SLO, each objective's weight scales its burn rate.
+	// For a composite [SLO], each objective's weight scales its burn rate.
 	SLOBudgetingMethodOccurrences SLOBudgetingMethod = "Occurrences"
 	// SLOBudgetingMethodTimeslices uses the ratio of slices meeting [SLOObjective.TimeSliceTarget] to all slices,
 	// giving each slice equal influence.
@@ -130,7 +130,7 @@ const (
 	SLOBudgetingMethodTimeslices SLOBudgetingMethod = "Timeslices"
 	// SLOBudgetingMethodRatioTimeslices averages success ratios across slices
 	// without classifying them against [SLOObjective.TimeSliceTarget].
-	// For a composite SLO, this method combines weighted deficits from 100 percent.
+	// For a composite [SLO], this method combines weighted deficits from 100 percent.
 	SLOBudgetingMethodRatioTimeslices SLOBudgetingMethod = "RatioTimeslices"
 )
 
@@ -147,31 +147,31 @@ type SLOIndicatorInline struct {
 }
 
 // SLOObjective defines a success target and, when applicable, a threshold comparison or composite-specific indicator.
-// For example, Target 0.995 and TargetPercent 99.5 both express a 99.5 percent target.
+// For example, [SLOObjective.Target] 0.995 and [SLOObjective.TargetPercent] 99.5 both express a 99.5 percent target.
 type SLOObjective struct {
 	// DisplayName is the objective's human-readable name.
 	DisplayName string `json:"displayName,omitempty"`
-	// Operator compares threshold-metric samples with Value.
+	// Operator compares threshold-metric samples with [SLOObjective.Value].
 	Operator Operator `json:"op,omitempty"`
 	// Value sets the threshold for metric sample comparisons.
-	// It is distinct from the success target expressed by Target or TargetPercent.
+	// It is distinct from the success target expressed by [SLOObjective.Target] or [SLOObjective.TargetPercent].
 	Value *float64 `json:"value,omitempty"`
 	// Target expresses the success target as a fraction.
 	Target *float64 `json:"target,omitempty"`
 	// TargetPercent expresses the success target as a percentage.
 	TargetPercent *float64 `json:"targetPercent,omitempty"`
-	// TimeSliceTarget classifies a slice as good when BudgetingMethod is [SLOBudgetingMethodTimeslices].
+	// TimeSliceTarget classifies a slice as good when [SLOSpec.BudgetingMethod] is [SLOBudgetingMethodTimeslices].
 	TimeSliceTarget *float64 `json:"timeSliceTarget,omitempty"`
 	// TimeSliceWindow sets the slice size and query interval.
 	// It applies to [SLOBudgetingMethodTimeslices] and [SLOBudgetingMethodRatioTimeslices].
 	// This Go model supports [DurationShorthand] only.
 	// OpenSLO also permits a number, which it interprets as minutes.
 	TimeSliceWindow *DurationShorthand `json:"timeSliceWindow,omitempty"`
-	// Indicator defines this objective's SLI inline for a composite SLO.
+	// Indicator defines this objective's [SLI] inline for a composite [SLO].
 	Indicator *SLOIndicatorInline `json:"indicator,omitempty"`
-	// IndicatorRef names this objective's [SLI] for a composite SLO.
+	// IndicatorRef names this objective's [SLI] for a composite [SLO].
 	IndicatorRef *string `json:"indicatorRef,omitempty"`
-	// CompositeWeight scales this objective's contribution to a composite SLO.
+	// CompositeWeight scales this objective's contribution to a composite [SLO].
 	// OpenSLO defaults it to 1, but this SDK preserves an omitted value as nil.
 	CompositeWeight *float64 `json:"compositeWeight,omitempty"`
 }
@@ -190,11 +190,11 @@ type SLOTimeWindow struct {
 type SLOCalendar struct {
 	// StartTime anchors the first calendar window.
 	StartTime string `json:"startTime"`
-	// TimeZone controls the interpretation of StartTime and later boundaries.
+	// TimeZone controls the interpretation of [SLOCalendar.StartTime] and later boundaries.
 	TimeZone string `json:"timeZone"`
 }
 
-// SLOAlertPolicy supplies an inline or referenced alert policy to an [SLO].
+// SLOAlertPolicy supplies an inline or referenced [AlertPolicy] to an [SLO].
 type SLOAlertPolicy struct {
 	*SLOAlertPolicyInline
 	*SLOAlertPolicyRef
@@ -387,7 +387,7 @@ var sloObjectiveValidation = govy.New(
 		Rules(rules.GTE(0.0), rules.LT(100.0)),
 )
 
-// Referenced SLIs do not expose their metric type here.
+// Referenced [SLI] objects do not expose their metric type here.
 var sloThresholdObjectiveValidationWhenInlinedSLI = govy.New(
 	govy.ForPointer(func(s SLOObjective) *float64 { return s.Value }).
 		WithName("value").

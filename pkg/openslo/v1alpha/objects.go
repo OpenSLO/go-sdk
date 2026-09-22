@@ -25,7 +25,7 @@ func GetSupportedKinds() []openslo.Kind {
 // Object is an OpenSLO v1alpha object with version-specific [Metadata].
 type Object interface {
 	openslo.Object
-	// GetMetadata returns the object's metadata.
+	// GetMetadata returns the object's [Metadata].
 	GetMetadata() Metadata
 }
 
