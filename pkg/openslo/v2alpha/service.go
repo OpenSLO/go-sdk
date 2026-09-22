@@ -13,7 +13,7 @@ var (
 	_ = openslo.ObjectValidator[Service](Service{})
 )
 
-// NewService returns a service from metadata and spec.
+// NewService returns a [Service] from metadata and spec.
 func NewService(metadata Metadata, spec ServiceSpec) Service {
 	return Service{
 		APIVersion: APIVersion,
@@ -23,10 +23,10 @@ func NewService(metadata Metadata, spec ServiceSpec) Service {
 	}
 }
 
-// Service identifies a high-level group for SLOs.
-// Each [SLO] refers to a Service by metadata name through [SLOSpec.ServiceRef].
-// Multiple SLOs can use the same Service name.
-// The SDK does not verify that a referenced Service exists.
+// Service identifies a high-level group for [SLO] objects.
+// Each [SLO] refers to a [Service] by [Metadata.Name] through [SLOSpec.ServiceRef].
+// Multiple [SLO] objects can use the same [Service] name.
+// The SDK does not verify that a referenced [Service] exists.
 type Service struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -44,23 +44,23 @@ func (s Service) GetKind() openslo.Kind {
 	return openslo.KindService
 }
 
-// GetName returns the service's metadata name.
+// GetName returns the [Service]'s [Metadata.Name].
 func (s Service) GetName() string {
 	return s.Metadata.Name
 }
 
-// Validate returns an error for an invalid service.
+// Validate returns an error for an invalid [Service].
 func (s Service) Validate() error {
 	return serviceValidation.Validate(s)
 }
 
-// String returns the service's formatted version and kind.
-// It also returns the metadata name when set.
+// String returns the [Service]'s formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (s Service) String() string {
 	return internal.GetObjectName(s)
 }
 
-// GetMetadata returns the service's metadata.
+// GetMetadata returns the [Service]'s [Metadata].
 func (s Service) GetMetadata() Metadata {
 	return s.Metadata
 }
@@ -72,7 +72,7 @@ func (s Service) GetValidator() govy.Validator[Service] {
 
 // ServiceSpec defines the descriptive attributes of a [Service].
 type ServiceSpec struct {
-	// Description summarizes the service.
+	// Description summarizes the [Service].
 	Description string `json:"description,omitempty"`
 }
 

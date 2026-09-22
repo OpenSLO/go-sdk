@@ -13,7 +13,7 @@ var (
 	_ = openslo.ObjectValidator[AlertNotificationTarget](AlertNotificationTarget{})
 )
 
-// NewAlertNotificationTarget returns a notification target from metadata and spec.
+// NewAlertNotificationTarget returns an [AlertNotificationTarget] from metadata and spec.
 func NewAlertNotificationTarget(metadata Metadata, spec AlertNotificationTargetSpec) AlertNotificationTarget {
 	return AlertNotificationTarget{
 		APIVersion: APIVersion,
@@ -42,23 +42,23 @@ func (a AlertNotificationTarget) GetKind() openslo.Kind {
 	return openslo.KindAlertNotificationTarget
 }
 
-// GetName returns the notification target's metadata name.
+// GetName returns the [AlertNotificationTarget]'s [Metadata.Name].
 func (a AlertNotificationTarget) GetName() string {
 	return a.Metadata.Name
 }
 
-// Validate returns an error for an invalid notification target.
+// Validate returns an error for an invalid [AlertNotificationTarget].
 func (a AlertNotificationTarget) Validate() error {
 	return alertNotificationTargetValidation.Validate(a)
 }
 
-// String returns the notification target's formatted version and kind.
-// It also returns the metadata name when set.
+// String returns the [AlertNotificationTarget]'s formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (a AlertNotificationTarget) String() string {
 	return internal.GetObjectName(a)
 }
 
-// GetMetadata returns the notification target's metadata.
+// GetMetadata returns the [AlertNotificationTarget]'s [Metadata].
 func (a AlertNotificationTarget) GetMetadata() Metadata {
 	return a.Metadata
 }

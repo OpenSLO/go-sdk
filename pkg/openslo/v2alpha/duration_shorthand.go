@@ -15,7 +15,7 @@ func ParseDurationShorthand(s string) (DurationShorthand, error) {
 	return *d, err
 }
 
-// NewDurationShorthand returns a shorthand with the supplied value and unit without validating them.
+// NewDurationShorthand returns a [DurationShorthand] with the supplied value and unit without validating them.
 func NewDurationShorthand(value int, unit DurationShorthandUnit) DurationShorthand {
 	return DurationShorthand{
 		unit:  unit,
@@ -100,7 +100,7 @@ var validDurationUnits = []DurationShorthandUnit{
 	DurationShorthandUnitWeek,
 }
 
-// Validate returns an error for an invalid duration shorthand.
+// Validate returns an error for an invalid [DurationShorthand].
 func (d DurationShorthand) Validate() error {
 	return durationShortHandValidation.Validate(d)
 }

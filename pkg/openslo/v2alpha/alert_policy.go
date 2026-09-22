@@ -13,7 +13,7 @@ var (
 	_ = openslo.ObjectValidator[AlertPolicy](AlertPolicy{})
 )
 
-// NewAlertPolicy returns an AlertPolicy from metadata and spec.
+// NewAlertPolicy returns an [AlertPolicy] from metadata and spec.
 func NewAlertPolicy(metadata Metadata, spec AlertPolicySpec) AlertPolicy {
 	return AlertPolicy{
 		APIVersion: APIVersion,
@@ -23,7 +23,7 @@ func NewAlertPolicy(metadata Metadata, spec AlertPolicySpec) AlertPolicy {
 	}
 }
 
-// AlertPolicy defines which alert-condition states trigger an SLO alert.
+// AlertPolicy defines which [AlertCondition] states trigger an [SLO] alert.
 // It also defines the notification destinations for triggered alerts.
 type AlertPolicy struct {
 	APIVersion openslo.Version `json:"apiVersion"`
@@ -42,23 +42,23 @@ func (a AlertPolicy) GetKind() openslo.Kind {
 	return openslo.KindAlertPolicy
 }
 
-// GetName returns the alert policy's metadata name.
+// GetName returns the [AlertPolicy]'s [Metadata.Name].
 func (a AlertPolicy) GetName() string {
 	return a.Metadata.Name
 }
 
-// Validate returns an error for an invalid alert policy.
+// Validate returns an error for an invalid [AlertPolicy].
 func (a AlertPolicy) Validate() error {
 	return alertPolicyValidation.Validate(a)
 }
 
-// String returns the alert policy's formatted version and kind.
-// It also returns the metadata name when set.
+// String returns the [AlertPolicy]'s formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (a AlertPolicy) String() string {
 	return internal.GetObjectName(a)
 }
 
-// GetMetadata returns the alert policy's metadata.
+// GetMetadata returns the [AlertPolicy]'s [Metadata].
 func (a AlertPolicy) GetMetadata() Metadata {
 	return a.Metadata
 }
@@ -73,7 +73,7 @@ func (a AlertPolicy) GetValidator() govy.Validator[AlertPolicy] {
 // JSON encoding omits false values.
 // This SDK applies no omission default.
 type AlertPolicySpec struct {
-	// Description summarizes the alert policy.
+	// Description summarizes the [AlertPolicy].
 	Description string `json:"description,omitempty"`
 	// AlertWhenNoData controls whether a missing burn-rate value triggers an alert.
 	AlertWhenNoData bool `json:"alertWhenNoData,omitempty"`
@@ -81,20 +81,20 @@ type AlertPolicySpec struct {
 	AlertWhenBreaching bool `json:"alertWhenBreaching,omitempty"`
 	// AlertWhenResolved controls whether a resolved condition triggers an alert.
 	AlertWhenResolved bool `json:"alertWhenResolved,omitempty"`
-	// Conditions contains alert conditions specified inline or by reference.
+	// Conditions contains [AlertCondition] objects specified inline or by reference.
 	Conditions []AlertPolicyCondition `json:"conditions,omitempty"`
 	// NotificationTargets contains delivery destinations.
 	// Specify each destination inline or by reference.
 	NotificationTargets []AlertPolicyNotificationTarget `json:"notificationTargets,omitempty"`
 }
 
-// AlertPolicyCondition supplies an inline or referenced alert condition to an [AlertPolicy].
+// AlertPolicyCondition supplies an inline or referenced [AlertCondition] to an [AlertPolicy].
 type AlertPolicyCondition struct {
 	*AlertPolicyConditionRef
 	*AlertPolicyConditionInline
 }
 
-// AlertPolicyConditionInline is an alert-condition definition embedded in an [AlertPolicy].
+// AlertPolicyConditionInline is an [AlertCondition] definition embedded in an [AlertPolicy].
 // The inline form contains kind, metadata, and spec, but no API version.
 type AlertPolicyConditionInline struct {
 	Kind     openslo.Kind       `json:"kind"`
@@ -104,17 +104,17 @@ type AlertPolicyConditionInline struct {
 
 // AlertPolicyConditionRef identifies a separately defined [AlertCondition].
 type AlertPolicyConditionRef struct {
-	// ConditionRef is the metadata name of the alert condition to use.
+	// ConditionRef is the [Metadata.Name] of the [AlertCondition] to use.
 	ConditionRef string `json:"conditionRef"`
 }
 
-// AlertPolicyNotificationTarget supplies an inline or referenced notification target to an [AlertPolicy].
+// AlertPolicyNotificationTarget supplies an inline or referenced [AlertNotificationTarget] to an [AlertPolicy].
 type AlertPolicyNotificationTarget struct {
 	*AlertPolicyNotificationTargetRef
 	*AlertPolicyNotificationTargetInline
 }
 
-// AlertPolicyNotificationTargetInline is an alert-notification-target definition embedded in an [AlertPolicy].
+// AlertPolicyNotificationTargetInline is an [AlertNotificationTarget] definition embedded in an [AlertPolicy].
 // The inline form contains kind, metadata, and spec, but no API version.
 type AlertPolicyNotificationTargetInline struct {
 	Kind     openslo.Kind                `json:"kind"`
@@ -124,7 +124,7 @@ type AlertPolicyNotificationTargetInline struct {
 
 // AlertPolicyNotificationTargetRef identifies a separately defined [AlertNotificationTarget].
 type AlertPolicyNotificationTargetRef struct {
-	// TargetRef is the metadata name of the notification target to use.
+	// TargetRef is the [Metadata.Name] of the [AlertNotificationTarget] to use.
 	TargetRef string `json:"targetRef"`
 }
 

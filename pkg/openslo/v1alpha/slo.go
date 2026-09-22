@@ -16,7 +16,7 @@ var (
 	_ = openslo.ObjectValidator[SLO](SLO{})
 )
 
-// NewSLO returns an SLO from metadata and spec.
+// NewSLO returns an [SLO] from metadata and spec.
 func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	return SLO{
 		APIVersion: APIVersion,
@@ -26,7 +26,7 @@ func NewSLO(metadata Metadata, spec SLOSpec) SLO {
 	}
 }
 
-// SLO is the legacy v1alpha SLO representation supported by this SDK.
+// SLO is the legacy v1alpha [SLO] representation supported by this SDK.
 // It defines reliability targets for a service level measured by an indicator.
 type SLO struct {
 	APIVersion openslo.Version `json:"apiVersion"`
@@ -45,23 +45,23 @@ func (s SLO) GetKind() openslo.Kind {
 	return openslo.KindSLO
 }
 
-// GetName returns the SLO's metadata name.
+// GetName returns the [SLO]'s [Metadata.Name].
 func (s SLO) GetName() string {
 	return s.Metadata.Name
 }
 
-// Validate returns an error for an invalid SLO.
+// Validate returns an error for an invalid [SLO].
 func (s SLO) Validate() error {
 	return sloValidation.Validate(s)
 }
 
-// String returns the SLO's formatted version and kind.
+// String returns the [SLO]'s formatted version and kind.
 // It also returns [Metadata.Name] when set.
 func (s SLO) String() string {
 	return internal.GetObjectName(s)
 }
 
-// GetMetadata returns the SLO's metadata.
+// GetMetadata returns the [SLO]'s [Metadata].
 func (s SLO) GetMetadata() Metadata {
 	return s.Metadata
 }
@@ -71,26 +71,26 @@ func (s SLO) GetValidator() govy.Validator[SLO] {
 	return sloValidation
 }
 
-// SLOSpec defines the service, indicator, objectives, time window, and error-budget calculation for an [SLO].
+// SLOSpec defines the [Service], indicator, objectives, time window, and error-budget calculation for an [SLO].
 type SLOSpec struct {
-	// TimeWindows defines the period over which the SLO is evaluated.
+	// TimeWindows defines the period over which the [SLO] is evaluated.
 	TimeWindows []SLOTimeWindow `json:"timeWindows"`
 	// BudgetingMethod applies the selected error-budget calculation to every objective.
 	BudgetingMethod SLOBudgetingMethod `json:"budgetingMethod"`
-	// Description summarizes the SLO.
+	// Description summarizes the [SLO].
 	Description string `json:"description,omitempty"`
-	// Indicator defines the threshold-metric form of the SLO.
+	// Indicator defines the threshold-metric form of the [SLO].
 	Indicator *SLOIndicator `json:"indicator"`
-	// Service is the metadata name of the [Service] whose reliability the SLO measures.
+	// Service is the [Metadata.Name] of the [Service] whose reliability the [SLO] measures.
 	Service string `json:"service"`
 	// Objectives contains reliability targets.
 	// For the ratio form, each objective's [SLOObjective.RatioMetrics] defines the SLI metric queries.
 	Objectives []SLOObjective `json:"objectives"`
 }
 
-// SLOBudgetingMethod identifies how an SLO calculates its error budget.
-// Occurrences weights each event equally.
-// Timeslices weights each time slice equally.
+// SLOBudgetingMethod identifies how an [SLO] calculates its error budget.
+// [SLOBudgetingMethodOccurrences] weights each event equally.
+// [SLOBudgetingMethodTimeslices] weights each time slice equally.
 type SLOBudgetingMethod string
 
 const (
@@ -106,7 +106,7 @@ var validSLOBudgetingMethods = []SLOBudgetingMethod{
 // SLOIndicator defines the threshold-metric form of a v1alpha service level indicator.
 type SLOIndicator struct {
 	// ThresholdMetric retrieves raw metric values.
-	// Each objective compares them with its [Operator] and Value.
+	// Each objective compares them with its [Operator] and [SLOObjective.Value].
 	ThresholdMetric SLOMetricSourceSpec `json:"thresholdMetric"`
 }
 
@@ -131,9 +131,9 @@ type SLOObjective struct {
 	// BudgetTarget is the desired fraction of good events or time slices.
 	BudgetTarget *float64 `json:"target"`
 	// TimeSliceTarget is the minimum success ratio that makes a time slice good.
-	// It is used by the Timeslices budgeting method.
+	// It is used by the [SLOBudgetingMethodTimeslices] budgeting method.
 	TimeSliceTarget *float64 `json:"timeSliceTarget,omitempty"`
-	// Operator compares values returned by the threshold metric with Value.
+	// Operator compares values returned by the threshold metric with [SLOObjective.Value].
 	Operator Operator `json:"op,omitempty"`
 }
 
@@ -149,12 +149,13 @@ type SLORatioMetrics struct {
 	Incremental bool `json:"incremental"`
 }
 
-// SLOTimeWindow defines the period over which an SLO is evaluated.
-// For example, a Unit of Week and a Count of 4 define a four-week window.
+// SLOTimeWindow defines the period over which an [SLO] is evaluated.
+// For example, a [SLOTimeWindow.Unit] of [SLOTimeWindowUnitWeek] and a [SLOTimeWindow.Count] of 4
+// define a four-week window.
 type SLOTimeWindow struct {
-	// Unit combines with Count to set the window length.
+	// Unit combines with [SLOTimeWindow.Count] to set the window length.
 	Unit SLOTimeWindowUnit `json:"unit"`
-	// Count sets how many Units form the window.
+	// Count sets how many units of [SLOTimeWindow.Unit] form the window.
 	Count int `json:"count"`
 	// IsRolling selects a continuously advancing window when true and a calendar-aligned window when false.
 	IsRolling bool `json:"isRolling"`
@@ -185,7 +186,7 @@ var validSLOTimeWindowUnits = []SLOTimeWindowUnit{
 type SLOCalendar struct {
 	// StartTime anchors the first calendar window.
 	StartTime string `json:"startTime"`
-	// TimeZone controls the interpretation of StartTime and later boundaries.
+	// TimeZone controls the interpretation of [SLOCalendar.StartTime] and later boundaries.
 	TimeZone string `json:"timeZone"`
 }
 

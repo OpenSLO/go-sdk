@@ -31,7 +31,7 @@ func GetSupportedKinds() []openslo.Kind {
 // Object is implemented by every OpenSLO v2alpha object and exposes its version-specific [Metadata].
 type Object interface {
 	openslo.Object
-	// GetMetadata returns the object's version-specific metadata.
+	// GetMetadata returns the object's version-specific [Metadata].
 	GetMetadata() Metadata
 }
 
@@ -51,7 +51,7 @@ type Labels map[string]string
 // Annotations maps annotation keys to arbitrary string values.
 type Annotations map[string]string
 
-// Operator specifies a comparison operation for an SLO objective or alert condition.
+// Operator specifies a comparison operation for an [SLO] objective or [AlertCondition].
 type Operator string
 
 const (
@@ -73,7 +73,7 @@ var operatorValidation = govy.New(
 		Rules(rules.OneOf(validOperators...)),
 )
 
-// Validate returns an error for an unsupported comparison operator.
+// Validate returns an error for an unsupported [Operator].
 func (o Operator) Validate() error {
 	return operatorValidation.Validate(o)
 }

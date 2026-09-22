@@ -58,7 +58,7 @@ type Annotations map[string]string
 // JSON decoding accepts either a single string or an array of strings.
 type Label []string
 
-// UnmarshalJSON decodes a string or string array into a Label.
+// UnmarshalJSON decodes a string or string array into a [Label].
 func (a *Label) UnmarshalJSON(data []byte) error {
 	var multi []string
 	if err := json.Unmarshal(data, &multi); err != nil {
@@ -99,7 +99,7 @@ var operatorValidation = govy.New(
 		Rules(rules.OneOf(validOperators...)),
 )
 
-// Validate returns an error for an unsupported operator.
+// Validate returns an error for an unsupported [Operator].
 func (o Operator) Validate() error {
 	return operatorValidation.Validate(o)
 }

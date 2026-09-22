@@ -13,7 +13,7 @@ var (
 	_ = openslo.ObjectValidator[SLI](SLI{})
 )
 
-// NewSLI returns an SLI from metadata and spec.
+// NewSLI returns an [SLI] from metadata and spec.
 func NewSLI(metadata Metadata, spec SLISpec) SLI {
 	return SLI{
 		APIVersion: APIVersion,
@@ -23,7 +23,7 @@ func NewSLI(metadata Metadata, spec SLISpec) SLI {
 	}
 }
 
-// SLI defines a derived reliability indicator calculated from one or more metric queries against data sources.
+// SLI defines a derived reliability indicator calculated from one or more metric queries against [DataSource] objects.
 type SLI struct {
 	APIVersion openslo.Version `json:"apiVersion"`
 	Kind       openslo.Kind    `json:"kind"`
@@ -41,23 +41,23 @@ func (s SLI) GetKind() openslo.Kind {
 	return openslo.KindSLI
 }
 
-// GetName returns the SLI's metadata name.
+// GetName returns the [SLI]'s [Metadata.Name].
 func (s SLI) GetName() string {
 	return s.Metadata.Name
 }
 
-// Validate returns an error for an invalid SLI.
+// Validate returns an error for an invalid [SLI].
 func (s SLI) Validate() error {
 	return sliValidation.Validate(s)
 }
 
-// String returns the SLI's formatted version and kind.
-// It also returns the metadata name when set.
+// String returns the [SLI]'s formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (s SLI) String() string {
 	return internal.GetObjectName(s)
 }
 
-// GetMetadata returns the SLI's metadata.
+// GetMetadata returns the [SLI]'s [Metadata].
 func (s SLI) GetMetadata() Metadata {
 	return s.Metadata
 }
@@ -69,32 +69,33 @@ func (s SLI) GetValidator() govy.Validator[SLI] {
 
 // SLISpec defines the query or queries used to calculate an [SLI].
 type SLISpec struct {
-	// Description summarizes the indicator.
+	// Description summarizes the [SLI].
 	Description string `json:"description,omitempty"`
 	// ThresholdMetric defines a query that returns raw values.
 	// [SLOObjective.Operator] compares each value with [SLOObjective.Value].
 	ThresholdMetric *SLIMetricSpec `json:"thresholdMetric,omitempty"`
-	// RatioMetric defines component queries or a precomputed ratio for an SLO objective.
+	// RatioMetric defines component queries or a precomputed ratio for an [SLO] objective.
 	RatioMetric *SLIRatioMetric `json:"ratioMetric,omitempty"`
 }
 
 // SLIRatioMetric defines an indicator as [SLIRatioMetric.Good] divided by [SLIRatioMetric.Total],
 // ([SLIRatioMetric.Total] minus [SLIRatioMetric.Bad]) divided by [SLIRatioMetric.Total],
 // or [SLIRatioMetric.Raw].
-// [SLIRatioMetric.RawType] identifies Raw as a success or failure ratio.
+// [SLIRatioMetric.RawType] identifies [SLIRatioMetric.Raw] as a success or failure ratio.
 // For example, 990 good events out of 1,000 total events produce 0.99.
 // 10 bad events with the same total produce the same success ratio.
 type SLIRatioMetric struct {
 	// Counter reports whether the good, bad, and total metrics are monotonically increasing counters.
-	// It has no effect when Raw is used.
+	// It has no effect when [SLIRatioMetric.Raw] is used.
 	Counter bool `json:"counter"`
-	// Good is the success-count numerator used with Total.
+	// Good is the success-count numerator used with [SLIRatioMetric.Total].
 	Good *SLIMetricSpec `json:"good,omitempty"`
-	// Bad is the failure-count input used with Total to derive successes.
+	// Bad is the failure-count input used with [SLIRatioMetric.Total] to derive successes.
 	Bad *SLIMetricSpec `json:"bad,omitempty"`
-	// Total is the denominator paired with Good or Bad.
+	// Total is the denominator paired with [SLIRatioMetric.Good] or [SLIRatioMetric.Bad].
 	Total *SLIMetricSpec `json:"total,omitempty"`
-	// RawType identifies whether Raw contains a success or failure ratio when Raw is used.
+	// RawType identifies whether [SLIRatioMetric.Raw] contains a success or failure ratio
+	// when [SLIRatioMetric.Raw] is used.
 	RawType SLIRawMetricType `json:"rawType,omitempty"`
 	// Raw supplies an already computed ratio.
 	Raw *SLIMetricSpec `json:"raw,omitempty"`

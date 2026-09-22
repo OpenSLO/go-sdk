@@ -121,7 +121,7 @@ var validDurationUnits = []DurationShorthandUnit{
 	DurationShorthandUnitYear,
 }
 
-// Validate returns an error for an invalid duration shorthand.
+// Validate returns an error for an invalid [DurationShorthand].
 func (d DurationShorthand) Validate() error {
 	return durationShortHandValidation.Validate(d)
 }

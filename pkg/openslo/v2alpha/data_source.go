@@ -15,7 +15,7 @@ var (
 	_ = openslo.ObjectValidator[DataSource](DataSource{})
 )
 
-// NewDataSource returns a data source from metadata and spec.
+// NewDataSource returns a [DataSource] from metadata and spec.
 func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 	return DataSource{
 		APIVersion: APIVersion,
@@ -26,7 +26,7 @@ func NewDataSource(metadata Metadata, spec DataSourceSpec) DataSource {
 }
 
 // DataSource represents reusable connection details for a metric source.
-// [SLIMetricSpec.DataSourceRef] selects it by metadata name.
+// [SLIMetricSpec.DataSourceRef] selects it by [Metadata.Name].
 // A metric query can instead embed [SLIMetricSpec.DataSourceSpec].
 // [SLIMetricSpec.Spec] contains implementation-defined query configuration.
 type DataSource struct {
@@ -46,23 +46,23 @@ func (d DataSource) GetKind() openslo.Kind {
 	return openslo.KindDataSource
 }
 
-// GetName returns the data source's metadata name.
+// GetName returns the [DataSource]'s [Metadata.Name].
 func (d DataSource) GetName() string {
 	return d.Metadata.Name
 }
 
-// Validate returns an error for an invalid data source.
+// Validate returns an error for an invalid [DataSource].
 func (d DataSource) Validate() error {
 	return dataSourceValidation.Validate(d)
 }
 
-// String returns the data source's formatted version and kind.
-// It also returns the metadata name when set.
+// String returns the [DataSource]'s formatted version and kind.
+// It also returns [Metadata.Name] when set.
 func (d DataSource) String() string {
 	return internal.GetObjectName(d)
 }
 
-// GetMetadata returns the data source's metadata.
+// GetMetadata returns the [DataSource]'s [Metadata].
 func (d DataSource) GetMetadata() Metadata {
 	return d.Metadata
 }
@@ -74,7 +74,7 @@ func (d DataSource) GetValidator() govy.Validator[DataSource] {
 
 // DataSourceSpec defines a metric-source type and its implementation-defined connection data.
 type DataSourceSpec struct {
-	// Description summarizes the data source.
+	// Description summarizes the [DataSource].
 	Description string `json:"description,omitempty"`
 	// Type identifies the metric-source type, such as Prometheus or Datadog.
 	// The consuming implementation defines the accepted values.

@@ -13,7 +13,7 @@ var (
 	_ = openslo.ObjectValidator[SLI](SLI{})
 )
 
-// NewSLI returns an SLI from metadata and spec.
+// NewSLI returns an [SLI] from metadata and spec.
 func NewSLI(metadata Metadata, spec SLISpec) SLI {
 	return SLI{
 		APIVersion: APIVersion,
@@ -41,35 +41,35 @@ func (s SLI) GetKind() openslo.Kind {
 	return openslo.KindSLI
 }
 
-// GetName returns the name in the SLI's [Metadata].
+// GetName returns the name in the [SLI]'s [Metadata].
 func (s SLI) GetName() string {
 	return s.Metadata.Name
 }
 
-// Validate returns an error for an invalid SLI.
+// Validate returns an error for an invalid [SLI].
 func (s SLI) Validate() error {
 	return sliValidation.Validate(s)
 }
 
-// String returns the SLI's formatted version and kind.
+// String returns the [SLI]'s formatted version and kind.
 // It also returns [Metadata.Name] when set.
 func (s SLI) String() string {
 	return internal.GetObjectName(s)
 }
 
-// GetMetadata returns the SLI's [Metadata].
+// GetMetadata returns the [SLI]'s [Metadata].
 func (s SLI) GetMetadata() Metadata {
 	return s.Metadata
 }
 
-// GetValidator returns the validator for SLI objects.
+// GetValidator returns the validator for [SLI] objects.
 func (s SLI) GetValidator() govy.Validator[SLI] {
 	return sliValidation
 }
 
 // SLISpec defines the query or queries used to calculate an [SLI].
 type SLISpec struct {
-	// Description summarizes the SLI.
+	// Description summarizes the [SLI].
 	Description string `json:"description,omitempty"`
 	// ThresholdMetric defines a query that returns raw values.
 	// [SLOObjective.Operator] compares each value with [SLOObjective.Value].
@@ -77,21 +77,23 @@ type SLISpec struct {
 	RatioMetric     *SLIRatioMetric `json:"ratioMetric,omitempty"`
 }
 
-// SLIRatioMetric defines an indicator from good divided by total or (total minus bad) divided by total.
+// SLIRatioMetric defines an indicator from [SLIRatioMetric.Good] divided by [SLIRatioMetric.Total]
+// or ([SLIRatioMetric.Total] minus [SLIRatioMetric.Bad]) divided by [SLIRatioMetric.Total].
 // It can instead use a precomputed success or failure ratio identified by [SLIRatioMetric.RawType].
 // For example, 99 good events out of 100 produce a ratio of 0.99.
 // One bad event out of 100 produces the same ratio.
 type SLIRatioMetric struct {
 	// Counter reports whether the queried good, bad, and total metrics are monotonically increasing.
-	// It has no effect when Raw is used.
+	// It has no effect when [SLIRatioMetric.Raw] is used.
 	Counter bool `json:"counter"`
 	// Good supplies the numerator for a good-over-total ratio.
 	Good *SLIMetricSpec `json:"good,omitempty"`
-	// Bad supplies the number subtracted from Total for a failure-based ratio.
+	// Bad supplies the number subtracted from [SLIRatioMetric.Total] for a failure-based ratio.
 	Bad *SLIMetricSpec `json:"bad,omitempty"`
-	// Total supplies the denominator for a Good- or Bad-based ratio.
+	// Total supplies the denominator for a [SLIRatioMetric.Good]- or [SLIRatioMetric.Bad]-based ratio.
 	Total *SLIMetricSpec `json:"total,omitempty"`
-	// RawType selects whether Raw is interpreted as a success or failure ratio when Raw is used.
+	// RawType selects whether [SLIRatioMetric.Raw] is interpreted as a success or failure ratio
+	// when [SLIRatioMetric.Raw] is used.
 	RawType SLIRawMetricType `json:"rawType,omitempty"`
 	// Raw defines a query for a precomputed success or failure ratio.
 	Raw *SLIMetricSpec `json:"raw,omitempty"`
@@ -107,7 +109,8 @@ type SLIMetricSource struct {
 	// MetricSourceRef names an existing [DataSource].
 	MetricSourceRef string `json:"metricSourceRef,omitempty"`
 	// Type identifies the implementation-defined metric-source type.
-	// When [SLIMetricSource.MetricSourceRef] is set, OpenSLO infers Type from the referenced [DataSource].
+	// When [SLIMetricSource.MetricSourceRef] is set, OpenSLO infers [SLIMetricSource.Type]
+	// from the referenced [DataSource].
 	Type string `json:"type,omitempty"`
 	// Spec contains source-specific query or metric-retrieval configuration.
 	Spec map[string]any `json:"spec"`
@@ -117,9 +120,9 @@ type SLIMetricSource struct {
 type SLIRawMetricType string
 
 const (
-	// SLIRawMetricTypeSuccess interprets Raw as good divided by total.
+	// SLIRawMetricTypeSuccess interprets [SLIRatioMetric.Raw] as good divided by total.
 	SLIRawMetricTypeSuccess SLIRawMetricType = "success"
-	// SLIRawMetricTypeFailure interprets Raw as bad divided by total.
+	// SLIRawMetricTypeFailure interprets [SLIRatioMetric.Raw] as bad divided by total.
 	SLIRawMetricTypeFailure SLIRawMetricType = "failure"
 )
 
